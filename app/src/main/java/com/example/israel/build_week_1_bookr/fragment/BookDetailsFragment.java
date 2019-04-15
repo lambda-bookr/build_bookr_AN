@@ -84,6 +84,7 @@ public class BookDetailsFragment extends Fragment {
     public static void replaceBooksDetailsFragment(FragmentActivity fragmentActivity, Book book, int i) {
         BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
 
+        // TODO animation
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         transaction.replace(i, bookDetailsFragment);
         transaction.addToBackStack(null); // remove this fragment on back press

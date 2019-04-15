@@ -12,9 +12,11 @@ import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
+import com.example.israel.build_week_1_bookr.fragment.RegisterFragment;
 import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 
+// TODO IMPORTANT. create login fragment
 public class LoginActivity extends AppCompatActivity {
 
     private EditText passwordEditText;
@@ -43,6 +45,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loginWithEmailAndPassword();
+            }
+        });
+
+        findViewById(R.id.activity_login_button_register).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RegisterFragment.replaceRegisterFragment(LoginActivity.this, R.id.activity_login_root);
             }
         });
     }
