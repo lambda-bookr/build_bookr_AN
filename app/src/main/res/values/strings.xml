@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Build_Week_1_Bookr</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="logging_in">Logging in</string>
+    <string name="placeholder_2_sentences">Maecenas tempor elit vel mauris lobortis, nec mattis mauris imperdiet. Aenean laoreet nulla feugiat, maximus felis vitae, placerat risus.</string>
+
+</resources>
