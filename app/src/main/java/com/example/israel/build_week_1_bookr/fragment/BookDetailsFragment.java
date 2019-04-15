@@ -1,6 +1,7 @@
 package com.example.israel.build_week_1_bookr.fragment;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,18 +11,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Book2;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBook2AsyncTask;
+import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
 public class BookDetailsFragment extends Fragment {
 
     private static final String ARG_BOOK = "book";
 
     private RequestBook2AsyncTask requestBook2AsyncTask;
+    private RequestImageByUrlAsyncTask requestBookImageByUrlAsyncTask;
+    private View fragmentView;
 
     public static BookDetailsFragment newInstance(Book book) {
 
@@ -45,17 +51,41 @@ public class BookDetailsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         Book book = getArguments().getParcelable(ARG_BOOK);
 
-        View view = inflater.inflate(R.layout.fragment_book_details, container, false);
-        TextView titleTextView = view.findViewById(R.id.fragment_book_details_text_view_title);
+        fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
+        TextView titleTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_title);
         titleTextView.setText(book.getTitle());
 
-        RequestBook2(book); // for the reviews
+        TextView authorTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_author);
+        authorTextView.setText(book.getAuthor());
 
-        return view;
+        TextView publisherTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_publisher);
+        publisherTextView.setText(book.getPublisher());
+
+        TextView priceTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_price);
+        priceTextView.setText(Double.toString(book.getPrice()));
+
+        TextView descriptionTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_description);
+        descriptionTextView.setText(book.getDescription());
+
+        requestBookImage(book);
+
+        requestBook2(book); // for the reviews
+
+        return fragmentView;
+    }
+
+    public static void addBooksDetailsFragment(FragmentActivity fragmentActivity, Book book, int i) {
+        BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
+
+        // TODO animation
+        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
+        transaction.add(i, bookDetailsFragment);
+        transaction.addToBackStack(null); // remove this fragment on back press
+        transaction.commit();
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void RequestBook2(Book book) {
+    private void requestBook2(Book book) {
         if (requestBook2AsyncTask != null) {
             return;
         }
@@ -81,17 +111,38 @@ public class BookDetailsFragment extends Fragment {
         };
     }
 
-    public static void replaceBooksDetailsFragment(FragmentActivity fragmentActivity, Book book, int i) {
-        BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
+    @SuppressLint("StaticFieldLeak")
+    private void requestBookImage(Book book) {
+        if (requestBookImageByUrlAsyncTask != null) {
+            return;
+        }
 
-        // TODO animation
-        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(i, bookDetailsFragment);
-        transaction.addToBackStack(null); // remove this fragment on back press
-        transaction.commit();
-    }
+        final ImageView bookImageImageView = fragmentView.findViewById(R.id.fragment_book_details_image_view_image);
+        bookImageImageView.setVisibility(View.GONE);
 
-    private void requestBookImage() {
+        final ProgressBar requestingImageProgressBar = fragmentView.findViewById(R.id.fragment_book_details_progress_bar_requesting_image);
+        requestingImageProgressBar.setVisibility(View.VISIBLE);
 
+        requestBookImageByUrlAsyncTask = new RequestImageByUrlAsyncTask(book.getImageUrl()) {
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+
+                requestingImageProgressBar.setVisibility(View.GONE);
+                bookImageImageView.setVisibility(View.VISIBLE);
+
+                if (isCancelled()) {
+                    return;
+                }
+
+                requestBookImageByUrlAsyncTask = null;
+
+                // TODO no image
+                bookImageImageView.setImageBitmap(bitmap);
+
+            }
+        };
+
+        requestBookImageByUrlAsyncTask.execute();
     }
 }

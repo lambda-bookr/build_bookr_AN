@@ -42,7 +42,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BookDetailsFragment.replaceBooksDetailsFragment(fragmentActivity, book, bookDetailsFragmentParentId);
+                BookDetailsFragment.addBooksDetailsFragment(fragmentActivity, book, bookDetailsFragmentParentId);
             }
         });
     }
