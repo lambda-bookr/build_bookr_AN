@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,7 +85,7 @@ public class NetworkAdapter {
             httpURLConnection.setReadTimeout(READ_TIMEOUT);
             httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
             httpURLConnection.setRequestMethod("POST");
-            //httpURLConnection.connect();
+            httpURLConnection.connect();
             outputStream = httpURLConnection.getOutputStream();
             if (outputStream != null) {
                 outputStream.write(requestBody.getBytes());
@@ -140,6 +142,79 @@ public class NetworkAdapter {
 
     @WorkerThread
     @Nullable
+    public static String httpRequestPOSTJson(String urlStr, JSONObject jsonObject) {
+        HttpURLConnection httpURLConnection = null;
+        OutputStream outputStream = null;
+        InputStream inputStream = null;
+        try {
+            URL url = new URL(urlStr);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.connect();
+            outputStream = httpURLConnection.getOutputStream();
+            if (outputStream != null) {
+                outputStream.write(jsonObject.toString().getBytes());
+            }
+
+            int responseCode = httpURLConnection.getResponseCode();
+            if (responseCode < HttpURLConnection.HTTP_OK || responseCode > HttpURLConnection.HTTP_MULT_CHOICE - 1) {
+                throw new IOException("Connection error. Response code: " + Integer.toString(responseCode));
+            }
+
+            inputStream = httpURLConnection.getInputStream();
+            StringBuilder builder = new StringBuilder();
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String resStr;
+                while ((resStr = reader.readLine()) != null) {
+                    builder.append(resStr);
+                }
+            }
+
+            responseCode = httpURLConnection.getResponseCode();
+            if (responseCode < HttpURLConnection.HTTP_OK || responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) {
+                throw new IOException("Connection error. Response code: " + Integer.toString(responseCode));
+            }
+
+            return builder.toString();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) { // for future reference. if ever i forgot to put internet permission again!!
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+    @WorkerThread
+    @Nullable
     public static Bitmap httpImageRequestGET(String urlStr) {
         HttpURLConnection httpURLConnection = null;
         InputStream inputStream = null;
@@ -181,4 +256,8 @@ public class NetworkAdapter {
 
         return null;
     }
+
+
+
+
 }

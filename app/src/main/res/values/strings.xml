@@ -13,5 +13,8 @@
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
     <string name="register">Register</string>
+    <string name="username_taken">Username is taken</string>
+    <string name="this_field_cannot_be_empty">This field cannot be empty</string>
+    <string name="registration_complete">Registration complete</string>
 
 </resources>

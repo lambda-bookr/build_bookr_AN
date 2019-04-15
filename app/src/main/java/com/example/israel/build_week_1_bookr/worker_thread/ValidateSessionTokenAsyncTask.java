@@ -13,8 +13,6 @@ public class ValidateSessionTokenAsyncTask extends AsyncTask<Void, Void, Boolean
     @Override
     protected Boolean doInBackground(Void... voids) {
 
-        // TODO
-
         return false;
     }
 }

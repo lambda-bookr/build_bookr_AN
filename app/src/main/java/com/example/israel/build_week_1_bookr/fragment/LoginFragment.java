@@ -22,6 +22,7 @@ import com.example.israel.build_week_1_bookr.activity.LoginActivity;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
+import com.example.israel.build_week_1_bookr.worker_thread.RegisterAsyncTask;
 
 public class LoginFragment extends Fragment {
 
@@ -96,14 +97,23 @@ public class LoginFragment extends Fragment {
         }
 
         final EditText emailEditText = v.findViewById(R.id.fragment_login_edit_text_email);
+        String emailStr = emailEditText.getText().toString();
+        if (emailStr.length() == 0) {
+            emailEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            return;
+        }
+
+        String passwordStr = passwordEditText.getText().toString();
+        if (passwordStr.length() == 0) {
+            emailEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            return;
+        }
 
         final ProgressBar loggingInProgressBar = v.findViewById(R.id.fragment_login_progress_bar_logging_in);
         loggingInProgressBar.setVisibility(View.VISIBLE);
 
         // try logging in with email and password
-        loginAsyncTask = new LoginAsyncTask(
-                emailEditText.getText().toString(),
-                passwordEditText.getText().toString()) {
+        loginAsyncTask = new LoginAsyncTask(emailStr, passwordStr) {
 
             @Override
             protected void onPostExecute(Result result) {
@@ -125,11 +135,6 @@ public class LoginFragment extends Fragment {
 
                         // do not come back here, use log out instead
                         getActivity().finish();
-                    } break;
-
-                    case Result.INVALID_EMAIL: {
-                        emailEditText.setError(getString(R.string.invalid_email));
-                        emailEditText.requestFocus();
                     } break;
 
                     case Result.EMAIL_NOT_FOUND: {

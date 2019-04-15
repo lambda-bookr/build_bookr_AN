@@ -13,8 +13,6 @@ import com.example.israel.build_week_1_bookr.worker_thread.ValidateSessionTokenA
 // TODO DrawerLayout for navigation
 public class MainActivity extends AppCompatActivity {
 
-    ValidateSessionTokenAsyncTask validateSessionTokenAsyncTask;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,46 +21,18 @@ public class MainActivity extends AppCompatActivity {
         validateSession();
     }
 
-    @Override
-    protected void onDestroy() {
-        if (validateSessionTokenAsyncTask != null) {
-            validateSessionTokenAsyncTask.cancel(false);
-            validateSessionTokenAsyncTask = null;
-        }
-
-        super.onDestroy();
-    }
-
     @SuppressLint("StaticFieldLeak")
     private void validateSession() {
-        if (validateSessionTokenAsyncTask != null) {
-            return;
+        if (SessionTokenDAO.isSessionValid(this)) {
+            // go directly to the book list activity
+            ActivityStarter.startBookListActivity(MainActivity.this);
+        } else {
+            // go directly to the login activity
+            ActivityStarter.startLoginActivity(MainActivity.this);
         }
 
-        validateSessionTokenAsyncTask = new ValidateSessionTokenAsyncTask(SessionTokenDAO.getSessionToken(this)) {
-            @Override
-            protected void onPostExecute(Boolean isValid) {
-                super.onPostExecute(isValid);
-
-                if (isCancelled()) {
-                    return;
-                }
-
-                validateSessionTokenAsyncTask = null;
-
-                if (isValid) {
-                    // go directly to the book list activity
-                    ActivityStarter.startBookListActivity(MainActivity.this);
-                } else {
-                    // go directly to the login activity
-                    ActivityStarter.startLoginActivity(MainActivity.this);
-                }
-
-                // prevents the user from coming back here
-                finish();
-            }
-        };
-        validateSessionTokenAsyncTask.execute();
+        // prevents the user from coming back here
+        finish();
 
     }
 }

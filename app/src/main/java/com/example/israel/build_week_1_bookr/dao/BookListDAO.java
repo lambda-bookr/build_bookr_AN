@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
+import com.example.israel.build_week_1_bookr.CommonStatics;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Book2;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 public class BookListDAO {
 
-    public static final String BASE_URL = "https://bookr-backend.herokuapp.com/api/";
+    public static final String BASE_URL = CommonStatics.DATABASE_BASE_URL;
     public static final String BOOK_LIST = "books/";
 
     @WorkerThread

@@ -18,41 +18,69 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/fragment_register_username"
+            <ProgressBar
+                android:id="@+id/fragment_register_progress_bar_registering"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_register_password"
                 app:layout_constraintTop_toTopOf="parent"
-                android:hint="@string/hint_username"/>
+                android:visibility="gone"/>
 
             <EditText
-                android:id="@+id/fragment_register_password"
+                android:id="@+id/fragment_register_edit_text_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_register_first_name"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_register_username"
-                android:hint="@string/hint_password"/>
+                android:hint="@string/hint_username"
+                app:layout_constraintBottom_toTopOf="@+id/fragment_register_edit_text_password"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_progress_bar_registering" />
 
             <EditText
-                android:id="@+id/fragment_register_first_name"
+                android:id="@+id/fragment_register_edit_text_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_register_last_name"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_register_password"
-                android:hint="@string/hint_first_name"/>
+                android:hint="@string/hint_password"
+                app:layout_constraintBottom_toTopOf="@+id/fragment_register_edit_text_first_name"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_username" />
 
             <EditText
-                android:id="@+id/fragment_register_last_name"
+                android:id="@+id/fragment_register_edit_text_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_register_first_name"
-                android:hint="@string/hint_last_name"/>
+                android:hint="@string/hint_first_name"
+                app:layout_constraintBottom_toTopOf="@+id/fragment_register_edit_text_last_name"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_password" />
 
+            <EditText
+                android:id="@+id/fragment_register_edit_text_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_last_name"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_first_name" />
+
+            <Button
+                android:id="@+id/fragment_register_button_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Confirm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_last_name" />
+
+            <TextView
+                android:id="@+id/fragment_register_text_view_result"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/registration_complete"
+                android:textColor="@color/green"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_register_button_confirm"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_last_name"
+                android:visibility="invisible"/>
 
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
-
 
 </android.support.constraint.ConstraintLayout>
