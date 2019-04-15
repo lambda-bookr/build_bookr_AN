@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                         // store session token
                         SessionTokenDAO.setSessionToken(LoginActivity.this, result.sessionToken);
 
-                        // TODO start book list activity
+                        ActivityStarter.startBookListActivity(LoginActivity.this);
 
                         // do not come back here, use log out instead
                         finish();
