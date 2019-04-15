@@ -6,5 +6,6 @@
     <string name="incorrect_password">Incorrect password</string>
     <string name="invalid_email">Invalid email</string>
     <string name="logging_in">Logging in</string>
+    <string name="placeholder_2_sentences">Maecenas tempor elit vel mauris lobortis, nec mattis mauris imperdiet. Aenean laoreet nulla feugiat, maximus felis vitae, placerat risus.</string>
 
 </resources>

@@ -46,7 +46,7 @@ public class BookDetailsFragment extends Fragment {
         Book book = getArguments().getParcelable(ARG_BOOK);
 
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
-        TextView titleTextView = view.findViewById(R.id.fragment_book_details_title);
+        TextView titleTextView = view.findViewById(R.id.fragment_book_details_text_view_title);
         titleTextView.setText(book.getTitle());
 
         RequestBook2(book); // for the reviews
