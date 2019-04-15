@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 
 import com.example.israel.build_week_1_bookr.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class RegisterFragment extends Fragment {
 
     public static RegisterFragment newInstance() {
