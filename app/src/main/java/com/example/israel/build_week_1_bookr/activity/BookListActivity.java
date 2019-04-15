@@ -12,6 +12,7 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
+// TODO IMPORTANT. Put recycler view into a fragment to prevent it from being interacted when the BookDetailsFragment is on top
 public class BookListActivity extends AppCompatActivity {
 
     public static final int GRID_SPAN_COUNT = 2;

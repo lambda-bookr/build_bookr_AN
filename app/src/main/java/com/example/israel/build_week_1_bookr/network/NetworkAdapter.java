@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+// TODO IMPORTANT. improve failed attempt reporting
 public class NetworkAdapter {
     public static final int READ_TIMEOUT = 3000;
     public static final int CONNECT_TIMEOUT = 3000;
