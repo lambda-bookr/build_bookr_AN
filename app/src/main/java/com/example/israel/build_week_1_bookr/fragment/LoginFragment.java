@@ -100,12 +100,14 @@ public class LoginFragment extends Fragment {
         String emailStr = emailEditText.getText().toString();
         if (emailStr.length() == 0) {
             emailEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            emailEditText.requestFocus();
             return;
         }
 
         String passwordStr = passwordEditText.getText().toString();
         if (passwordStr.length() == 0) {
-            emailEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            passwordEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            passwordEditText.requestFocus();
             return;
         }
 
@@ -137,17 +139,9 @@ public class LoginFragment extends Fragment {
                         getActivity().finish();
                     } break;
 
-                    case Result.EMAIL_NOT_FOUND: {
-                        // TODO if implemented
-                    } break;
-
                     case Result.WRONG_PASSWORD: {
                         passwordEditText.setError(getString(R.string.incorrect_password));
                         passwordEditText.requestFocus();
-                    }
-
-                    case Result.TIME_OUT: {
-                        // TODO
                     }
                 }
             }

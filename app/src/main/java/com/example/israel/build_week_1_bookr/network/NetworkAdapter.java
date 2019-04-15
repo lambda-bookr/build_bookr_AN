@@ -2,6 +2,7 @@ package com.example.israel.build_week_1_bookr.network;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
@@ -141,11 +142,12 @@ public class NetworkAdapter {
     }
 
     @WorkerThread
-    @Nullable
-    public static String httpRequestPOSTJson(String urlStr, JSONObject jsonObject) {
+    @NonNull
+    public static Result httpRequestPOSTJson(String urlStr, JSONObject jsonObject) {
         HttpURLConnection httpURLConnection = null;
         OutputStream outputStream = null;
         InputStream inputStream = null;
+        Result result = new Result();
         try {
             URL url = new URL(urlStr);
             httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -161,6 +163,7 @@ public class NetworkAdapter {
             }
 
             int responseCode = httpURLConnection.getResponseCode();
+            result.responseCode = responseCode;
             if (responseCode < HttpURLConnection.HTTP_OK || responseCode > HttpURLConnection.HTTP_MULT_CHOICE - 1) {
                 throw new IOException("Connection error. Response code: " + Integer.toString(responseCode));
             }
@@ -175,12 +178,8 @@ public class NetworkAdapter {
                 }
             }
 
-            responseCode = httpURLConnection.getResponseCode();
-            if (responseCode < HttpURLConnection.HTTP_OK || responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) {
-                throw new IOException("Connection error. Response code: " + Integer.toString(responseCode));
-            }
-
-            return builder.toString();
+            result.resultObj = builder.toString();
+            return result;
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -210,7 +209,7 @@ public class NetworkAdapter {
             }
         }
 
-        return null;
+        return result;
     }
 
     @WorkerThread
@@ -257,7 +256,13 @@ public class NetworkAdapter {
         return null;
     }
 
+    public static class Result {
+        /** The request didn't have a chance to get to a getResponseCode line*/
+        public static final int INVALID_RESPONSE_CODE = -1;
 
+        public int responseCode = INVALID_RESPONSE_CODE;
+        public Object resultObj;
+    }
 
 
 }
