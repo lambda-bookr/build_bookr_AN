@@ -90,4 +90,8 @@ public class BookDetailsFragment extends Fragment {
         transaction.addToBackStack(null); // remove this fragment on back press
         transaction.commit();
     }
+
+    private void requestBookImage() {
+
+    }
 }

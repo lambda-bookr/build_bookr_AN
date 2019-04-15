@@ -19,7 +19,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/fragment_book_details_image_view_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:src="@drawable/ic_launcher_background"
@@ -34,7 +34,7 @@
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 android:text="Book Title Placeholder"
                 android:textSize="20sp"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_image_view_image" />
 
             <TextView
                 android:id="@+id/fragment_book_details_text_view_author"

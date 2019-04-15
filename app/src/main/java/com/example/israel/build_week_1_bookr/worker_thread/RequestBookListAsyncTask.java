@@ -15,11 +15,12 @@ public class RequestBookListAsyncTask extends AsyncTask<Void, Void, RequestBookL
     @NonNull
     protected Result doInBackground(Void... voids) {
 
-        try { // TODO remove this
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // simulation
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         Result result = new Result();
         result.books = BookListDAO.getBookList();

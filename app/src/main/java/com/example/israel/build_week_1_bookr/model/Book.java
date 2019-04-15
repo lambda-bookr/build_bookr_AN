@@ -37,7 +37,7 @@ public class Book implements Parcelable {
         }
 
         try {
-            title = bookJson.getString("title");
+            title = bookJson.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();
         }

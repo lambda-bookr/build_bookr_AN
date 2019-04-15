@@ -27,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+        // TODO create a hard code here
         LoginFragment.replaceLoginFragment(this, R.id.activity_login_root);
     }
 }

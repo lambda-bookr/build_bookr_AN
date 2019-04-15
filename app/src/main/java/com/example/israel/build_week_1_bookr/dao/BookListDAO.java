@@ -31,18 +31,21 @@ public class BookListDAO {
         }
 
         try {
-            JSONObject booksJson = new JSONObject(booksJsonStr);
-            JSONArray booksJsonArr = booksJson.getJSONArray("books");
-            // TODO
+            JSONArray booksJsonArr = new JSONArray(booksJsonStr);
+            books.ensureCapacity(booksJsonArr.length());
+            for (int i = 0; i < booksJsonArr.length(); ++i) {
+                JSONObject bookJson = booksJsonArr.getJSONObject(i);
+                books.add(new Book(bookJson));
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // TODO test only
-        for (int i = 0; i < 50; ++i) {
-            books.add(new Book());
-        }
+//        // TODO test only
+//        for (int i = 0; i < 50; ++i) {
+//            books.add(new Book());
+//        }
 
         return books;
     }

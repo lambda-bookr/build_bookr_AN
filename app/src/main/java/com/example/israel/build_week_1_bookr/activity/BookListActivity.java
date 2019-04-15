@@ -13,7 +13,7 @@ import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
 import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
-// TODO IMPORTANT. Put recycler view into a fragment to prevent it from being interacted when the BookDetailsFragment is on top
+// TODO refresh functionality when pulling down
 public class BookListActivity extends AppCompatActivity {
 
     @Override
@@ -24,6 +24,7 @@ public class BookListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_book_list);
 
+        // TODO create a hard code here
         BookListFragment.replaceBookListFragment(this, R.id.activity_book_list_root);
 
     }
