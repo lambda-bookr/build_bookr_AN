@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Build_Week_1_Bookr</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="invalid_email">Invalid email</string>
 </resources>

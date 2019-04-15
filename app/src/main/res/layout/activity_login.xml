@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".activity.LoginActivity">
+
+    <ProgressBar
+        android:id="@+id/activity_login_progress_bar_logging_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/activity_login_edit_text_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_email"
+        app:layout_constraintTop_toBottomOf="@+id/activity_login_progress_bar_logging_in"
+        tools:layout_editor_absoluteX="16dp"
+        android:maxLines="1"/>
+
+    <EditText
+        android:id="@+id/activity_login_edit_text_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/activity_login_edit_text_email"
+        android:hint="@string/hint_password"
+        android:maxLines="1"
+        android:inputType="textPassword"
+        android:imeActionId="7"/>
+
+    <Button
+        android:id="@+id/activity_login_button_log_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_login_edit_text_password"
+        android:text="@string/log_in"/>
+
+</android.support.constraint.ConstraintLayout>
