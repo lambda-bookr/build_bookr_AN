@@ -22,6 +22,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // TODO animation
+
         setContentView(R.layout.activity_login);
 
         LoginFragment.replaceLoginFragment(this, R.id.activity_login_root);

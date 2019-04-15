@@ -82,7 +82,6 @@ public class LoginFragment extends Fragment {
     public static void replaceLoginFragment(FragmentActivity fragmentActivity, int i) {
         LoginFragment loginFragment = LoginFragment.newInstance();
 
-        // TODO animation
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         transaction.replace(i, loginFragment);
         // login fragment should always be underneath
