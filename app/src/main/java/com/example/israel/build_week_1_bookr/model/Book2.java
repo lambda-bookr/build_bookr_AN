@@ -11,9 +11,9 @@ import java.util.ArrayList;
 public class Book2 extends Book{
 
     private static final String KEY_JSON_USERNAME = "username";
-    private static final String KEY_JSON_FIRST_NAME = "firstname";
-    private static final String KEY_JSON_LAST_NAME = "lastname";
-    private static final String KEY_JSON_THUMBNAIL_URL = "thumbnailurl";
+    private static final String KEY_JSON_FIRST_NAME = "firstName";
+    private static final String KEY_JSON_LAST_NAME = "lastName";
+    private static final String KEY_JSON_THUMBNAIL_URL = "thumbnailUrl";
     private static final String KEY_JSON_REVIEWS = "reviews";
 
     public Book2(JSONObject book2Json) {

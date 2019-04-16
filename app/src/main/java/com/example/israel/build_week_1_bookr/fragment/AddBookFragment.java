@@ -113,7 +113,6 @@ public class AddBookFragment extends Fragment {
         EditText descriptionEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_description);
         String descriptionStr = descriptionEditText.getText().toString();
 
-
         // TODO progress bar
 
         requestAddBookAsyncTask = new RequestAddBookAsyncTask(

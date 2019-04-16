@@ -16,7 +16,7 @@ public class Book implements Parcelable {
     private static final String KEY_JSON_PRICE = "price";
     private static final String KEY_JSON_PUBLISHER = "publisher";
     private static final String KEY_JSON_DESCRIPTION = "description";
-    private static final String KEY_JSON_IMAGE_URL = "imageurl";
+    private static final String KEY_JSON_IMAGE_URL = "imageUrl";
     private static final String KEY_JSON_AVERAGE_RATING = "rating";
 
     public Book() {
