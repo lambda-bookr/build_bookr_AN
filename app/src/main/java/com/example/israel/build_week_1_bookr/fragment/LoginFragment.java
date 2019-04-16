@@ -21,6 +21,7 @@ import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
 
+// TODO MEDIUM toast
 public class LoginFragment extends Fragment {
 
     private View fragmentView;

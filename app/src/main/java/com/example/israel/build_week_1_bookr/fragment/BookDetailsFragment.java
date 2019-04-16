@@ -26,6 +26,7 @@ import com.example.israel.build_week_1_bookr.worker_thread.RequestBook2AsyncTask
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
 // TODO MEDIUM. improve review list view. Move review view into a new fragment when the average rating is clicked
+// TODO CRITICAL add review
 public class BookDetailsFragment extends Fragment {
 
     private static final String ARG_BOOK = "book";

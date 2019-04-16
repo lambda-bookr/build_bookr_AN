@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class BookListDAO {
 
     private static final String BASE_URL = CommonStatics.DATABASE_BASE_URL;
-    private static final String BOOK_LIST = "books/";
+    private static final String BOOK_LIST = "api/books/";
 
     @WorkerThread
     @NonNull

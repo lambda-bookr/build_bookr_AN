@@ -22,7 +22,7 @@
                 android:id="@+id/list_item_review_text_view_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BOOK REVIEWER USERNAME"
+                android:text="@string/placeholder_book_reviewer_username"
                 android:maxLines="1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>

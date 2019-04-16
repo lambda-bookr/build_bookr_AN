@@ -11,6 +11,9 @@ public class SessionTokenDAO {
     private static final String KEY_SESSION_CREATED_TIME = "session_created_time";
     private static final long TIME_MILLIS_SESSION_VALID_MAX = (24 * 3600 * 7) - 3600; // 7 days minus 1 hour
 
+    // TODO LOW this might not be the best place to put this
+    private static final String KEY_USER_ID = "user_id";
+
     private static SharedPreferences getSP(Context context) {
         return context.getSharedPreferences(NAME_SP, Context.MODE_PRIVATE);
     }
@@ -44,6 +47,19 @@ public class SessionTokenDAO {
         SharedPreferences.Editor editor = sp.edit();
         editor.putLong(KEY_SESSION_CREATED_TIME, Long.MAX_VALUE);
         editor.apply();
+    }
+
+    @MainThread
+    public static void setUserId(Context context, int userId) {
+        SharedPreferences sp = getSP(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(KEY_USER_ID, userId);
+        editor.apply();
+    }
+
+    @MainThread
+    public static int getUserId(Context context) {
+        return getSP(context).getInt(KEY_USER_ID, -1);
     }
 
 }

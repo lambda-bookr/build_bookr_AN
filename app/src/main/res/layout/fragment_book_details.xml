@@ -47,7 +47,7 @@
                 android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
                 android:paddingTop="10dp"
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
-                android:text="Book Title Placeholder"
+                android:text="@string/placeholder_book_title"
                 android:textSize="20sp"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_constraint_layout_image" />
 
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
-                android:text="by Book Author Placeholder"
+                android:text="@string/placeholder_book_author"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_text_view_title" />
 
             <TextView
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
-                android:text="published by Book Publisher Placeholder"
+                android:text="@string/placeholder_book_publisher"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_text_view_author" />
 
             <TextView
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
-                android:text="Price: $1,000,000.00"
+                android:text="@string/placeholder_book_price"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_text_view_publisher"
                 tools:layout_editor_absoluteX="0dp" />
 
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_text_view_description" >
+                app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_text_view_description">
 
                 <ProgressBar
                     android:id="@+id/fragment_book_details_progress_bar_requesting_reviews"
@@ -120,7 +120,8 @@
                     android:id="@+id/fragment_book_details_recycler_view_reviews"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    tools:listitem="@layout/list_item_review"/>
 
             </android.support.constraint.ConstraintLayout>
 

@@ -3,6 +3,7 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -17,10 +18,12 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
-// TODO MEDIUM preserve last position when coming back from the details
+// TODO MEDIUM preserve last position when coming back from the details. Hint savedInstance
+// TODO CRITICAL add book, delete book
 public class BookListFragment extends Fragment {
 
-    public static final int GRID_SPAN_COUNT = 2;
+    private View fragmentView;
+    private static final int GRID_SPAN_COUNT = 2;
     private RecyclerView bookListRecyclerView;
     private BookListAdapter bookListAdapter;
     private RequestBookListAsyncTask requestBookListAsyncTask;
@@ -42,17 +45,23 @@ public class BookListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_book_list, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        setupBookListRecyclerView(view);
+        setupBookListRecyclerView();
+        requestBookList();
+        FloatingActionButton addBookFAB = fragmentView.findViewById(R.id.fragment_book_list_fab_add_book);
+        addBookFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createAddBookFragment();
+            }
+        });
 
-        requestBookList(view);
-
-        return view;
+        return fragmentView;
     }
 
-    private void setupBookListRecyclerView(View v) {
-        bookListRecyclerView = v.findViewById(R.id.fragment_book_list_recycler_view_book_list);
+    private void setupBookListRecyclerView() {
+        bookListRecyclerView = fragmentView.findViewById(R.id.fragment_book_list_recycler_view_book_list);
         // @NOTE: do not set recycler view to GONE
         bookListRecyclerView.setHasFixedSize(true);
 
@@ -66,12 +75,12 @@ public class BookListFragment extends Fragment {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void requestBookList(View v) {
+    private void requestBookList() {
         if (requestBookListAsyncTask != null) {
             return;
         }
 
-        final ProgressBar requestingBookListProgressBar = v.findViewById(R.id.fragment_book_list_progress_bar_requesting_book_list);
+        final ProgressBar requestingBookListProgressBar = fragmentView.findViewById(R.id.fragment_book_list_progress_bar_requesting_book_list);
         requestingBookListProgressBar.setVisibility(View.VISIBLE);
         bookListRecyclerView.setVisibility(View.INVISIBLE);
 
@@ -92,6 +101,14 @@ public class BookListFragment extends Fragment {
             }
         };
         requestBookListAsyncTask.execute();
+    }
+
+    private void createAddBookFragment() {
+        AddBookFragment addBookFragment = AddBookFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.activity_book_list_drawer_layout_root, addBookFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

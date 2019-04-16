@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.worker_thread.RegisterAsyncTask;
 
+// TODO MEDIUM toast
 public class RegisterFragment extends Fragment {
 
     private RegisterAsyncTask registerAsyncTask;

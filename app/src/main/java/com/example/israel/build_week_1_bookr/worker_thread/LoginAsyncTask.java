@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 
 public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result> {
 
-    static private final String LOGIN = "auth/login/";
+    static private final String LOGIN = "api/auth/login/";
     static private final String KEY_JSON_USERNAME = "username";
     static private final String KEY_JSON_PASSWORD = "password";
     static private final String KEY_JSON_TOKEN = "token";
@@ -53,7 +53,6 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
             result.result = Result.CANNOT_CONNECT_TO_SERVER;
             return result;
         }
-
 
         if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // successful log in
             String replyStr = (String)requestResult.resultObj;

@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 
 public class RegisterAsyncTask extends AsyncTask<Void, Void, RegisterAsyncTask.Result> {
 
-    static private final String REGISTER = "auth/register/";
+    static private final String REGISTER = "api/auth/register/";
     static private final String KEY_JSON_USERNAME = "username";
     static private final String KEY_JSON_PASSWORD = "password";
     static private final String KEY_JSON_FIRST_NAME = "firstname";

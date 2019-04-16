@@ -22,7 +22,7 @@
                 android:id="@+id/list_item_book_text_view_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BOOK TITLE"
+                android:text="@string/placeholder_book_title"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 

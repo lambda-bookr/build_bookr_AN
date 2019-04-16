@@ -16,7 +16,6 @@ import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 
 // TODO HIGH refresh functionality when pulling down
 // TODO LOW custom toolbar. and header for nav layout to show user data
-// TODO CRITICAL add book, delete book
 // TODO MEDIUM animation
 public class BookListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
