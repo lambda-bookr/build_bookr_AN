@@ -9,7 +9,6 @@ import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 
 // TODO isTablet
-// TODO DrawerLayout for navigation
 public class MainActivity extends AppCompatActivity {
 
     @Override

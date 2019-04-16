@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Build_Week_1_Bookr</string>
+    <string name="app_name">Bookr</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="log_in">Log in</string>
@@ -7,9 +7,6 @@
     <string name="invalid_email">Invalid email</string>
     <string name="logging_in">Logging in</string>
     <string name="placeholder_2_sentences">Maecenas tempor elit vel mauris lobortis, nec mattis mauris imperdiet. Aenean laoreet nulla feugiat, maximus felis vitae, placerat risus.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
     <string name="register">Register</string>

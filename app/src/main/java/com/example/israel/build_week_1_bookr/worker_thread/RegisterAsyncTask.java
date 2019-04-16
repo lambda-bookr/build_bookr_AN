@@ -15,8 +15,8 @@ public class RegisterAsyncTask extends AsyncTask<Void, Void, RegisterAsyncTask.R
     static private final String REGISTER = "auth/register/";
     static private final String KEY_JSON_USERNAME = "username";
     static private final String KEY_JSON_PASSWORD = "password";
-    static private final String KEY_JSON_FIRST_NAME = "firstName";
-    static private final String KEY_JSON_LAST_NAME = "lastName";
+    static private final String KEY_JSON_FIRST_NAME = "firstname";
+    static private final String KEY_JSON_LAST_NAME = "lastname";
     static private final String KEY_JSON_TOKEN = "token";
 
     public RegisterAsyncTask(String username, String password, String firstName, String lastName) {

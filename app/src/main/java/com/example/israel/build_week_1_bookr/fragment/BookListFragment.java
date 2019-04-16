@@ -73,7 +73,7 @@ public class BookListFragment extends Fragment {
 
         bookListRecyclerView.setLayoutManager(layoutManager);
 
-        bookListAdapter = new BookListAdapter(getActivity(), R.id.activity_book_list_root);
+        bookListAdapter = new BookListAdapter(getActivity(), R.id.activity_book_list_frame_layout);
         bookListRecyclerView.setAdapter(bookListAdapter);
     }
 

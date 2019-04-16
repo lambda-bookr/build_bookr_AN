@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.BookListActivity"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    android:id="@+id/activity_book_list_root">
+    android:id="@+id/activity_book_list_drawer_layout_root">
+    
+    <FrameLayout
+        android:id="@+id/activity_book_list_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/activity_book_list_nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

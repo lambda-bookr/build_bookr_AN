@@ -86,7 +86,7 @@ public class NetworkAdapter {
             httpURLConnection.setReadTimeout(READ_TIMEOUT);
             httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
             httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.connect();
+            //httpURLConnection.connect();
             outputStream = httpURLConnection.getOutputStream();
             if (outputStream != null) {
                 outputStream.write(requestBody.getBytes());
@@ -156,7 +156,7 @@ public class NetworkAdapter {
             httpURLConnection.setRequestProperty("Content-Type", "application/json");
             httpURLConnection.setRequestProperty("Accept", "application/json");
             httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.connect();
+            //httpURLConnection.connect();
             outputStream = httpURLConnection.getOutputStream();
             if (outputStream != null) {
                 outputStream.write(jsonObject.toString().getBytes());
