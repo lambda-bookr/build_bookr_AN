@@ -43,11 +43,6 @@ public class BookListDAO {
             e.printStackTrace();
         }
 
-//        // TODO test only
-//        for (int i = 0; i < 50; ++i) {
-//            books.add(new Book());
-//        }
-
         return books;
     }
 

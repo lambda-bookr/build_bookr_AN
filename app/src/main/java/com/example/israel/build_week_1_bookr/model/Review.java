@@ -3,7 +3,7 @@ package com.example.israel.build_week_1_bookr.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// TODO if Book2 needs to be parcelable then this also needs to be parcelable
+// TODO DEPENDS. if Book2 needs to be parcelable then this also needs to be parcelable
 public class Review {
 
     private static final String KEY_JSON_ID = "id";

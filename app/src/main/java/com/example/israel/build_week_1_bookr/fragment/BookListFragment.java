@@ -17,9 +17,9 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
-// TODO should the book list refresh after book details closes
-// TODO currently it doesn't refresh
-// TODO this fragment can still receive action because we are adding the details activity instead of replacing
+// TODO MEDIUM. should the book list refresh after book details closes. currently it doesn't refresh
+// TODO VERY HIGH. this fragment can still receive action because we are adding the details activity instead of replacing
+// TODO CRITICAL. Review list
 public class BookListFragment extends Fragment {
 
     public static final int GRID_SPAN_COUNT = 2;
@@ -56,7 +56,7 @@ public class BookListFragment extends Fragment {
     public static void replaceBookListFragment(FragmentActivity fragmentActivity, int i) {
         BookListFragment bookListFragment = BookListFragment.newInstance();
 
-        // TODO animation
+        // TODO MEDIUM animation
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         transaction.replace(i, bookListFragment);
         // login fragment should always be underneath

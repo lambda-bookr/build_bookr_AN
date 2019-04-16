@@ -1,5 +1,6 @@
 package com.example.israel.build_week_1_bookr.activity;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -12,11 +13,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO animation
-
         setContentView(R.layout.activity_login);
 
-        // TODO create a hard code here
-        LoginFragment.replaceLoginFragment(this, R.id.activity_login_root);
+        // TODO VERY LOW. hard code this to xml
+        addLoginFragment();
+
+    }
+
+    private void addLoginFragment() {
+        LoginFragment loginFragment = LoginFragment.newInstance();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_login_root, loginFragment);
+        // login fragment should always be underneath
+        transaction.commit();
     }
 }

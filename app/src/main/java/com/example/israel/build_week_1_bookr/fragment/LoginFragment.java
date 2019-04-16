@@ -78,16 +78,6 @@ public class LoginFragment extends Fragment {
         return fragmentView;
     }
 
-    public static void replaceLoginFragment(FragmentActivity fragmentActivity, int i) {
-        LoginFragment loginFragment = LoginFragment.newInstance();
-
-        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(i, loginFragment);
-        // login fragment should always be underneath
-        transaction.commit();
-
-    }
-
     @SuppressLint("StaticFieldLeak")
     private void login() {
         if (loginAsyncTask != null) {

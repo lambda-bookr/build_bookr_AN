@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// TODO reviews
 public class Book implements Parcelable {
 
     public static final int INVALID_ID = -1;
@@ -87,7 +86,6 @@ public class Book implements Parcelable {
         imageUrl = in.readString();
     }
 
-    // TODO do not forget parcel
     private int id;
     private int userId;
     private String author;

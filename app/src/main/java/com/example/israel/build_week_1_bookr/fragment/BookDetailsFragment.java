@@ -77,7 +77,7 @@ public class BookDetailsFragment extends Fragment {
     public static void addBooksDetailsFragment(FragmentActivity fragmentActivity, Book book, int i) {
         BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
 
-        // TODO animation
+        // TODO MEDIUM animation
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         transaction.add(i, bookDetailsFragment);
         transaction.addToBackStack(null); // remove this fragment on back press
@@ -137,7 +137,7 @@ public class BookDetailsFragment extends Fragment {
 
                 requestBookImageByUrlAsyncTask = null;
 
-                // TODO no image
+                // TODO LOW. if there's no image, should we set a default image
                 bookImageImageView.setImageBitmap(bitmap);
 
             }

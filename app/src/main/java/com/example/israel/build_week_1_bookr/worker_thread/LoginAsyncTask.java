@@ -30,12 +30,6 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
     @NonNull
     protected LoginAsyncTask.Result doInBackground(Void... voids) {
 
-//        try { // TODO remove this
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
         Result result = new Result();
 
         JSONObject credentialsJson = new JSONObject();

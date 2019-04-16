@@ -55,7 +55,7 @@ public class RegisterFragment extends Fragment {
     public static void replaceRegisterFragment(FragmentActivity fragmentActivity, int i) {
         RegisterFragment registerFragment = RegisterFragment.newInstance();
 
-        // TODO animation
+        // TODO MEDIUM. animation
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         transaction.replace(i, registerFragment);
         transaction.addToBackStack(null); // remove this fragment on back press
@@ -118,7 +118,6 @@ public class RegisterFragment extends Fragment {
                 switch (result.code) {
                     case Result.SUCCESS: {
                         resultTextView.setVisibility(View.VISIBLE);
-                        // TODO go directly to BookListActivity
                     } break;
 
                     case Result.USERNAME_TAKEN: {

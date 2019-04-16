@@ -8,7 +8,8 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 
-// TODO isTablet
+// TODO LOW. isTablet
+// TODO MEDIUM. animation, especially the card view, they should slide in/out naturally
 public class MainActivity extends AppCompatActivity {
 
     @Override

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-// TODO parcelable? the problem is the CREATOR
+// TODO DEPENDS. parcelable if needed. the problem is the CREATOR
 public class Book2 extends Book{
 
     private static final String KEY_JSON_USERNAME = "username";

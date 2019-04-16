@@ -37,7 +37,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
         viewHolder.titleTextView.setText(book.getTitle());
 
-        // TODO more set
+        // TODO HIGH what's more to display
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
