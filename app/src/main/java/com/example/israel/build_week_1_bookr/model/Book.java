@@ -17,6 +17,7 @@ public class Book implements Parcelable {
     private static final String KEY_JSON_PUBLISHER = "publisher";
     private static final String KEY_JSON_DESCRIPTION = "description";
     private static final String KEY_JSON_IMAGE_URL = "imageurl";
+    private static final String KEY_JSON_AVERAGE_RATING = "rating";
 
     public Book() {
 
@@ -73,6 +74,11 @@ public class Book implements Parcelable {
             e.printStackTrace();
         }
 
+        try {
+            averageRating = bookJson.getDouble(KEY_JSON_AVERAGE_RATING);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     protected Book(Parcel in) {
@@ -84,6 +90,7 @@ public class Book implements Parcelable {
         publisher = in.readString();
         description = in.readString();
         imageUrl = in.readString();
+        averageRating = in.readDouble();
     }
 
     private int id;
@@ -94,6 +101,7 @@ public class Book implements Parcelable {
     private String publisher;
     private String description;
     private String imageUrl;
+    private double averageRating;
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {
         @Override
@@ -139,6 +147,10 @@ public class Book implements Parcelable {
         return imageUrl;
     }
 
+    public double getAverageRating() {
+        return averageRating;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -154,5 +166,6 @@ public class Book implements Parcelable {
         dest.writeString(publisher);
         dest.writeString(description);
         dest.writeString(imageUrl);
+        dest.writeDouble(averageRating);
     }
 }

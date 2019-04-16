@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     android:id="@+id/activity_book_list_drawer_layout_root">
-    
+
     <FrameLayout
         android:id="@+id/activity_book_list_frame_layout"
         android:layout_width="match_parent"

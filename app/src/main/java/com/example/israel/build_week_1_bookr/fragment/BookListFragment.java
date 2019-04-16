@@ -17,9 +17,7 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
-// TODO MEDIUM. should the book list refresh after book details closes. currently it doesn't refresh
-// TODO VERY HIGH. this fragment can still receive action because we are adding the details activity instead of replacing
-// TODO CRITICAL. Review list
+// TODO MEDIUM preserve last position when coming back from the details
 public class BookListFragment extends Fragment {
 
     public static final int GRID_SPAN_COUNT = 2;
@@ -51,16 +49,6 @@ public class BookListFragment extends Fragment {
         requestBookList(view);
 
         return view;
-    }
-
-    public static void replaceBookListFragment(FragmentActivity fragmentActivity, int i) {
-        BookListFragment bookListFragment = BookListFragment.newInstance();
-
-        // TODO MEDIUM animation
-        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(i, bookListFragment);
-        // login fragment should always be underneath
-        transaction.commit();
     }
 
     private void setupBookListRecyclerView(View v) {

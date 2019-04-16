@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 // TODO DEPENDS. parcelable if needed. the problem is the CREATOR
+// TODO MEDIUM use UserProfile
 public class Book2 extends Book{
 
     private static final String KEY_JSON_USERNAME = "username";
@@ -61,7 +62,25 @@ public class Book2 extends Book{
     private String firstName;
     private String lastName;
     private String thumbnailUrl;
-    private ArrayList<Review> reviews;
+    private ArrayList<Review> reviews = new ArrayList<>();
 
+    public String getUsername() {
+        return username;
+    }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public ArrayList<Review> getReviews() {
+        return reviews;
+    }
 }

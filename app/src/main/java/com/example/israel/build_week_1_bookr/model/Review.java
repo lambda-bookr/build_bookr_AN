@@ -53,4 +53,23 @@ public class Review {
     private int rating;
     private String thumbnailUrl;
 
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
 }

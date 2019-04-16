@@ -64,7 +64,7 @@ public class BookListActivity extends AppCompatActivity
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_book_list_frame_layout, bookListFragment);
-        // login fragment should always be underneath
+        // this fragment should always be underneath
         transaction.commit();
     }
 

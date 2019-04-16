@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
@@ -23,7 +24,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
     private FragmentActivity fragmentActivity;
     private int bookDetailsFragmentParentId;
-    private ArrayList<Book> bookList = new ArrayList<>();
+    private ArrayList<Book> books = new ArrayList<>();
 
     @NonNull
     @Override
@@ -33,11 +34,10 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull BookListAdapter.ViewHolder viewHolder, int i) {
-        final Book book = bookList.get(i);
+        final Book book = books.get(i);
 
         viewHolder.titleTextView.setText(book.getTitle());
-
-        // TODO HIGH what's more to display
+        viewHolder.averageRatingRatingBar.setRating((float)book.getAverageRating());
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,11 +49,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return bookList.size();
+        return books.size();
     }
 
-    public void setBookList(@NonNull ArrayList<Book> bookList) {
-        this.bookList = bookList;
+    public void setBookList(@NonNull ArrayList<Book> books) {
+        this.books = books;
         notifyDataSetChanged();
     }
 
@@ -63,9 +63,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
             super(itemView);
 
             titleTextView = itemView.findViewById(R.id.list_item_book_text_view_title);
+            averageRatingRatingBar = itemView.findViewById(R.id.list_item_book_rating_bar_average_rating);
         }
 
-        TextView titleTextView;
+        private TextView titleTextView;
+        private RatingBar averageRatingRatingBar;
     }
 
 }

@@ -8,19 +8,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.adapter.ReviewListAdapter;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Book2;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBook2AsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
+// TODO MEDIUM. improve review list view. Move review view into a new fragment when the average rating is clicked
 public class BookDetailsFragment extends Fragment {
 
     private static final String ARG_BOOK = "book";
@@ -64,6 +69,9 @@ public class BookDetailsFragment extends Fragment {
         TextView priceTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_price);
         priceTextView.setText(Double.toString(book.getPrice()));
 
+        RatingBar averageRatingRatingBar = fragmentView.findViewById(R.id.fragment_book_review_rating_bar_average_rating);
+        averageRatingRatingBar.setRating((float)book.getAverageRating());
+
         TextView descriptionTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_description);
         descriptionTextView.setText(book.getDescription());
 
@@ -79,7 +87,7 @@ public class BookDetailsFragment extends Fragment {
 
         // TODO MEDIUM animation
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.add(i, bookDetailsFragment);
+        transaction.replace(i, bookDetailsFragment); // refreshes the login fragment
         transaction.addToBackStack(null); // remove this fragment on back press
         transaction.commit();
     }
@@ -90,10 +98,19 @@ public class BookDetailsFragment extends Fragment {
             return;
         }
 
+        final ProgressBar requestingReviewsProgressBar = fragmentView.findViewById(R.id.fragment_book_details_progress_bar_requesting_reviews);
+        requestingReviewsProgressBar.setVisibility(View.VISIBLE);
+
+        final RecyclerView reviewsRecyclerView = fragmentView.findViewById(R.id.fragment_book_details_recycler_view_reviews);
+        reviewsRecyclerView.setVisibility(View.INVISIBLE);
+
         requestBook2AsyncTask = new RequestBook2AsyncTask(book) {
             @Override
             protected void onPostExecute(Book2 book2) {
                 super.onPostExecute(book2);
+                reviewsRecyclerView.setVisibility(View.VISIBLE);
+                requestingReviewsProgressBar.setVisibility(View.INVISIBLE);
+
 
                 if (isCancelled()) {
                     return;
@@ -105,10 +122,21 @@ public class BookDetailsFragment extends Fragment {
                     return;
                 }
 
-                // TODO recycler view for reviews
-
+                setupReviewsRecyclerView(book2);
             }
         };
+        requestBook2AsyncTask.execute();
+    }
+
+    private void setupReviewsRecyclerView(Book2 book2) {
+        RecyclerView reviewsRecyclerView = fragmentView.findViewById(R.id.fragment_book_details_recycler_view_reviews);
+        reviewsRecyclerView.setHasFixedSize(true); // TODO this might change if I implement resizing for reviews view
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        reviewsRecyclerView.setLayoutManager(layoutManager);
+
+        ReviewListAdapter reviewListAdapter = new ReviewListAdapter(book2.getReviews());
+        reviewsRecyclerView.setAdapter(reviewListAdapter);
     }
 
     @SuppressLint("StaticFieldLeak")

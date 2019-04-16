@@ -26,6 +26,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
+            <RatingBar
+                android:id="@+id/list_item_book_rating_bar_average_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_book_text_view_title"
+                android:rating="2.5"
+                android:numStars="5"
+                android:isIndicator="true"
+                android:progressTint="@color/rating_bar_color"
+                style="?android:attr/ratingBarStyleSmall" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
