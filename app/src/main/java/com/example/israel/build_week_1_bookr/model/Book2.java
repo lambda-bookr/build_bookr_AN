@@ -9,35 +9,41 @@ import java.util.ArrayList;
 // TODO parcelable? the problem is the CREATOR
 public class Book2 extends Book{
 
+    private static final String KEY_JSON_USERNAME = "username";
+    private static final String KEY_JSON_FIRST_NAME = "firstname";
+    private static final String KEY_JSON_LAST_NAME = "lastname";
+    private static final String KEY_JSON_THUMBNAIL_URL = "thumbnailurl";
+    private static final String KEY_JSON_REVIEWS = "reviews";
+
     public Book2(JSONObject book2Json) {
         super(book2Json);
 
         try {
-            username = book2Json.getString("username");
+            username = book2Json.getString(KEY_JSON_USERNAME);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         try {
-            firstName = book2Json.getString("firstName");
+            firstName = book2Json.getString(KEY_JSON_FIRST_NAME);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         try {
-            lastName = book2Json.getString("lastName");
+            lastName = book2Json.getString(KEY_JSON_LAST_NAME);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         try {
-            thumbnailUrl = book2Json.getString("thumbnailUrl");
+            thumbnailUrl = book2Json.getString(KEY_JSON_THUMBNAIL_URL);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         try {
-            JSONArray reviewsJsonArr = book2Json.getJSONArray("reviews");
+            JSONArray reviewsJsonArr = book2Json.getJSONArray(KEY_JSON_REVIEWS);
             if (reviewsJsonArr != null) {
                 reviews.ensureCapacity(reviewsJsonArr.length());
                 for (int i = 0; i < reviewsJsonArr.length(); ++i) {

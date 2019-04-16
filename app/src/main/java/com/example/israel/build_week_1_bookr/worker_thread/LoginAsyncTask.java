@@ -14,6 +14,9 @@ import java.net.HttpURLConnection;
 public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result> {
 
     static public final String LOGIN = "auth/login/";
+    static public final String KEY_JSON_USERNAME = "username";
+    static public final String KEY_JSON_PASSWORD = "password";
+    static public final String KEY_JSON_TOKEN = "token";
 
     public LoginAsyncTask(@NonNull String email, @NonNull String password) {
         this.email = email;
@@ -37,8 +40,8 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
 
         JSONObject credentialsJson = new JSONObject();
         try {
-            credentialsJson.put("username", email);
-            credentialsJson.put("password", password);
+            credentialsJson.put(KEY_JSON_USERNAME, email);
+            credentialsJson.put(KEY_JSON_PASSWORD, password);
         } catch (JSONException e) {
             e.printStackTrace();
             return result;
@@ -57,11 +60,12 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
             return result;
         }
 
-        String replyStr = (String)requestResult.resultObj;
+
         if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // successful log in
+            String replyStr = (String)requestResult.resultObj;
             try {
                 JSONObject replyJson = new JSONObject(replyStr);
-                result.sessionToken = replyJson.getString("token");
+                result.sessionToken = replyJson.getString(KEY_JSON_TOKEN);
                 result.result = Result.SUCCESS;
             } catch (JSONException e) {
                 e.printStackTrace();
