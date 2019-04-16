@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
-import com.example.israel.build_week_1_bookr.worker_thread.ValidateSessionTokenAsyncTask;
 
 // TODO isTablet
 // TODO DrawerLayout for navigation

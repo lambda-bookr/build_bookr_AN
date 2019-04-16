@@ -13,7 +13,7 @@ public class Book implements Parcelable {
     private static final String KEY_JSON_ID = "id";
     private static final String KEY_JSON_USER_ID = "user_id";
     private static final String KEY_JSON_AUTHOR = "author";
-    private static final String KEY_JSON_NAME = "name";
+    private static final String KEY_JSON_TITLE = "title";
     private static final String KEY_JSON_PRICE = "price";
     private static final String KEY_JSON_PUBLISHER = "publisher";
     private static final String KEY_JSON_DESCRIPTION = "description";
@@ -45,7 +45,7 @@ public class Book implements Parcelable {
         }
 
         try {
-            title = bookJson.getString(KEY_JSON_NAME);
+            title = bookJson.getString(KEY_JSON_TITLE);
         } catch (JSONException e) {
             e.printStackTrace();
         }

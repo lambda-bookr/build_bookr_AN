@@ -13,17 +13,17 @@ import java.net.HttpURLConnection;
 
 public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result> {
 
-    static public final String LOGIN = "auth/login/";
-    static public final String KEY_JSON_USERNAME = "username";
-    static public final String KEY_JSON_PASSWORD = "password";
-    static public final String KEY_JSON_TOKEN = "token";
+    static private final String LOGIN = "auth/login/";
+    static private final String KEY_JSON_USERNAME = "username";
+    static private final String KEY_JSON_PASSWORD = "password";
+    static private final String KEY_JSON_TOKEN = "token";
 
-    public LoginAsyncTask(@NonNull String email, @NonNull String password) {
-        this.email = email;
+    public LoginAsyncTask(@NonNull String username, @NonNull String password) {
+        this.username = username;
         this.password = password;
     }
 
-    private String email;
+    private String username;
     private String password;
 
     @Override
@@ -40,7 +40,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
 
         JSONObject credentialsJson = new JSONObject();
         try {
-            credentialsJson.put(KEY_JSON_USERNAME, email);
+            credentialsJson.put(KEY_JSON_USERNAME, username);
             credentialsJson.put(KEY_JSON_PASSWORD, password);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -81,9 +81,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
     public class Result {
 
         public static final int SUCCESS = 0;
-        public static final int INVALID_EMAIL = 1;
+        public static final int INVALID_USERNAME = 1;
         public static final int INVALID_PASSWORD = 2;
-        public static final int EMAIL_NOT_FOUND = 3;
+        public static final int USERNAME_NOT_FOUND = 3;
         public static final int WRONG_PASSWORD = 4;
         public static final int TIME_OUT = 5;
         public static final int INVALID_SERVER_REPLY = 6;

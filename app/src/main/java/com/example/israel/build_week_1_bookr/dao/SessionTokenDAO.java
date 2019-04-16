@@ -35,7 +35,7 @@ public class SessionTokenDAO {
         SharedPreferences sp = getSP(context);
         long currentTime = System.currentTimeMillis();
         long elapsedTime = sp.getLong(KEY_SESSION_CREATED_TIME, Long.MAX_VALUE) - currentTime;
-        return TIME_MILLIS_SESSION_VALID_MAX < elapsedTime;
+        return elapsedTime < TIME_MILLIS_SESSION_VALID_MAX;
     }
 
     @MainThread

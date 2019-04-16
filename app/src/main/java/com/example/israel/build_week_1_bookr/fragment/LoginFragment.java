@@ -12,20 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
-import com.example.israel.build_week_1_bookr.activity.LoginActivity;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
-import com.example.israel.build_week_1_bookr.worker_thread.RegisterAsyncTask;
 
 public class LoginFragment extends Fragment {
 
+    private View fragmentView;
     private EditText passwordEditText;
     private LoginAsyncTask loginAsyncTask;
 
@@ -47,15 +45,15 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        final View view = inflater.inflate(R.layout.fragment_login, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
 
-        passwordEditText = view.findViewById(R.id.fragment_login_edit_text_password);
+        passwordEditText = fragmentView.findViewById(R.id.fragment_login_edit_text_password);
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginWithEmailAndPassword(view);
+                    login();
                     return true;
                 }
 
@@ -63,21 +61,21 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.fragment_login_button_log_in).setOnClickListener(new View.OnClickListener() {
+        fragmentView.findViewById(R.id.fragment_login_button_log_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginWithEmailAndPassword(view);
+                login();
             }
         });
 
-        view.findViewById(R.id.fragment_login_button_register).setOnClickListener(new View.OnClickListener() {
+        fragmentView.findViewById(R.id.fragment_login_button_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RegisterFragment.replaceRegisterFragment(getActivity(), R.id.activity_login_root);
             }
         });
 
-        return view;
+        return fragmentView;
     }
 
     public static void replaceLoginFragment(FragmentActivity fragmentActivity, int i) {
@@ -91,16 +89,16 @@ public class LoginFragment extends Fragment {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void loginWithEmailAndPassword(View v) {
+    private void login() {
         if (loginAsyncTask != null) {
             return;
         }
 
-        final EditText emailEditText = v.findViewById(R.id.fragment_login_edit_text_email);
-        String emailStr = emailEditText.getText().toString();
-        if (emailStr.length() == 0) {
-            emailEditText.setError(getString(R.string.this_field_cannot_be_empty));
-            emailEditText.requestFocus();
+        final EditText usernameEditText = fragmentView.findViewById(R.id.fragment_login_edit_text_username);
+        String usernameStr = usernameEditText.getText().toString();
+        if (usernameStr.length() == 0) {
+            usernameEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            usernameEditText.requestFocus();
             return;
         }
 
@@ -111,11 +109,11 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        final ProgressBar loggingInProgressBar = v.findViewById(R.id.fragment_login_progress_bar_logging_in);
+        final ProgressBar loggingInProgressBar = fragmentView.findViewById(R.id.fragment_login_progress_bar_logging_in);
         loggingInProgressBar.setVisibility(View.VISIBLE);
 
-        // try logging in with email and password
-        loginAsyncTask = new LoginAsyncTask(emailStr, passwordStr) {
+        // try logging in with username and password
+        loginAsyncTask = new LoginAsyncTask(usernameStr, passwordStr) {
 
             @Override
             protected void onPostExecute(Result result) {

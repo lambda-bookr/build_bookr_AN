@@ -12,11 +12,12 @@ import java.net.HttpURLConnection;
 
 public class RegisterAsyncTask extends AsyncTask<Void, Void, RegisterAsyncTask.Result> {
 
-    static public final String REGISTER = "auth/register/";
-    static public final String KEY_JSON_USERNAME = "username";
-    static public final String KEY_JSON_PASSWORD = "password";
-    static public final String KEY_JSON_FIRST_NAME = "firstName";
-    static public final String KEY_JSON_LAST_NAME = "lastName";
+    static private final String REGISTER = "auth/register/";
+    static private final String KEY_JSON_USERNAME = "username";
+    static private final String KEY_JSON_PASSWORD = "password";
+    static private final String KEY_JSON_FIRST_NAME = "firstName";
+    static private final String KEY_JSON_LAST_NAME = "lastName";
+    static private final String KEY_JSON_TOKEN = "token";
 
     public RegisterAsyncTask(String username, String password, String firstName, String lastName) {
         this.username = username;
@@ -56,7 +57,7 @@ public class RegisterAsyncTask extends AsyncTask<Void, Void, RegisterAsyncTask.R
 
             try {
                 JSONObject replyJson = new JSONObject(replyStr);
-                result.token = replyJson.getString("token");
+                result.token = replyJson.getString(KEY_JSON_TOKEN);
                 result.code = Result.SUCCESS;
             } catch (JSONException e) {
                 e.printStackTrace();
