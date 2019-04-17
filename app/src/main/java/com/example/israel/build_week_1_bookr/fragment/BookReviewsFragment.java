@@ -73,7 +73,7 @@ public class BookReviewsFragment extends Fragment {
         });
 
         setupRecyclerView();
-        requestReview();
+        requestReviews();
 
         return fragmentView;
     }
@@ -105,10 +105,12 @@ public class BookReviewsFragment extends Fragment {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void requestReview() {
+    private void requestReviews() {
         if (requestBookReviewsAsyncTask != null) {
             return;
         }
+
+        // TODO CRITICAL progress bar
 
         requestBookReviewsAsyncTask = new RequestBookReviewsAsyncTask(book.getId()) {
             @Override

@@ -29,9 +29,6 @@ import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestDeleteBookAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
-// TODO CRITICAL. improve review list view. Move review view into a new fragment when the average rating is clicked
-// TODO CRITICAL add review
-// TODO MEDIUM surround description with scroll view
 public class BookDetailsFragment extends Fragment {
 
     private static final int REQUEST_CONFIRM_DELETE_BOOK = 0;
@@ -100,7 +97,7 @@ public class BookDetailsFragment extends Fragment {
         publisherTextView.setText(book.getPublisher());
 
         TextView priceTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_price);
-        priceTextView.setText(Double.toString(book.getPrice()));
+        priceTextView.setText("$" + Double.toString(book.getPrice()));
 
         RatingBar averageRatingRatingBar = fragmentView.findViewById(R.id.fragment_book_review_rating_bar_average_rating);
         averageRatingRatingBar.setRating((float)book.getAverageRating());

@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
+// TODO LOW move asynctask definition here
 public class BookrAPIDAO {
 
     private static final String BASE_URL = CommonStatics.DATABASE_BASE_URL;
