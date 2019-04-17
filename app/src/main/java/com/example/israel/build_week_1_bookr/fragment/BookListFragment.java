@@ -115,8 +115,8 @@ public class BookListFragment extends Fragment {
 
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
-                //bookListAdapter.setBookList(result.books);
-                populateBookListAdapter(result.books);
+                bookListAdapter.setBookList(result.books);
+                //populateBookListAdapter(result.books);
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
@@ -141,6 +141,9 @@ public class BookListFragment extends Fragment {
             public void run() {
                 for (final Book book : books) {
                     final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
+                    if (getActivity() == null) {
+                        return;
+                    }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -148,7 +151,6 @@ public class BookListFragment extends Fragment {
                         }
                     });
                 }
-
             }
         }).start();
     }

@@ -126,7 +126,7 @@ public class AddBookFragment extends Fragment {
                 super.onPostExecute(result);
                 requestingAddBookProgressBar.setVisibility(View.GONE);
 
-                if (isCancelled()) {
+                if (isCancelled() || getActivity() == null) {
                     return;
                 }
 

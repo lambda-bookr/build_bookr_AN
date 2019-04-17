@@ -60,7 +60,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book, bookImageBitmap, viewHolder.getLayoutPosition());
+                BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book, viewHolder.getLayoutPosition());
                 bookDetailsFragment.setTargetFragment(bookListFragment, 0);
 
                 bookDetailsFragment.setEnterTransition(new Slide());
@@ -73,7 +73,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
             }
         });
 
-        if (i >= lastPosition) {
+        if (i > lastPosition) {
             Animation animation = AnimationUtils.loadAnimation(viewHolder.itemView.getContext(), android.R.anim.slide_in_left);
             viewHolder.itemView.startAnimation(animation);
             lastPosition = i;
@@ -87,6 +87,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
     public void setBookList(@NonNull ArrayList<Book> books) {
         this.books = books;
+        this.bookImageBitmaps.ensureCapacity(books.size());
+        for (int i = 0; i < books.size(); ++i) {
+            this.bookImageBitmaps.add(null);
+        }
+
         notifyDataSetChanged();
     }
 

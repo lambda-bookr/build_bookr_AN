@@ -34,7 +34,6 @@ public class BookDetailsFragment extends Fragment {
 
     private static final int REQUEST_CONFIRM_DELETE_BOOK = 0;
     private static final String ARG_BOOK = "book";
-    private static final String ARG_BOOK_IMAGE_BITMAP = "book_image_bitmap";
     private static final String ARG_BOOK_LIST_POSITION = "book_list_position";
 
     private View fragmentView;
@@ -43,11 +42,10 @@ public class BookDetailsFragment extends Fragment {
     private RequestDeleteBookAsyncTask requestDeleteBookAsyncTask;
     private int bookListPosition;
 
-    public static BookDetailsFragment newInstance(Book book, Bitmap bookImageBitmap, int bookListPosition) {
+    public static BookDetailsFragment newInstance(Book book, int bookListPosition) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARG_BOOK, book);
-        args.putParcelable(ARG_BOOK_IMAGE_BITMAP, bookImageBitmap);
         args.putInt(ARG_BOOK_LIST_POSITION, bookListPosition);
 
         BookDetailsFragment fragment = new BookDetailsFragment();
@@ -66,7 +64,6 @@ public class BookDetailsFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         book = getArguments().getParcelable(ARG_BOOK);
-        Bitmap bookImageBitmap = getArguments().getParcelable(ARG_BOOK_IMAGE_BITMAP);
         bookListPosition = getArguments().getInt(ARG_BOOK_LIST_POSITION);
 
         fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
@@ -130,9 +127,7 @@ public class BookDetailsFragment extends Fragment {
         TextView descriptionTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_description);
         descriptionTextView.setText(book.getDescription());
 
-        ImageView bookImageImageView = fragmentView.findViewById(R.id.fragment_book_details_image_view_image);
-        bookImageImageView.setImageBitmap(bookImageBitmap);
-        //requestBookImage();
+        requestBookImage();
 
         return fragmentView;
     }
@@ -204,7 +199,7 @@ public class BookDetailsFragment extends Fragment {
             protected void onPostExecute(Result result) {
                 super.onPostExecute(result);
 
-                if (isCancelled()) {
+                if (isCancelled() || getActivity() == null) {
                     return;
                 }
 

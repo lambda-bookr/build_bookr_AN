@@ -114,7 +114,7 @@ public class AddBookReviewFragment extends Fragment {
             protected void onPostExecute(JSONObject jsonObject) {
                 super.onPostExecute(jsonObject);
 
-                if (isCancelled()) {
+                if (isCancelled() || getActivity() == null) {
                     return;
                 }
 

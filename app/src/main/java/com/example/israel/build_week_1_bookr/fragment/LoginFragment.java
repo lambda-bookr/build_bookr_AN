@@ -134,7 +134,7 @@ public class LoginFragment extends Fragment {
             protected void onPostExecute(Result result) {
                 super.onPostExecute(result);
 
-                if (isCancelled()) {
+                if (isCancelled() || getActivity() == null) {
                     return;
                 }
                 loginAsyncTask = null;
