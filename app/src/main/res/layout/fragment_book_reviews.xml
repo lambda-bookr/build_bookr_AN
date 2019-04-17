@@ -24,18 +24,19 @@
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <ProgressBar
-                    android:id="@+id/fragment_book_reviews_progress_bar_requesting_reviews"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/fragment_book_reviews_swipe_refresh_layout_reviews"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="invisible" />
+                    android:layout_height="match_parent">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/fragment_book_reviews_recycler_view_reviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    tools:listitem="@layout/list_item_review" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/fragment_book_reviews_recycler_view_reviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        tools:listitem="@layout/list_item_review" />
+
+                </android.support.v4.widget.SwipeRefreshLayout>
 
             </android.support.constraint.ConstraintLayout>
 
@@ -43,8 +44,8 @@
                 android:id="@+id/fragment_book_reviews_fab_add_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_add_white_24dp"/>

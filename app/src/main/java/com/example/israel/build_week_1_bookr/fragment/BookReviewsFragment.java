@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ public class BookReviewsFragment extends Fragment {
     private RequestBookReviewsAsyncTask requestBookReviewsAsyncTask;
     private RequestRemoveReviewAsyncTask requestRemoveReviewAsyncTask;
     private ReviewListAdapter reviewListAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private int removeReviewId;
     private int removeReviewAdapterPosition;
 
@@ -73,6 +75,14 @@ public class BookReviewsFragment extends Fragment {
             }
         });
 
+        swipeRefreshLayout = fragmentView.findViewById(R.id.fragment_book_reviews_swipe_refresh_layout_reviews);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestReviews();
+            }
+        });
+
         FloatingActionButton addReviewFAB = fragmentView.findViewById(R.id.fragment_book_reviews_fab_add_review);
         addReviewFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +92,7 @@ public class BookReviewsFragment extends Fragment {
         });
 
         setupRecyclerView();
+        swipeRefreshLayout.setRefreshing(true);
         requestReviews();
 
         return fragmentView;
@@ -123,18 +134,16 @@ public class BookReviewsFragment extends Fragment {
             return;
         }
 
-        // TODO CRITICAL progress bar
-
         requestBookReviewsAsyncTask = new RequestBookReviewsAsyncTask(book.getId()) {
             @Override
             protected void onPostExecute(Result result) {
                 super.onPostExecute(result);
-
                 if (isCancelled()) {
                     return;
                 }
 
                 requestBookReviewsAsyncTask = null;
+                swipeRefreshLayout.setRefreshing(false);
 
                 reviewListAdapter.setReviewList(result.reviews);
 
@@ -157,11 +166,11 @@ public class BookReviewsFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestRemoveReview() {
-        // TODO CRITICAL progress bar
-
         if (requestRemoveReviewAsyncTask != null) {
             return;
         }
+
+        // TODO CRITICAL progress bar
 
         requestRemoveReviewAsyncTask = new RequestRemoveReviewAsyncTask(removeReviewId) {
 

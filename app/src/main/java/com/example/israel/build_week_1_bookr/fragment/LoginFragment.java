@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
@@ -23,6 +24,7 @@ import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
 public class LoginFragment extends Fragment {
 
     private View fragmentView;
+    private EditText usernameEditText;
     private EditText passwordEditText;
     private LoginAsyncTask loginAsyncTask;
 
@@ -45,6 +47,19 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
 
         fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
+
+        usernameEditText = fragmentView.findViewById(R.id.fragment_login_edit_text_username);
+        usernameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    passwordEditText.requestFocus();
+                    return true;
+                }
+
+                return false;
+            }
+        });
 
         passwordEditText = fragmentView.findViewById(R.id.fragment_login_edit_text_password);
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -89,11 +104,12 @@ public class LoginFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void login() {
+        StaticHelpers.hideKeyboard(getActivity());
+
         if (loginAsyncTask != null) {
             return;
         }
 
-        final EditText usernameEditText = fragmentView.findViewById(R.id.fragment_login_edit_text_username);
         String usernameStr = usernameEditText.getText().toString();
         if (usernameStr.length() == 0) {
             usernameEditText.setError(getString(R.string.this_field_cannot_be_empty));
