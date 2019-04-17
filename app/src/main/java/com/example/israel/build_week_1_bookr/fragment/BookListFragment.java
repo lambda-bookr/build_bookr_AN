@@ -89,7 +89,7 @@ public class BookListFragment extends Fragment {
 
         bookListRecyclerView.setLayoutManager(layoutManager);
 
-        bookListAdapter = new BookListAdapter(getActivity(), R.id.activity_book_list_frame_layout);
+        bookListAdapter = new BookListAdapter(this, R.id.activity_book_list_frame_layout);
         bookListRecyclerView.setAdapter(bookListAdapter);
     }
 
@@ -151,6 +151,10 @@ public class BookListFragment extends Fragment {
 
             }
         }).start();
+    }
+
+    public void removeBook(int bookPosition) {
+        bookListAdapter.removeBook(bookPosition);
     }
 
 }

@@ -24,18 +24,19 @@ import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.fragment.BookDetailsFragment;
+import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 import com.example.israel.build_week_1_bookr.model.Book;
 
 import java.util.ArrayList;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> {
 
-    public BookListAdapter(FragmentActivity fragmentActivity, int bookDetailsFragmentSlotId) {
-        this.fragmentActivity = fragmentActivity;
+    public BookListAdapter(BookListFragment bookListFragment, int bookDetailsFragmentSlotId) {
+        this.bookListFragment = bookListFragment;
         this.bookDetailsFragmentSlotId = bookDetailsFragmentSlotId;
     }
 
-    private FragmentActivity fragmentActivity;
+    private BookListFragment bookListFragment ;
     private int bookDetailsFragmentSlotId;
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Bitmap> bookImageBitmaps = new ArrayList<>();
@@ -59,11 +60,12 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book, bookImageBitmap);
+                BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book, bookImageBitmap, viewHolder.getLayoutPosition());
+                bookDetailsFragment.setTargetFragment(bookListFragment, 0);
 
                 bookDetailsFragment.setEnterTransition(new Slide());
 
-                FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
+                FragmentTransaction transaction = bookListFragment.getActivity().getSupportFragmentManager().beginTransaction();
                 //transaction.setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right);
                 transaction.add(bookDetailsFragmentSlotId, bookDetailsFragment); // refreshes the login fragment
                 transaction.addToBackStack(null); // remove this fragment on back press

@@ -35,17 +35,20 @@ public class BookDetailsFragment extends Fragment {
     private static final int REQUEST_CONFIRM_DELETE_BOOK = 0;
     private static final String ARG_BOOK = "book";
     private static final String ARG_BOOK_IMAGE_BITMAP = "book_image_bitmap";
+    private static final String ARG_BOOK_LIST_POSITION = "book_list_position";
 
     private View fragmentView;
     private Book book;
     private RequestImageByUrlAsyncTask requestBookImageByUrlAsyncTask;
     private RequestDeleteBookAsyncTask requestDeleteBookAsyncTask;
+    private int bookListPosition;
 
-    public static BookDetailsFragment newInstance(Book book, Bitmap bookImageBitmap) {
+    public static BookDetailsFragment newInstance(Book book, Bitmap bookImageBitmap, int bookListPosition) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARG_BOOK, book);
         args.putParcelable(ARG_BOOK_IMAGE_BITMAP, bookImageBitmap);
+        args.putInt(ARG_BOOK_LIST_POSITION, bookListPosition);
 
         BookDetailsFragment fragment = new BookDetailsFragment();
         fragment.setArguments(args);
@@ -64,6 +67,7 @@ public class BookDetailsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         book = getArguments().getParcelable(ARG_BOOK);
         Bitmap bookImageBitmap = getArguments().getParcelable(ARG_BOOK_IMAGE_BITMAP);
+        bookListPosition = getArguments().getInt(ARG_BOOK_LIST_POSITION);
 
         fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
 
@@ -210,6 +214,7 @@ public class BookDetailsFragment extends Fragment {
                     case Result.SUCCESS: {
                         // TODO DEPENDS. remove the book from book list manually
 
+                        ((BookListFragment)getTargetFragment()).removeBook(bookListPosition);
                         getActivity().getSupportFragmentManager().popBackStack();
 
                         Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_success), Toast.LENGTH_SHORT);
