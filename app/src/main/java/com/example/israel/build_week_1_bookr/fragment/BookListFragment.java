@@ -2,6 +2,7 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,13 +21,17 @@ import android.widget.ScrollView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
+import com.example.israel.build_week_1_bookr.model.Book;
+import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
+
+import java.util.ArrayList;
 
 // TODO MEDIUM preserve last position when coming back from the details. Hint savedInstance
 public class BookListFragment extends Fragment {
 
     private View fragmentView;
-    private static final int GRID_SPAN_COUNT = 2;
+    private static final int GRID_SPAN_COUNT = 1;
     private RecyclerView bookListRecyclerView;
     private BookListAdapter bookListAdapter;
     private RequestBookListAsyncTask requestBookListAsyncTask;
@@ -48,6 +53,7 @@ public class BookListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_book_list, container, false);
 
@@ -93,6 +99,8 @@ public class BookListFragment extends Fragment {
             return;
         }
 
+        bookListAdapter.removeAllBooks();
+
         bookListRecyclerView.setVisibility(View.INVISIBLE);
 
         requestBookListAsyncTask = new RequestBookListAsyncTask() {
@@ -107,7 +115,8 @@ public class BookListFragment extends Fragment {
 
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
-                bookListAdapter.setBookList(result.books);
+                //bookListAdapter.setBookList(result.books);
+                populateBookListAdapter(result.books);
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
@@ -124,6 +133,24 @@ public class BookListFragment extends Fragment {
         transaction.add(R.id.activity_book_list_frame_layout, addBookFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void populateBookListAdapter(final ArrayList<Book> books) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (final Book book : books) {
+                    final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            bookListAdapter.addBook(book, bookImageBitmap);
+                        }
+                    });
+                }
+
+            }
+        }).start();
     }
 
 }

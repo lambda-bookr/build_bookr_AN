@@ -1,5 +1,6 @@
 package com.example.israel.build_week_1_bookr.adapter;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +16,9 @@ import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -34,6 +38,8 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     private FragmentActivity fragmentActivity;
     private int bookDetailsFragmentSlotId;
     private ArrayList<Book> books = new ArrayList<>();
+    private ArrayList<Bitmap> bookImageBitmaps = new ArrayList<>();
+    private int lastPosition;
 
     @NonNull
     @Override
@@ -44,10 +50,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final BookListAdapter.ViewHolder viewHolder, int i) {
         final Book book = books.get(i);
+        final Bitmap bookImageBitmap = bookImageBitmaps.get(i);
 
         viewHolder.titleTextView.setText(book.getTitle());
         viewHolder.averageRatingRatingBar.setRating((float)book.getAverageRating());
-
+        viewHolder.bookImageImageView.setImageBitmap(bookImageBitmap);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +70,12 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
                 transaction.commit();
             }
         });
+
+        if (i >= lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(viewHolder.itemView.getContext(), android.R.anim.slide_in_left);
+            viewHolder.itemView.startAnimation(animation);
+            lastPosition = i;
+        }
     }
 
     @Override
@@ -75,6 +88,18 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public void addBook(Book book, Bitmap bookImageBitmap) {
+        books.add(book);
+        bookImageBitmaps.add(bookImageBitmap);
+        notifyItemInserted(books.size() - 1);
+    }
+
+    public void removeAllBooks() {
+        books.clear();
+        bookImageBitmaps.clear();
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
@@ -82,10 +107,12 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
             titleTextView = itemView.findViewById(R.id.list_item_book_text_view_title);
             averageRatingRatingBar = itemView.findViewById(R.id.list_item_book_rating_bar_average_rating);
+            bookImageImageView = itemView.findViewById(R.id.list_item_book_image_view_image);
         }
 
         private TextView titleTextView;
         private RatingBar averageRatingRatingBar;
+        private ImageView bookImageImageView;
     }
 
 }
