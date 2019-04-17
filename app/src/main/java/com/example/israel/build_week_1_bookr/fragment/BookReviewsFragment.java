@@ -66,6 +66,13 @@ public class BookReviewsFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_book_reviews, container, false);
 
+        fragmentView.findViewById(R.id.fragment_book_reviews_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // blocker
+            }
+        });
+
         FloatingActionButton addReviewFAB = fragmentView.findViewById(R.id.fragment_book_reviews_fab_add_review);
         addReviewFAB.setOnClickListener(new View.OnClickListener() {
             @Override

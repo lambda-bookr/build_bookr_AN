@@ -50,6 +50,13 @@ public class AddBookFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_add_book, container, false);
 
+        fragmentView.findViewById(R.id.fragment_add_book_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // blocker
+            }
+        });
+
         Button addBookButton = fragmentView.findViewById(R.id.fragment_add_book_button_add_book);
         addBookButton.setOnClickListener(new View.OnClickListener() {
             @Override

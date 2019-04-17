@@ -2,4 +2,6 @@
 <resources>
     <dimen name="fragment_book_details_text_horizontal_padding">10dp</dimen>
     <dimen name="add_book_button_margin">15dp</dimen>
+    <dimen name="book_list_card_radius">10dp</dimen>
+    <dimen name="book_list_card_elevation">10dp</dimen>
 </resources>

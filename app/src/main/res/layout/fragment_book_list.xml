@@ -25,7 +25,7 @@
             android:id="@+id/fragment_book_list_recycler_view_book_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
+            android:padding="20dp"
             tools:layoutManager="android.support.v7.widget.GridLayoutManager"
             tools:spanCount="2"
             tools:listitem="@layout/list_item_book"

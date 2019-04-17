@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,13 @@ public class BookDetailsFragment extends Fragment {
         book = getArguments().getParcelable(ARG_BOOK);
 
         fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
+
+        fragmentView.findViewById(R.id.fragment_book_details_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // blocker
+            }
+        });
 
         // create more options popup
         ImageButton moreOptionsImageButton = fragmentView.findViewById(R.id.fragment_book_details_image_button_more_options);
@@ -133,16 +141,6 @@ public class BookDetailsFragment extends Fragment {
         }
 
         super.onDetach();
-    }
-
-    public static void createBooksDetailsFragment(FragmentActivity fragmentActivity, Book book, int i) {
-        BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
-
-        // TODO MEDIUM animation
-        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(i, bookDetailsFragment); // refreshes the login fragment
-        transaction.addToBackStack(null); // remove this fragment on back press
-        transaction.commit();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -254,9 +252,11 @@ public class BookDetailsFragment extends Fragment {
     private void createBookReviewsFragment() {
         BookReviewsFragment bookReviewsFragment = BookReviewsFragment.newInstance(book);
 
+        bookReviewsFragment.setEnterTransition(new Slide());
+
         // TODO HIGH add but do not refresh this fragment
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_book_list_frame_layout, bookReviewsFragment);
+        transaction.add(R.id.activity_book_list_frame_layout, bookReviewsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -53,7 +53,8 @@
                 android:layout_marginStart="40dp"
                 android:text="@string/add"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fragment_add_book_review_edit_text" />
+                app:layout_constraintTop_toBottomOf="@id/fragment_add_book_review_edit_text"
+                android:backgroundTint="@color/button_color"/>
 
             <Button
                 android:id="@+id/fragment_add_book_review_button_cancel"
@@ -62,7 +63,8 @@
                 android:layout_marginEnd="40dp"
                 android:text="@string/cancel"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fragment_add_book_review_edit_text" />
+                app:layout_constraintTop_toBottomOf="@id/fragment_add_book_review_edit_text"
+                android:backgroundTint="@color/button_color"/>
 
         </android.support.constraint.ConstraintLayout>
 

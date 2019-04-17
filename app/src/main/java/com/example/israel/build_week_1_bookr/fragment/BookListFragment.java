@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,8 +117,11 @@ public class BookListFragment extends Fragment {
 
     private void createAddBookFragment() {
         AddBookFragment addBookFragment = AddBookFragment.newInstance();
+
+        addBookFragment.setEnterTransition(new Slide());
+
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_book_list_frame_layout, addBookFragment);
+        transaction.add(R.id.activity_book_list_frame_layout, addBookFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
