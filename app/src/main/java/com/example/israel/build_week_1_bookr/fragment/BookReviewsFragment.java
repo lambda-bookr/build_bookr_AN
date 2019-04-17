@@ -63,6 +63,16 @@ public class BookReviewsFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onDetach() {
+        if (requestBookReviewsAsyncTask != null) {
+            requestBookReviewsAsyncTask.cancel(false);
+            requestBookReviewsAsyncTask = null;
+        }
+
+        super.onDetach();
+    }
+
     private void setupRecyclerView() {
         RecyclerView reviewsRecyclerView = fragmentView.findViewById(R.id.fragment_book_reviews_recycler_view_reviews);
         reviewsRecyclerView.setHasFixedSize(true); // TODO this might change if I implement resizing for reviews view
@@ -99,7 +109,7 @@ public class BookReviewsFragment extends Fragment {
     }
 
     private void createAddBookReviewFragment() {
-        AddBookReviewFragment addBookReviewFragment = AddBookReviewFragment.newInstance();
+        AddBookReviewFragment addBookReviewFragment = AddBookReviewFragment.newInstance(book.getId());
 
         // TODO MEDIUM animation
         // TODO VERY LOW. use the creator fragment as the source fragment rather than the activity.

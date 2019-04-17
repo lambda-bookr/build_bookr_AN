@@ -119,6 +119,21 @@ public class BookDetailsFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onDetach() {
+        if (requestBookImageByUrlAsyncTask != null) {
+            requestBookImageByUrlAsyncTask.cancel(false);
+            requestBookImageByUrlAsyncTask = null;
+        }
+
+        if (requestDeleteBookAsyncTask != null) {
+            requestDeleteBookAsyncTask.cancel(false);
+            requestDeleteBookAsyncTask = null;
+        }
+
+        super.onDetach();
+    }
+
     public static void createBooksDetailsFragment(FragmentActivity fragmentActivity, Book book, int i) {
         BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
 

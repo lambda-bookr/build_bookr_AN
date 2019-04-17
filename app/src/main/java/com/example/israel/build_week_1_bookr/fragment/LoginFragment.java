@@ -77,6 +77,16 @@ public class LoginFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onDetach() {
+        if (loginAsyncTask != null) {
+            loginAsyncTask.cancel(false);
+            loginAsyncTask = null;
+        }
+
+        super.onDetach();
+    }
+
     @SuppressLint("StaticFieldLeak")
     private void login() {
         if (loginAsyncTask != null) {

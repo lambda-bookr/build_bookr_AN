@@ -1,4 +1,21 @@
 package com.example.israel.build_week_1_bookr.worker_thread;
 
-public class RequestRemoveReviewAsyncTask {
+import android.os.AsyncTask;
+
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
+
+import org.json.JSONObject;
+
+public class RequestRemoveReviewAsyncTask extends AsyncTask<Void, Void, JSONObject> {
+
+    public RequestRemoveReviewAsyncTask(int reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    private int reviewId;
+
+    @Override
+    protected JSONObject doInBackground(Void... voids) {
+        return BookrAPIDAO.removeReview(reviewId);
+    }
 }

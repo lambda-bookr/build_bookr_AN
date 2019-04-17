@@ -53,6 +53,16 @@ public class RegisterFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onDetach() {
+        if (registerAsyncTask != null) {
+            registerAsyncTask.cancel(false);
+            registerAsyncTask = null;
+        }
+
+        super.onDetach();
+    }
+
     public static void createRegisterFragment(FragmentActivity fragmentActivity, int i) {
         RegisterFragment registerFragment = RegisterFragment.newInstance();
 

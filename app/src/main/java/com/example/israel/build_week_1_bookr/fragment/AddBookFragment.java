@@ -61,6 +61,16 @@ public class AddBookFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onDetach() {
+        if (requestAddBookAsyncTask != null) {
+            requestAddBookAsyncTask.cancel(false);
+            requestAddBookAsyncTask = null;
+        }
+
+        super.onDetach();
+    }
+
     private void createConfirmationDialog() {
         AddBookConfirmationDialogFragment addBookConfirmationDialogFragment = new AddBookConfirmationDialogFragment();
         addBookConfirmationDialogFragment.setTargetFragment(this, REQUEST_CONFIRM_ADD_BOOK);

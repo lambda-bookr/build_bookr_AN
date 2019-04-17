@@ -16,7 +16,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="10dp">
 
             <ProgressBar
                 android:id="@+id/fragment_add_book_progress_bar_requesting_add_book"
@@ -30,8 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_title"
-                android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
-                android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_progress_bar_requesting_add_book" />
 
             <EditText
@@ -39,8 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_author"
-                android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
-                android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_title" />
 
             <EditText
@@ -48,8 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_publisher"
-                android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
-                android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_author" />
 
             <EditText
@@ -58,8 +53,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_price"
                 android:inputType="numberDecimal"
-                android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
-                android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_publisher"
                 tools:layout_editor_absoluteX="0dp" />
 
@@ -68,8 +61,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_description"
-                android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
-                android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_price"
                 tools:layout_editor_absoluteX="0dp"
                 android:maxLines="5"/>

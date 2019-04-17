@@ -29,10 +29,11 @@
                 style="?android:attr/ratingBarStyleIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:isIndicator="true"
+                android:isIndicator="false"
                 android:numStars="5"
                 android:progressTint="@color/rating_bar_color"
                 android:rating="5"
+                android:stepSize="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:hint="Write a review"
+                android:hint="@string/write_a_review"
                 android:minLines="5"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_review_rating_bar" />
 
