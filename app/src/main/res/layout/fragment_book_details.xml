@@ -115,28 +115,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_book_review_rating_bar_average_rating"
                 tools:layout_editor_absoluteX="0dp" />
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/fragment_book_details_constraint_layout_reviews"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_text_view_description">
-
-                <ProgressBar
-                    android:id="@+id/fragment_book_details_progress_bar_requesting_reviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="invisible" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/fragment_book_details_recycler_view_reviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    tools:listitem="@layout/list_item_review"/>
-
-            </android.support.constraint.ConstraintLayout>
-
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>

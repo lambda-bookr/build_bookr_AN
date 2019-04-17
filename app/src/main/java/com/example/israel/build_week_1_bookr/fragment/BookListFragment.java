@@ -19,7 +19,6 @@ import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
 // TODO MEDIUM preserve last position when coming back from the details. Hint savedInstance
-// TODO CRITICAL add book, delete book
 public class BookListFragment extends Fragment {
 
     private View fragmentView;

@@ -34,8 +34,9 @@ import com.example.israel.build_week_1_bookr.worker_thread.RequestBook2AsyncTask
 import com.example.israel.build_week_1_bookr.worker_thread.RequestDeleteBookAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
-// TODO MEDIUM. improve review list view. Move review view into a new fragment when the average rating is clicked
+// TODO CRITICAL. improve review list view. Move review view into a new fragment when the average rating is clicked
 // TODO CRITICAL add review
+// TODO MEDIUM surround description with scroll view
 public class BookDetailsFragment extends Fragment {
 
     private static final int REQUEST_CONFIRM_DELETE_BOOK = 0;
@@ -113,11 +114,7 @@ public class BookDetailsFragment extends Fragment {
         TextView descriptionTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_description);
         descriptionTextView.setText(book.getDescription());
 
-        setupReviewsRecyclerView();
-
         requestBookImage();
-
-        requestBook2(); // for the reviews
 
         return fragmentView;
     }
@@ -130,53 +127,6 @@ public class BookDetailsFragment extends Fragment {
         transaction.replace(i, bookDetailsFragment); // refreshes the login fragment
         transaction.addToBackStack(null); // remove this fragment on back press
         transaction.commit();
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private void requestBook2() {
-        if (requestBook2AsyncTask != null) {
-            return;
-        }
-
-        final ProgressBar requestingReviewsProgressBar = fragmentView.findViewById(R.id.fragment_book_details_progress_bar_requesting_reviews);
-        requestingReviewsProgressBar.setVisibility(View.VISIBLE);
-
-        final RecyclerView reviewsRecyclerView = fragmentView.findViewById(R.id.fragment_book_details_recycler_view_reviews);
-        reviewsRecyclerView.setVisibility(View.INVISIBLE);
-
-        requestBook2AsyncTask = new RequestBook2AsyncTask(book) {
-            @Override
-            protected void onPostExecute(Book2 book2) {
-                super.onPostExecute(book2);
-                reviewsRecyclerView.setVisibility(View.VISIBLE);
-                requestingReviewsProgressBar.setVisibility(View.INVISIBLE);
-
-
-                if (isCancelled()) {
-                    return;
-                }
-
-                requestBook2AsyncTask = null;
-
-                if (book2 == null) {
-                    return;
-                }
-
-                reviewListAdapter.setReviewList(book2.getReviews());
-            }
-        };
-        requestBook2AsyncTask.execute();
-    }
-
-    private void setupReviewsRecyclerView() {
-        RecyclerView reviewsRecyclerView = fragmentView.findViewById(R.id.fragment_book_details_recycler_view_reviews);
-        reviewsRecyclerView.setHasFixedSize(true); // TODO this might change if I implement resizing for reviews view
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        reviewsRecyclerView.setLayoutManager(layoutManager);
-
-        reviewListAdapter = new ReviewListAdapter();
-        reviewsRecyclerView.setAdapter(reviewListAdapter);
     }
 
     @SuppressLint("StaticFieldLeak")

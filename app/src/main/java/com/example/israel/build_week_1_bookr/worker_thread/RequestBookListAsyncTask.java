@@ -2,9 +2,8 @@ package com.example.israel.build_week_1_bookr.worker_thread;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.example.israel.build_week_1_bookr.dao.BookListDAO;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 
 import java.util.ArrayList;
@@ -15,15 +14,9 @@ public class RequestBookListAsyncTask extends AsyncTask<Void, Void, RequestBookL
     @NonNull
     protected Result doInBackground(Void... voids) {
 
-        // simulation
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
+        // TODO better Result
         Result result = new Result();
-        result.books = BookListDAO.getBookList();
+        result.books = BookrAPIDAO.getBookList();
 
         return result;
     }
