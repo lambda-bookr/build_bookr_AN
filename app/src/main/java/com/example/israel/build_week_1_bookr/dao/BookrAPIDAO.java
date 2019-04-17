@@ -100,23 +100,32 @@ public class BookrAPIDAO {
     }
 
     @WorkerThread
-    public static boolean addReview(int bookId, int userId, int rating, String review) {
-        JSONObject reviewJson = new JSONObject();
+    @Nullable
+    public static JSONObject addReview(int bookId, int userId, int rating, String review) {
+        JSONObject outReviewJson = new JSONObject();
         try {
-            reviewJson.put(KEY_JSON_ADD_REVIEW_BOOK_ID, bookId);
-            reviewJson.put(KEY_JSON_ADD_REVIEW_USER_ID, userId);
-            reviewJson.put(KEY_JSON_ADD_REVIEW_RATING, rating);
-            reviewJson.put(KEY_JSON_ADD_REVIEW_REVIEW, review);
+            outReviewJson.put(KEY_JSON_ADD_REVIEW_BOOK_ID, bookId);
+            outReviewJson.put(KEY_JSON_ADD_REVIEW_USER_ID, userId);
+            outReviewJson.put(KEY_JSON_ADD_REVIEW_RATING, rating);
+            outReviewJson.put(KEY_JSON_ADD_REVIEW_REVIEW, review);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(BASE_URL + API_REVIEWS, reviewJson);
+        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(BASE_URL + API_REVIEWS, outReviewJson);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
-            return false;
+            return null;
         }
 
-        return result.responseCode == HttpURLConnection.HTTP_CREATED;
+        if (result.responseCode == HttpURLConnection.HTTP_CREATED) {
+            try {
+                return new JSONObject((String)result.resultObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
     @WorkerThread

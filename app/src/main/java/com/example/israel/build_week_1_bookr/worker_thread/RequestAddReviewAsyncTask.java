@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 
 import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 
-public class RequestAddReviewAsyncTask extends AsyncTask<Void, Void, Boolean> {
+import org.json.JSONObject;
+
+public class RequestAddReviewAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
     public RequestAddReviewAsyncTask(int bookId, int userId, int rating, String review) {
         this.bookId = bookId;
@@ -19,7 +21,7 @@ public class RequestAddReviewAsyncTask extends AsyncTask<Void, Void, Boolean> {
     private String review;
 
     @Override
-    protected Boolean doInBackground(Void... voids) {
+    protected JSONObject doInBackground(Void... voids) {
 
         return BookrAPIDAO.addReview(bookId, userId, rating, review);
     }

@@ -15,9 +15,13 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddReviewAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveReviewAsyncTask;
+
+import org.json.JSONObject;
 
 public class AddBookReviewFragment extends Fragment {
 
@@ -107,8 +111,8 @@ public class AddBookReviewFragment extends Fragment {
         requestAddReviewAsyncTask = new RequestAddReviewAsyncTask(bookId, userId, (int)ratingBar.getRating(), reviewStr) {
 
             @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
+            protected void onPostExecute(JSONObject jsonObject) {
+                super.onPostExecute(jsonObject);
 
                 if (isCancelled()) {
                     return;
@@ -116,11 +120,14 @@ public class AddBookReviewFragment extends Fragment {
 
                 requestAddReviewAsyncTask = null;
 
-                if (aBoolean) {
-                    // TODO CRITICAL add to the review list
+                if (jsonObject != null) {
+                    Review review = new Review(jsonObject);
+                    ((BookReviewsFragment)getTargetFragment()).addReview(review);
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
                     toast.show();
+
+                    StaticHelpers.hideKeyboard(getActivity());
                 } else {
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_failed), Toast.LENGTH_SHORT);
                     toast.show();

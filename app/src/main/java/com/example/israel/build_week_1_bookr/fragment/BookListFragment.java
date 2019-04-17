@@ -48,6 +48,7 @@ public class BookListFragment extends Fragment {
 
         setupBookListRecyclerView();
         requestBookList();
+        
         FloatingActionButton addBookFAB = fragmentView.findViewById(R.id.fragment_book_list_fab_add_book);
         addBookFAB.setOnClickListener(new View.OnClickListener() {
             @Override
