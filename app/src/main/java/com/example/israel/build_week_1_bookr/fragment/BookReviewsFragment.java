@@ -41,6 +41,8 @@ public class BookReviewsFragment extends Fragment {
     private RequestBookReviewsAsyncTask requestBookReviewsAsyncTask;
     private RequestRemoveReviewAsyncTask requestRemoveReviewAsyncTask;
     private ReviewListAdapter reviewListAdapter;
+    private int removeReviewId;
+    private int removeReviewAdapterPosition;
 
     public static BookReviewsFragment newInstance(Book book) {
 
@@ -142,14 +144,14 @@ public class BookReviewsFragment extends Fragment {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void requestRemoveReview(int reviewId) {
+    private void requestRemoveReview() {
         // TODO CRITICAL progress bar
 
         if (requestRemoveReviewAsyncTask != null) {
             return;
         }
 
-        requestRemoveReviewAsyncTask = new RequestRemoveReviewAsyncTask(reviewId) {
+        requestRemoveReviewAsyncTask = new RequestRemoveReviewAsyncTask(removeReviewId) {
 
             @Override
             protected void onPostExecute(JSONObject jsonObject) {
@@ -162,7 +164,8 @@ public class BookReviewsFragment extends Fragment {
                 requestRemoveReviewAsyncTask = null;
 
                 if (jsonObject != null) {
-                    // TODO CRITICAL remove from list or refresh?
+                    reviewListAdapter.removeReview(removeReviewAdapterPosition);
+
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_success), Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
@@ -175,7 +178,9 @@ public class BookReviewsFragment extends Fragment {
 
     }
 
-    public void createReviewPopupMenu(View v, final Review review) {
+    public void createReviewPopupMenu(View v, final Review review, int reviewAdapterPosition) {
+        removeReviewId = review.getId();
+        this.removeReviewAdapterPosition = reviewAdapterPosition;
         PopupMenu popupMenu = new PopupMenu(getActivity(), v);
         popupMenu.getMenuInflater().inflate(R.menu.fragment_book_reviews_review_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -184,7 +189,7 @@ public class BookReviewsFragment extends Fragment {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.menu_book_reviews_review_delete: {
-                        createRemoveReviewConfirmationDialogFragment(review.getId());
+                        createRemoveReviewConfirmationDialogFragment();
                     } break;
                 }
 
@@ -194,24 +199,18 @@ public class BookReviewsFragment extends Fragment {
         popupMenu.show();
     }
 
-    private void createRemoveReviewConfirmationDialogFragment(int reviewId) {
+    private void createRemoveReviewConfirmationDialogFragment() {
         RemoveReviewConfirmationDialogFragment removeReviewConfirmationDialogFragment = new RemoveReviewConfirmationDialogFragment();
         removeReviewConfirmationDialogFragment.setTargetFragment(this, REQUEST_CONFIRM_DELETE_REVIEW);
-        Bundle argsBundle = new Bundle();
-        argsBundle.putInt(RemoveReviewConfirmationDialogFragment.ARG_REVIEW_ID, reviewId);
-        removeReviewConfirmationDialogFragment.setArguments(argsBundle);
         removeReviewConfirmationDialogFragment.show(getFragmentManager(), null);
     }
 
     public static class RemoveReviewConfirmationDialogFragment extends DialogFragment {
 
-        public static final String ARG_REVIEW_ID = "review_id";
-
         @NonNull
         @Override
         public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-            final int reviewId = getArguments().getInt(ARG_REVIEW_ID);
             final BookReviewsFragment bookReviewsFragment = (BookReviewsFragment)getTargetFragment();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -220,7 +219,7 @@ public class BookReviewsFragment extends Fragment {
             builder.setPositiveButton(bookReviewsFragment.getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    bookReviewsFragment.requestRemoveReview(reviewId);
+                    bookReviewsFragment.requestRemoveReview();
                 }
             });
 

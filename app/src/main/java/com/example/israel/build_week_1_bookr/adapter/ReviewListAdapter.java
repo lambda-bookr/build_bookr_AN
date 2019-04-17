@@ -30,7 +30,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final Review review = reviews.get(i);
 
         viewHolder.usernameTextView.setText(review.getUsername());
@@ -40,7 +40,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                bookReviewsFragment.createReviewPopupMenu(v, review);
+                bookReviewsFragment.createReviewPopupMenu(v, review, viewHolder.getAdapterPosition());
                 return true;
             }
         });
@@ -75,13 +75,12 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         notifyItemInserted(reviews.size() - 1);
     }
 
-    public void removeReview(int reviewId) {
-        for (int i = 0; i < reviews.size(); ++i) {
-            if (reviews.get(i).getId() == reviewId) {
-                reviews.remove(i);
-                notifyItemRemoved(i);
-                break;
-            }
+    public void removeReview(int i) {
+        if ( i >= reviews.size()) {
+            return;
         }
+
+        reviews.remove(i);
+        notifyItemRemoved(i);
     }
 }

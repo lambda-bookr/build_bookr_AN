@@ -117,7 +117,7 @@ public class AddBookReviewFragment extends Fragment {
                 requestAddReviewAsyncTask = null;
 
                 if (aBoolean) {
-                    // TODO CRITICAL add to the review list or just refresh?
+                    // TODO CRITICAL add to the review list
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
                     toast.show();
