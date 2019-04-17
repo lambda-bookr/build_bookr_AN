@@ -34,16 +34,18 @@ public class BookDetailsFragment extends Fragment {
 
     private static final int REQUEST_CONFIRM_DELETE_BOOK = 0;
     private static final String ARG_BOOK = "book";
+    private static final String ARG_BOOK_IMAGE_BITMAP = "book_image_bitmap";
 
     private View fragmentView;
     private Book book;
     private RequestImageByUrlAsyncTask requestBookImageByUrlAsyncTask;
     private RequestDeleteBookAsyncTask requestDeleteBookAsyncTask;
 
-    public static BookDetailsFragment newInstance(Book book) {
+    public static BookDetailsFragment newInstance(Book book, Bitmap bookImageBitmap) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARG_BOOK, book);
+        args.putParcelable(ARG_BOOK_IMAGE_BITMAP, bookImageBitmap);
 
         BookDetailsFragment fragment = new BookDetailsFragment();
         fragment.setArguments(args);
@@ -61,6 +63,7 @@ public class BookDetailsFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         book = getArguments().getParcelable(ARG_BOOK);
+        Bitmap bookImageBitmap = getArguments().getParcelable(ARG_BOOK_IMAGE_BITMAP);
 
         fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
 
@@ -123,7 +126,9 @@ public class BookDetailsFragment extends Fragment {
         TextView descriptionTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_description);
         descriptionTextView.setText(book.getDescription());
 
-        requestBookImage();
+        ImageView bookImageImageView = fragmentView.findViewById(R.id.fragment_book_details_image_view_image);
+        bookImageImageView.setImageBitmap(bookImageBitmap);
+        //requestBookImage();
 
         return fragmentView;
     }

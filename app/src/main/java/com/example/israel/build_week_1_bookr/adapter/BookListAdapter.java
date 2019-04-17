@@ -59,7 +59,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book);
+                BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book, bookImageBitmap);
 
                 bookDetailsFragment.setEnterTransition(new Slide());
 
@@ -94,7 +94,15 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         notifyItemInserted(books.size() - 1);
     }
 
+    public void removeBook(int i) {
+        lastPosition -= 1;
+        books.remove(i);
+        bookImageBitmaps.remove(i);
+        notifyItemRemoved(i);
+    }
+
     public void removeAllBooks() {
+        lastPosition = 0;
         books.clear();
         bookImageBitmaps.clear();
         notifyDataSetChanged();
