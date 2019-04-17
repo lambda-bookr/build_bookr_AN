@@ -3,7 +3,10 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +49,14 @@ public class BookReviewsFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_book_reviews, container, false);
 
+        FloatingActionButton addReviewFAB = fragmentView.findViewById(R.id.fragment_book_reviews_fab_add_review);
+        addReviewFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createAddBookReviewFragment();
+            }
+        });
+
         setupRecyclerView();
         requestReview();
 
@@ -59,7 +70,7 @@ public class BookReviewsFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         reviewsRecyclerView.setLayoutManager(layoutManager);
 
-        reviewListAdapter = new ReviewListAdapter();
+        reviewListAdapter = new ReviewListAdapter(this);
         reviewsRecyclerView.setAdapter(reviewListAdapter);
     }
 
@@ -84,6 +95,18 @@ public class BookReviewsFragment extends Fragment {
 
             }
         };
+        requestBookReviewsAsyncTask.execute();
+    }
+
+    private void createAddBookReviewFragment() {
+        AddBookReviewFragment addBookReviewFragment = AddBookReviewFragment.newInstance();
+
+        // TODO MEDIUM animation
+        // TODO VERY LOW. use the creator fragment as the source fragment rather than the activity.
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.activity_book_list_frame_layout, addBookReviewFragment); // refreshes the login fragment
+        transaction.addToBackStack(null); // remove this fragment on back press
+        transaction.commit();
     }
 
 }

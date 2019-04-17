@@ -9,12 +9,18 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.fragment.BookReviewsFragment;
 import com.example.israel.build_week_1_bookr.model.Review;
 
 import java.util.ArrayList;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ViewHolder> {
 
+    public ReviewListAdapter(BookReviewsFragment bookReviewsFragment) {
+        this.bookReviewsFragment = bookReviewsFragment;
+    }
+
+    private BookReviewsFragment bookReviewsFragment;
     private ArrayList<Review> reviews = new ArrayList<>();
 
     @NonNull
@@ -30,6 +36,15 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         viewHolder.usernameTextView.setText(review.getUsername());
         viewHolder.ratingRatingBar.setRating(review.getRating());
         viewHolder.reviewTextView.setText(review.getReview());
+
+        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO CRITICAL
+
+                return true;
+            }
+        });
     }
 
     @Override

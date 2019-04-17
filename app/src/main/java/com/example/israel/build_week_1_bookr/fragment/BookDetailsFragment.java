@@ -12,8 +12,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,10 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
-import com.example.israel.build_week_1_bookr.adapter.ReviewListAdapter;
 import com.example.israel.build_week_1_bookr.model.Book;
-import com.example.israel.build_week_1_bookr.model.Book2;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestBook2AsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestDeleteBookAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
@@ -44,8 +39,6 @@ public class BookDetailsFragment extends Fragment {
 
     private View fragmentView;
     private Book book;
-    private ReviewListAdapter reviewListAdapter;
-    private RequestBook2AsyncTask requestBook2AsyncTask;
     private RequestImageByUrlAsyncTask requestBookImageByUrlAsyncTask;
     private RequestDeleteBookAsyncTask requestDeleteBookAsyncTask;
 
@@ -73,12 +66,12 @@ public class BookDetailsFragment extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
 
-        ImageButton expandMoreImageButton = fragmentView.findViewById(R.id.fragment_book_details_image_button_expand_more);
-        expandMoreImageButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton moreOptionsImageButton = fragmentView.findViewById(R.id.fragment_book_details_image_button_more_options);
+        moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(getActivity(), v);
-                popupMenu.getMenuInflater().inflate(R.menu.fragment_book_details_expand_more, popupMenu.getMenu());
+                popupMenu.getMenuInflater().inflate(R.menu.fragment_book_details_more_options, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -110,6 +103,13 @@ public class BookDetailsFragment extends Fragment {
 
         RatingBar averageRatingRatingBar = fragmentView.findViewById(R.id.fragment_book_review_rating_bar_average_rating);
         averageRatingRatingBar.setRating((float)book.getAverageRating());
+
+        fragmentView.findViewById(R.id.fragment_book_details_text_view_reviews).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createBookReviewsFragment();
+            }
+        });
 
         TextView descriptionTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_description);
         descriptionTextView.setText(book.getDescription());
@@ -233,5 +233,15 @@ public class BookDetailsFragment extends Fragment {
 
             return builder.create();
         }
+    }
+
+    private void createBookReviewsFragment() {
+        BookReviewsFragment bookReviewsFragment = BookReviewsFragment.newInstance(book);
+
+        // TODO HIGH add but do not refresh this fragment
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_book_list_frame_layout, bookReviewsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
