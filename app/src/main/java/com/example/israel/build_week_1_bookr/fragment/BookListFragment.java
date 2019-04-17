@@ -3,16 +3,19 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
@@ -26,6 +29,7 @@ public class BookListFragment extends Fragment {
     private RecyclerView bookListRecyclerView;
     private BookListAdapter bookListAdapter;
     private RequestBookListAsyncTask requestBookListAsyncTask;
+    private SwipeRefreshLayout bookListSwipeRefreshLayout;
 
     public static BookListFragment newInstance() {
 
@@ -48,7 +52,14 @@ public class BookListFragment extends Fragment {
 
         setupBookListRecyclerView();
         requestBookList();
-        
+        bookListSwipeRefreshLayout = fragmentView.findViewById(R.id.fragment_book_list_swipe_refresh_layout_book_list);
+        bookListSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestBookList();
+            }
+        });
+
         FloatingActionButton addBookFAB = fragmentView.findViewById(R.id.fragment_book_list_fab_add_book);
         addBookFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +109,8 @@ public class BookListFragment extends Fragment {
                 requestingBookListProgressBar.setVisibility(View.GONE);
 
                 bookListAdapter.setBookList(result.books);
+
+                bookListSwipeRefreshLayout.setRefreshing(false);
             }
         };
         requestBookListAsyncTask.execute();
