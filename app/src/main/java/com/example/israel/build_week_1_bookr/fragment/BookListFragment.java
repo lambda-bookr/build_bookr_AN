@@ -53,6 +53,7 @@ public class BookListFragment extends Fragment {
         setupBookListRecyclerView();
         requestBookList();
         bookListSwipeRefreshLayout = fragmentView.findViewById(R.id.fragment_book_list_swipe_refresh_layout_book_list);
+        bookListSwipeRefreshLayout.setRefreshing(true);
         bookListSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -91,8 +92,6 @@ public class BookListFragment extends Fragment {
             return;
         }
 
-        final ProgressBar requestingBookListProgressBar = fragmentView.findViewById(R.id.fragment_book_list_progress_bar_requesting_book_list);
-        requestingBookListProgressBar.setVisibility(View.VISIBLE);
         bookListRecyclerView.setVisibility(View.INVISIBLE);
 
         requestBookListAsyncTask = new RequestBookListAsyncTask() {
@@ -106,7 +105,6 @@ public class BookListFragment extends Fragment {
                 requestBookListAsyncTask = null;
 
                 bookListRecyclerView.setVisibility(View.VISIBLE);
-                requestingBookListProgressBar.setVisibility(View.GONE);
 
                 bookListAdapter.setBookList(result.books);
 

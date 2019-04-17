@@ -46,5 +46,7 @@
     <string name="delete_review_success">Review deleted</string>
     <string name="delete_review_failed">Failed to delete review</string>
     <string name="delete_review">Delete review</string>
+    <string name="by">by</string>
+    <string name="published_by">published by</string>
 
 </resources>

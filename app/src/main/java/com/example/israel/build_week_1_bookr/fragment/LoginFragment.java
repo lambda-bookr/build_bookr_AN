@@ -67,7 +67,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        fragmentView.findViewById(R.id.fragment_login_button_register).setOnClickListener(new View.OnClickListener() {
+        fragmentView.findViewById(R.id.fragment_login_text_view_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RegisterFragment.createRegisterFragment(getActivity(), R.id.activity_login_root);
@@ -123,7 +123,7 @@ public class LoginFragment extends Fragment {
                 }
                 loginAsyncTask = null;
 
-                loggingInProgressBar.setVisibility(View.GONE);
+                loggingInProgressBar.setVisibility(View.INVISIBLE);
 
                 switch (result.result) {
                     case Result.SUCCESS: {

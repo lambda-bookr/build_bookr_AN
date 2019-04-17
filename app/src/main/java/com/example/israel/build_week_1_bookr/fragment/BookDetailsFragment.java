@@ -91,13 +91,16 @@ public class BookDetailsFragment extends Fragment {
         titleTextView.setText(book.getTitle());
 
         TextView authorTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_author);
-        authorTextView.setText(book.getAuthor());
+        String authorStr = getString(R.string.by) + " " + book.getAuthor();
+        authorTextView.setText(authorStr);
 
         TextView publisherTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_publisher);
-        publisherTextView.setText(book.getPublisher());
+        String publisherStr = getString(R.string.published_by) + " " + book.getPublisher();
+        publisherTextView.setText(publisherStr);
 
         TextView priceTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_price);
-        priceTextView.setText("$" + Double.toString(book.getPrice()));
+        String priceStr = "$" + Double.toString(book.getPrice());
+        priceTextView.setText(priceStr);
 
         RatingBar averageRatingRatingBar = fragmentView.findViewById(R.id.fragment_book_review_rating_bar_average_rating);
         averageRatingRatingBar.setRating((float)book.getAverageRating());
