@@ -10,7 +10,7 @@ public class Review {
     private static final String KEY_JSON_USERNAME = "username";
     private static final String KEY_JSON_REVIEW = "review";
     private static final String KEY_JSON_RATING = "rating";
-    private static final String KEY_JSON_THUMBNAIL_URL = "thumbnailurl";
+    private static final String KEY_JSON_THUMBNAIL_URL = "thumbnailUrl";
 
     public Review(JSONObject reviewJson) {
 

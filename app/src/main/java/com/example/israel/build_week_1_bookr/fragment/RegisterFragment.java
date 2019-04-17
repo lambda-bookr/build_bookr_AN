@@ -53,7 +53,7 @@ public class RegisterFragment extends Fragment {
         return fragmentView;
     }
 
-    public static void replaceRegisterFragment(FragmentActivity fragmentActivity, int i) {
+    public static void createRegisterFragment(FragmentActivity fragmentActivity, int i) {
         RegisterFragment registerFragment = RegisterFragment.newInstance();
 
         // TODO MEDIUM. animation

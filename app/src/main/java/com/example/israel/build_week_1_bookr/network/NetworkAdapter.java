@@ -213,6 +213,62 @@ public class NetworkAdapter {
     }
 
     @WorkerThread
+    @NonNull
+    public static Result httpRequestDEL(String urlStr) {
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputStream = null;
+        Result result = new Result();
+        try {
+            URL url = new URL(urlStr);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            httpURLConnection.setRequestMethod("DELETE");
+            httpURLConnection.connect();
+
+            int responseCode = httpURLConnection.getResponseCode();
+            result.responseCode = responseCode;
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new IOException("Connection error. Response code: " + Integer.toString(responseCode));
+            }
+
+            inputStream = httpURLConnection.getInputStream();
+            StringBuilder builder = new StringBuilder();
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String resStr;
+                while ((resStr = reader.readLine()) != null) {
+                    builder.append(resStr);
+                }
+            }
+
+            result.resultObj = builder.toString();
+            return result;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) { // for future reference. if ever i forgot to put internet permission again!!
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+        }
+
+        return result;
+    }
+
+    @WorkerThread
     @Nullable
     public static Bitmap httpImageRequestGET(String urlStr) {
         HttpURLConnection httpURLConnection = null;

@@ -42,13 +42,25 @@
 
             <TextView
                 android:id="@+id/fragment_book_details_text_view_title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/fragment_book_details_text_horizontal_padding"
                 android:paddingTop="10dp"
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 android:text="@string/placeholder_book_title"
                 android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_book_details_image_button_expand_more"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_constraint_layout_image" />
+
+            <ImageButton
+                android:id="@+id/fragment_book_details_image_button_expand_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_expand_more_white_24dp"
+                android:backgroundTint="@color/expand_more_tint"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_book_details_constraint_layout_image" />
 
             <TextView

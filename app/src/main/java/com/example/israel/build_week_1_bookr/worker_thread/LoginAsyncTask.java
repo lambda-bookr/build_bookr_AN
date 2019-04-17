@@ -17,6 +17,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
     static private final String KEY_JSON_USERNAME = "username";
     static private final String KEY_JSON_PASSWORD = "password";
     static private final String KEY_JSON_TOKEN = "token";
+    static private final String KEY_JSON_USER_ID = "userID";
 
     public LoginAsyncTask(@NonNull String username, @NonNull String password) {
         this.username = username;
@@ -59,6 +60,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
             try {
                 JSONObject replyJson = new JSONObject(replyStr);
                 result.sessionToken = replyJson.getString(KEY_JSON_TOKEN);
+                result.userId = replyJson.getInt(KEY_JSON_USER_ID);
                 result.result = Result.SUCCESS;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -85,6 +87,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
 
         public int result;
         public String sessionToken;
+        public int userId;
 
     }
 

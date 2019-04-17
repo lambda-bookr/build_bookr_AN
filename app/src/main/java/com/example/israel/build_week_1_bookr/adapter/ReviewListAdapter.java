@@ -15,11 +15,7 @@ import java.util.ArrayList;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ViewHolder> {
 
-    public ReviewListAdapter(ArrayList<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    private ArrayList<Review> reviews;
+    private ArrayList<Review> reviews = new ArrayList<>();
 
     @NonNull
     @Override
@@ -53,5 +49,10 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         private TextView usernameTextView;
         private RatingBar ratingRatingBar;
         private TextView reviewTextView;
+    }
+
+    public void setReviewList(ArrayList<Review> reviews) {
+        this.reviews = reviews;
+        notifyDataSetChanged();
     }
 }

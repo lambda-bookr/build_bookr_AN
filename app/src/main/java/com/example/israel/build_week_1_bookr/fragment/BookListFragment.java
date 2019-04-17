@@ -106,7 +106,7 @@ public class BookListFragment extends Fragment {
     private void createAddBookFragment() {
         AddBookFragment addBookFragment = AddBookFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.activity_book_list_drawer_layout_root, addBookFragment);
+        transaction.replace(R.id.activity_book_list_frame_layout, addBookFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

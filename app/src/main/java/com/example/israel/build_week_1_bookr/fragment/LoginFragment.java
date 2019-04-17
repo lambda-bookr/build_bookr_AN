@@ -5,8 +5,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +70,7 @@ public class LoginFragment extends Fragment {
         fragmentView.findViewById(R.id.fragment_login_button_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RegisterFragment.replaceRegisterFragment(getActivity(), R.id.activity_login_root);
+                RegisterFragment.createRegisterFragment(getActivity(), R.id.activity_login_root);
             }
         });
 
@@ -121,6 +119,7 @@ public class LoginFragment extends Fragment {
                     case Result.SUCCESS: {
                         // store session token
                         SessionTokenDAO.setSessionToken(getActivity(), result.sessionToken);
+                        SessionTokenDAO.setUserId(getActivity(), result.userId);
 
                         ActivityStarter.startBookListActivity(getActivity());
 

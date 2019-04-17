@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,8 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookAsyncTask;
 
@@ -66,6 +68,79 @@ public class AddBookFragment extends Fragment {
 
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private void requestAddBook() {
+        if (requestAddBookAsyncTask != null) {
+            return;
+        }
+
+        // TODO warning this field cannot be empty, except description
+        EditText titleEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_title);
+        String titleStr = titleEditText.getText().toString();
+        if (titleStr.length() == 0) {
+            titleEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            titleEditText.requestFocus();
+            return;
+        }
+        EditText authorEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_author);
+        String authorStr = authorEditText.getText().toString();
+        if (authorStr.length() == 0) {
+            authorEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            authorEditText.requestFocus();
+            return;
+        }
+        EditText publisherEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_publisher);
+        String publisherStr = publisherEditText.getText().toString();
+        if (publisherStr.length() == 0) {
+            publisherEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            publisherEditText.requestFocus();
+            return;
+        }
+        EditText priceEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_price);
+        String priceStr = priceEditText.getText().toString();
+        if (priceStr.length() == 0) {
+            priceEditText.setError(getString(R.string.this_field_cannot_be_empty));
+            priceEditText.requestFocus();
+            return;
+        }
+        EditText descriptionEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_description);
+        String descriptionStr = descriptionEditText.getText().toString();
+
+        final ProgressBar requestingAddBookProgressBar = fragmentView.findViewById(R.id.fragment_add_book_progress_bar_requesting_add_book);
+        requestingAddBookProgressBar.setVisibility(View.VISIBLE);
+
+        requestAddBookAsyncTask = new RequestAddBookAsyncTask(
+                SessionTokenDAO.getUserId(getActivity()),
+                titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, "http://lorempixel.com/640/480") { // TODO proper image url
+            @Override
+            protected void onPostExecute(Result result) {
+                super.onPostExecute(result);
+                requestingAddBookProgressBar.setVisibility(View.GONE);
+
+                if (isCancelled()) {
+                    return;
+                }
+
+                requestAddBookAsyncTask = null;
+
+                switch (result.result) {
+                    case Result.SUCCESS: {
+                        // TODO DEPENDS. add the book to book list manually
+                        Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
+                        toast.show();
+                    } break;
+
+                    case Result.FAILED: {
+                        Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
+                        toast.show();
+                    } break;
+                }
+
+            }
+        };
+        requestAddBookAsyncTask.execute();
+    }
+
     public static class AddBookConfirmationDialogFragment extends DialogFragment {
 
         @NonNull
@@ -79,8 +154,8 @@ public class AddBookFragment extends Fragment {
             builder.setPositiveButton(addBookFragment.getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
                     addBookFragment.requestAddBook();
+                    StaticHelpers.hideKeyboard(getActivity());
                 }
             });
 
@@ -93,56 +168,5 @@ public class AddBookFragment extends Fragment {
 
             return builder.create();
         }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private void requestAddBook() {
-        if (requestAddBookAsyncTask != null) {
-            return;
-        }
-
-        // TODO this field cannot be empty, except description
-        EditText titleEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_title);
-        String titleStr = titleEditText.getText().toString();
-        EditText authorEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_author);
-        String authorStr = authorEditText.getText().toString();
-        EditText publisherEditText = fragmentView.findViewById(R.id.fragment_book_details_text_view_publisher);
-        String publisherStr = publisherEditText.getText().toString();
-        EditText priceEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_price);
-        String priceStr = priceEditText.getText().toString();
-        EditText descriptionEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_description);
-        String descriptionStr = descriptionEditText.getText().toString();
-
-        // TODO progress bar
-
-        requestAddBookAsyncTask = new RequestAddBookAsyncTask(
-                SessionTokenDAO.getUserId(getActivity()),
-                titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, "") {
-            @Override
-            protected void onPostExecute(Result result) {
-                super.onPostExecute(result);
-
-                if (isCancelled()) {
-                    return;
-                }
-
-                requestAddBookAsyncTask = null;
-
-                switch (result.result) {
-                    case Result.SUCCESS: {
-                        // TODO DEPENDS. add book to the list
-
-                        // TODO toast
-                    } break;
-
-                    case Result.FAILED: {
-                        // TODO toast
-                    } break;
-                }
-
-            }
-        };
-        requestAddBookAsyncTask.execute();
-
     }
 }

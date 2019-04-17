@@ -73,9 +73,10 @@ public class Book implements Parcelable {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         try {
-            averageRating = bookJson.getDouble(KEY_JSON_AVERAGE_RATING);
+            if (!bookJson.isNull(KEY_JSON_AVERAGE_RATING)) { // if there's no review, server sends a null value
+                averageRating = bookJson.getDouble(KEY_JSON_AVERAGE_RATING);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

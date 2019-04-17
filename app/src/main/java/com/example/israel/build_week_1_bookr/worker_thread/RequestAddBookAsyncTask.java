@@ -62,16 +62,15 @@ public class RequestAddBookAsyncTask extends AsyncTask<Void, Void, RequestAddBoo
             return result;
         }
 
-        if (networkResult.responseCode != HttpURLConnection.HTTP_CREATED) {
-            result.result = Result.FAILED;
-            return result;
-        }
-
-        try {
-            result.addedBookJson = new JSONObject((String)networkResult.resultObj);
-            result.result = Result.SUCCESS;
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (networkResult.responseCode == HttpURLConnection.HTTP_CREATED) {
+            try {
+                result.addedBookJson = new JSONObject((String)networkResult.resultObj);
+                result.result = Result.SUCCESS;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                result.result = Result.FAILED;
+            }
+        } else {
             result.result = Result.FAILED;
         }
 

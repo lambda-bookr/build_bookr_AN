@@ -27,5 +27,11 @@
     <string name="add_book_confirm_message">Add book</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="add_book_success">Successfully added book</string>
+    <string name="add_book_failed">Failed to add book</string>
+    <string name="delete_book_confirmation_message">Are you sure you want to delete this book?</string>
+    <string name="delete_book">Delete Book</string>
+    <string name="delete_book_success">Book successfully deleted</string>
+    <string name="delete_book_failed">Failed to delete book</string>
 
 </resources>
