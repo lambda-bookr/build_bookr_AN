@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/menu_book_details_book_delete"
-        android:title="@string/delete_book"/>
+    <item android:id="@+id/menu_book_reviews_review_delete"
+        android:title="@string/delete_review"/>
 
 </menu>

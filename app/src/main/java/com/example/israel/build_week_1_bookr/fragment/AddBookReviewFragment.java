@@ -117,7 +117,7 @@ public class AddBookReviewFragment extends Fragment {
                 requestAddReviewAsyncTask = null;
 
                 if (aBoolean) {
-                    // TODO HIGH add to the review list
+                    // TODO CRITICAL add to the review list or just refresh?
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
                     toast.show();
@@ -130,11 +130,6 @@ public class AddBookReviewFragment extends Fragment {
             }
         };
         requestAddReviewAsyncTask.execute();
-    }
-
-    private void requestRemoveReview() {
-        // TODO CRITICAL progress bar
-
     }
 
 }

@@ -66,6 +66,7 @@ public class BookDetailsFragment extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.fragment_book_details, container, false);
 
+        // create more options popup
         ImageButton moreOptionsImageButton = fragmentView.findViewById(R.id.fragment_book_details_image_button_more_options);
         moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +78,7 @@ public class BookDetailsFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
                         switch (id) {
-                            case R.id.menu_book_details_delete: {
+                            case R.id.menu_book_details_book_delete: {
                                 createDeleteBookConfirmationDialog();
                             } break;
                         }

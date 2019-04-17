@@ -2,7 +2,12 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -10,21 +15,31 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.ReviewListAdapter;
 import com.example.israel.build_week_1_bookr.model.Book;
+import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookReviewsAsyncTask;
+import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveReviewAsyncTask;
+
+import org.json.JSONObject;
 
 public class BookReviewsFragment extends Fragment {
+
+    private static final int REQUEST_CONFIRM_DELETE_REVIEW = 0;
 
     private static final String ARG_BOOK = "book";
 
     private View fragmentView;
     private Book book;
     private RequestBookReviewsAsyncTask requestBookReviewsAsyncTask;
+    private RequestRemoveReviewAsyncTask requestRemoveReviewAsyncTask;
     private ReviewListAdapter reviewListAdapter;
 
     public static BookReviewsFragment newInstance(Book book) {
@@ -68,6 +83,11 @@ public class BookReviewsFragment extends Fragment {
         if (requestBookReviewsAsyncTask != null) {
             requestBookReviewsAsyncTask.cancel(false);
             requestBookReviewsAsyncTask = null;
+        }
+
+        if (requestRemoveReviewAsyncTask != null) {
+            requestRemoveReviewAsyncTask.cancel(false);
+            requestRemoveReviewAsyncTask = null;
         }
 
         super.onDetach();
@@ -117,6 +137,100 @@ public class BookReviewsFragment extends Fragment {
         transaction.add(R.id.activity_book_list_frame_layout, addBookReviewFragment); // refreshes the login fragment
         transaction.addToBackStack(null); // remove this fragment on back press
         transaction.commit();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void requestRemoveReview(int reviewId) {
+        // TODO CRITICAL progress bar
+
+        if (requestRemoveReviewAsyncTask != null) {
+            return;
+        }
+
+        requestRemoveReviewAsyncTask = new RequestRemoveReviewAsyncTask(reviewId) {
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                super.onPostExecute(jsonObject);
+
+                if (isCancelled()) {
+                    return;
+                }
+
+                requestRemoveReviewAsyncTask = null;
+
+                if (jsonObject != null) {
+                    // TODO CRITICAL remove from list or refresh?
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_success), Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_failed), Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        };
+        requestRemoveReviewAsyncTask.execute();
+
+    }
+
+    public void createReviewPopupMenu(View v, final Review review) {
+        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+        popupMenu.getMenuInflater().inflate(R.menu.fragment_book_reviews_review_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.menu_book_reviews_review_delete: {
+                        createRemoveReviewConfirmationDialogFragment(review.getId());
+                    } break;
+                }
+
+                return true;
+            }
+        });
+        popupMenu.show();
+    }
+
+    private void createRemoveReviewConfirmationDialogFragment(int reviewId) {
+        RemoveReviewConfirmationDialogFragment removeReviewConfirmationDialogFragment = new RemoveReviewConfirmationDialogFragment();
+        removeReviewConfirmationDialogFragment.setTargetFragment(this, REQUEST_CONFIRM_DELETE_REVIEW);
+        Bundle argsBundle = new Bundle();
+        argsBundle.putInt(RemoveReviewConfirmationDialogFragment.ARG_REVIEW_ID, reviewId);
+        removeReviewConfirmationDialogFragment.setArguments(argsBundle);
+        removeReviewConfirmationDialogFragment.show(getFragmentManager(), null);
+    }
+
+    public static class RemoveReviewConfirmationDialogFragment extends DialogFragment {
+
+        public static final String ARG_REVIEW_ID = "review_id";
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+            final int reviewId = getArguments().getInt(ARG_REVIEW_ID);
+            final BookReviewsFragment bookReviewsFragment = (BookReviewsFragment)getTargetFragment();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            // TODO LOW make this text red
+            builder.setMessage(bookReviewsFragment.getString(R.string.remove_review_confirmation_message));
+            builder.setPositiveButton(bookReviewsFragment.getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    bookReviewsFragment.requestRemoveReview(reviewId);
+                }
+            });
+
+            builder.setNegativeButton(bookReviewsFragment.getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            return builder.create();
+        }
     }
 
 }

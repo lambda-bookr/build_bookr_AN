@@ -71,20 +71,12 @@ public class AddBookFragment extends Fragment {
         super.onDetach();
     }
 
-    private void createConfirmationDialog() {
-        AddBookConfirmationDialogFragment addBookConfirmationDialogFragment = new AddBookConfirmationDialogFragment();
-        addBookConfirmationDialogFragment.setTargetFragment(this, REQUEST_CONFIRM_ADD_BOOK);
-        addBookConfirmationDialogFragment.show(getFragmentManager(), null);
-
-    }
-
     @SuppressLint("StaticFieldLeak")
     private void requestAddBook() {
         if (requestAddBookAsyncTask != null) {
             return;
         }
 
-        // TODO warning this field cannot be empty, except description
         EditText titleEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_title);
         String titleStr = titleEditText.getText().toString();
         if (titleStr.length() == 0) {
@@ -149,6 +141,13 @@ public class AddBookFragment extends Fragment {
             }
         };
         requestAddBookAsyncTask.execute();
+    }
+
+    private void createConfirmationDialog() {
+        AddBookConfirmationDialogFragment addBookConfirmationDialogFragment = new AddBookConfirmationDialogFragment();
+        addBookConfirmationDialogFragment.setTargetFragment(this, REQUEST_CONFIRM_ADD_BOOK);
+        addBookConfirmationDialogFragment.show(getFragmentManager(), null);
+
     }
 
     public static class AddBookConfirmationDialogFragment extends DialogFragment {
