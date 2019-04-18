@@ -3,6 +3,7 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -37,6 +38,7 @@ public class BookListFragment extends Fragment {
     private BookListAdapter bookListAdapter;
     private RequestBookListAsyncTask requestBookListAsyncTask;
     private SwipeRefreshLayout bookListSwipeRefreshLayout;
+    private DownloadBookImagesAsyncTask downloadBookImagesAsyncTask;
 
     public static BookListFragment newInstance() {
 
@@ -80,6 +82,16 @@ public class BookListFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onDetach() {
+        // when we log out this fragment can be detached
+        cancelDownloadBookImages();
+        cancelRequestBookList();
+
+        super.onDetach();
+
+    }
+
     private void setupBookListRecyclerView() {
         bookListRecyclerView = fragmentView.findViewById(R.id.fragment_book_list_recycler_view_book_list);
         // @NOTE: do not set recycler view to GONE
@@ -100,6 +112,7 @@ public class BookListFragment extends Fragment {
             return;
         }
 
+        cancelDownloadBookImages(); // a new book list will be used
         bookListAdapter.removeAllBooks();
 
         bookListRecyclerView.setVisibility(View.INVISIBLE);
@@ -117,12 +130,20 @@ public class BookListFragment extends Fragment {
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
                 bookListAdapter.setBookList(books);
-                downloadBookListImages(new ArrayList<>(books));
+                downloadBookImagesAsyncTask = new DownloadBookImagesAsyncTask(new ArrayList<>(books));
+                downloadBookImagesAsyncTask.execute();
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
         };
         requestBookListAsyncTask.execute();
+    }
+
+    private void cancelRequestBookList() {
+        if (requestBookListAsyncTask != null) {
+            requestBookListAsyncTask.cancel(false);
+            requestBookListAsyncTask = null;
+        }
     }
 
     private void createAddBookFragment() {
@@ -137,34 +158,59 @@ public class BookListFragment extends Fragment {
         transaction.commit();
     }
 
-    /** Download the images one by one then update the corresponding view*/
-    private void downloadBookListImages(final ArrayList<Book> books) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < books.size(); ++i) {
-                    final Book book = books.get(i);
-                    final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
-                    if (getActivity() == null) {
-                        return;
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bookListAdapter.setBookImageBitmap(book, bookImageBitmap);
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
     public void addBook(Book book) {
         bookListAdapter.addBook(book);
     }
 
     public void removeBook(int bookPosition) {
         bookListAdapter.removeBook(bookPosition);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class DownloadBookImagesAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        public DownloadBookImagesAsyncTask(ArrayList<Book> books) {
+            this.books = books;
+        }
+
+        private ArrayList<Book> books;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            // Download the images one by one then update the corresponding view
+            for (int i = 0; i < books.size(); ++i) {
+                final Book book = books.get(i);
+                final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
+                if (isCancelled() || // the adapter list is now different. It will not crash but it's useless to set the images
+                        getActivity() == null) {
+                    return null;
+                }
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bookListAdapter.setBookImageBitmap(book, bookImageBitmap);
+                    }
+                });
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            downloadBookImagesAsyncTask = null;
+        }
+    }
+
+    private void cancelDownloadBookImages() {
+        if (downloadBookImagesAsyncTask != null) {
+            downloadBookImagesAsyncTask.cancel(false);
+            downloadBookImagesAsyncTask = null;
+        }
     }
 
 }
