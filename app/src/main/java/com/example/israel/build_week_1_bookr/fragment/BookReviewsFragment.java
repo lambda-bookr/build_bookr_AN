@@ -29,6 +29,8 @@ import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookReviewsAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveBookReviewAsyncTask;
 
+import java.util.ArrayList;
+
 public class BookReviewsFragment extends Fragment {
 
     private static final int REQUEST_CONFIRM_DELETE_REVIEW = 0;
@@ -134,8 +136,8 @@ public class BookReviewsFragment extends Fragment {
 
         requestBookReviewsAsyncTask = new RequestBookReviewsAsyncTask(book.getId()) {
             @Override
-            protected void onPostExecute(Result result) {
-                super.onPostExecute(result);
+            protected void onPostExecute(@NonNull ArrayList<Review> reviews) {
+                super.onPostExecute(reviews);
                 if (isCancelled()) {
                     return;
                 }
@@ -143,7 +145,7 @@ public class BookReviewsFragment extends Fragment {
                 requestBookReviewsAsyncTask = null;
                 swipeRefreshLayout.setRefreshing(false);
 
-                reviewListAdapter.setReviewList(result.reviews);
+                reviewListAdapter.setReviewList(reviews);
 
             }
         };
