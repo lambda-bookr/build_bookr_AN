@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.BookDetailsFragment"
+    android:id="@+id/fragment_add_book_constraint_layout_root">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/book_list_card_radius"
+        app:cardElevation="@dimen/book_list_card_elevation"
+        app:cardUseCompatPadding="true"
+        android:backgroundTint="#d9c9ae">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <ProgressBar
+                android:id="@+id/fragment_add_book_progress_bar_requesting_add_book"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/fragment_add_book_edit_text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_title"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_progress_bar_requesting_add_book" />
+
+            <EditText
+                android:id="@+id/fragment_add_book_edit_text_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_author"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_title" />
+
+            <EditText
+                android:id="@+id/fragment_add_book_edit_text_publisher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_publisher"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_author" />
+
+            <EditText
+                android:id="@+id/fragment_add_book_edit_text_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_price"
+                android:inputType="numberDecimal"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_publisher" />
+
+            <EditText
+                android:id="@+id/fragment_add_book_edit_text_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_description"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_price"
+                android:maxLines="5"/>
+
+            <EditText
+                android:id="@+id/fragment_add_book_edit_text_image_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_image_url"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_description" />
+
+            <Button
+                android:id="@+id/fragment_add_book_button_add_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/button_color"
+                android:text="@string/add_book"
+                android:textColor="@color/button_text_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_add_book_edit_text_image_url" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
