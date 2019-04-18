@@ -126,7 +126,7 @@ public class BookListFragment extends Fragment {
 
     private void createAddBookFragment() {
         AddBookFragment addBookFragment = AddBookFragment.newInstance();
-
+        addBookFragment.setTargetFragment(this, 0);
         addBookFragment.setEnterTransition(new Slide());
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -153,6 +153,10 @@ public class BookListFragment extends Fragment {
                 }
             }
         }).start();
+    }
+
+    public void addBook(Book book) {
+        bookListAdapter.addBook(book, null);
     }
 
     public void removeBook(int bookPosition) {

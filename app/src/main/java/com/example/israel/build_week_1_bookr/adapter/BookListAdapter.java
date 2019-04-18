@@ -1,5 +1,6 @@
 package com.example.israel.build_week_1_bookr.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.fragment.BookDetailsFragment;
 import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 import com.example.israel.build_week_1_bookr.model.Book;
+import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
 import java.util.ArrayList;
 
@@ -51,11 +54,10 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final BookListAdapter.ViewHolder viewHolder, int i) {
         final Book book = books.get(i);
-        final Bitmap bookImageBitmap = bookImageBitmaps.get(i);
 
         viewHolder.titleTextView.setText(book.getTitle());
+        viewHolder.authorTextView.setText(book.getAuthor());
         viewHolder.averageRatingRatingBar.setRating((float)book.getAverageRating());
-        viewHolder.bookImageImageView.setImageBitmap(bookImageBitmap);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +69,13 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
                 FragmentTransaction transaction = bookListFragment.getActivity().getSupportFragmentManager().beginTransaction();
                 //transaction.setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right);
-                transaction.add(bookDetailsFragmentSlotId, bookDetailsFragment); // refreshes the login fragment
+                transaction.add(bookDetailsFragmentSlotId, bookDetailsFragment);
                 transaction.addToBackStack(null); // remove this fragment on back press
                 transaction.commit();
             }
         });
 
-        if (i > lastPosition) {
+        if (i >= lastPosition) {
             Animation animation = AnimationUtils.loadAnimation(viewHolder.itemView.getContext(), android.R.anim.slide_in_left);
             viewHolder.itemView.startAnimation(animation);
             lastPosition = i;
@@ -105,6 +107,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         lastPosition -= 1;
         books.remove(i);
         bookImageBitmaps.remove(i);
+
         notifyItemRemoved(i);
     }
 
@@ -112,6 +115,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         lastPosition = 0;
         books.clear();
         bookImageBitmaps.clear();
+
         notifyDataSetChanged();
     }
 
@@ -121,13 +125,16 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
             super(itemView);
 
             titleTextView = itemView.findViewById(R.id.list_item_book_text_view_title);
+            authorTextView = itemView.findViewById(R.id.list_item_book_text_view_author);
             averageRatingRatingBar = itemView.findViewById(R.id.list_item_book_rating_bar_average_rating);
             bookImageImageView = itemView.findViewById(R.id.list_item_book_image_view_image);
         }
 
         private TextView titleTextView;
+        private TextView authorTextView;
         private RatingBar averageRatingRatingBar;
         private ImageView bookImageImageView;
+
     }
 
 }

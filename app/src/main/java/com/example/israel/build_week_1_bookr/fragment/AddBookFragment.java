@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookAsyncTask;
 
 public class AddBookFragment extends Fragment {
@@ -134,7 +135,8 @@ public class AddBookFragment extends Fragment {
 
                 switch (result.result) {
                     case Result.SUCCESS: {
-                        // TODO DEPENDS. add the book to book list manually
+                        ((BookListFragment)getTargetFragment()).addBook(new Book(result.addedBookJson));
+
                         Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
                         toast.show();
                     } break;
