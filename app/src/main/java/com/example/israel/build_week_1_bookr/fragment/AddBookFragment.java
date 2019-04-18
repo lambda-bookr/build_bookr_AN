@@ -27,6 +27,7 @@ import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookAsyncTa
 public class AddBookFragment extends Fragment {
 
     private static final int REQUEST_CONFIRM_ADD_BOOK = 0;
+    public static final String DEFAULT_IMAGE_URL = "http://lorempixel.com/640/480";
 
     private View fragmentView;
     private RequestAddBookAsyncTask requestAddBookAsyncTask;
@@ -115,12 +116,18 @@ public class AddBookFragment extends Fragment {
         EditText descriptionEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_description);
         String descriptionStr = descriptionEditText.getText().toString();
 
+        EditText imageUrlEditText = fragmentView.findViewById(R.id.fragment_add_book_edit_text_image_url);
+        String imageUrlStr = imageUrlEditText.getText().toString();
+        if (imageUrlStr.length() == 0) {
+            imageUrlStr = DEFAULT_IMAGE_URL;
+        }
+
         final ProgressBar requestingAddBookProgressBar = fragmentView.findViewById(R.id.fragment_add_book_progress_bar_requesting_add_book);
         requestingAddBookProgressBar.setVisibility(View.VISIBLE);
 
         requestAddBookAsyncTask = new RequestAddBookAsyncTask(
                 SessionTokenDAO.getUserId(getActivity()),
-                titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, "http://lorempixel.com/640/480") { // TODO proper image url
+                titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, imageUrlStr) {
             @Override
             protected void onPostExecute(Book book) {
                 super.onPostExecute(book);
