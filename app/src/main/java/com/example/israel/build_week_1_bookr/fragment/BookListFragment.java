@@ -27,7 +27,8 @@ import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncT
 
 import java.util.ArrayList;
 
-// TODO MEDIUM preserve last position when coming back from the details. Hint savedInstance
+// TODO HIGH preserve last position when coming back from the details. Hint savedInstance
+// TODO MEDIUM fragment's animation
 public class BookListFragment extends Fragment {
 
     private View fragmentView;

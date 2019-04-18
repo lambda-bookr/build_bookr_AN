@@ -154,10 +154,9 @@ public class BookReviewsFragment extends Fragment {
 
     private void createAddBookReviewFragment() {
         AddBookReviewFragment addBookReviewFragment = AddBookReviewFragment.newInstance(book.getId());
-        // TODO LOW. use this fragment as the source fragment for the transaction rather than the activity. so we can use get parent fragment on AddBookReview fragment rather than getTargetFragment
+        // TODO FUTURE USE. use this fragment as the source fragment for the transaction rather than the activity. so we can use get parent fragment on AddBookReview fragment rather than getTargetFragment
         addBookReviewFragment.setTargetFragment(this, 0);
 
-        // TODO MEDIUM animation
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.activity_book_list_frame_layout, addBookReviewFragment); // refreshes the login fragment
         transaction.addToBackStack(null); // remove this fragment on back press
@@ -235,7 +234,7 @@ public class BookReviewsFragment extends Fragment {
             final BookReviewsFragment bookReviewsFragment = (BookReviewsFragment)getTargetFragment();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // TODO LOW make this text red
+            // TODO MEDIUM make this text red
             builder.setMessage(bookReviewsFragment.getString(R.string.remove_review_confirmation_message));
             builder.setPositiveButton(bookReviewsFragment.getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override

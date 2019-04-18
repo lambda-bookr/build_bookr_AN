@@ -14,9 +14,7 @@ import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 
-// TODO HIGH refresh functionality when pulling down
-// TODO LOW custom toolbar. and header for nav layout to show user data
-// TODO MEDIUM animation
+// TODO MEDIUM custom toolbar. and header for nav layout to show user data
 public class BookListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

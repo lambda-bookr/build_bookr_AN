@@ -11,7 +11,7 @@ public class SessionTokenDAO {
     private static final String KEY_SESSION_CREATED_TIME = "session_created_time";
     private static final long TIME_MILLIS_SESSION_VALID_MAX = (24 * 3600 * 7) - 3600; // 7 days minus 1 hour
 
-    // TODO LOW this might not be the best place to put this
+    // TODO LOW this might not be the best place to put this. create user UserProfileDAO?
     private static final String KEY_USER_ID = "user_id";
 
     private static SharedPreferences getSP(Context context) {

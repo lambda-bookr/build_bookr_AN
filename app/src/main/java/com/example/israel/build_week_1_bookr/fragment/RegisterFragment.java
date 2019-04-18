@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.worker_thread.RegisterAsyncTask;
 
-// TODO MEDIUM toast
+// TODO HIGH toast
 public class RegisterFragment extends Fragment {
 
     private RegisterAsyncTask registerAsyncTask;
@@ -66,7 +67,8 @@ public class RegisterFragment extends Fragment {
     public static void createRegisterFragment(FragmentActivity fragmentActivity, int i) {
         RegisterFragment registerFragment = RegisterFragment.newInstance();
 
-        // TODO MEDIUM. animation
+        registerFragment.setEnterTransition(new Slide());
+
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         transaction.replace(i, registerFragment);
         transaction.addToBackStack(null); // remove this fragment on back press

@@ -173,7 +173,7 @@ public class BookDetailsFragment extends Fragment {
 
                 requestBookImageByUrlAsyncTask = null;
 
-                // TODO LOW. if there's no image, should we set a default image
+                // TODO MEDIUM. if there's no image, should we set a default image
                 bookImageImageView.setImageBitmap(bitmap);
 
             }
@@ -230,7 +230,7 @@ public class BookDetailsFragment extends Fragment {
             final BookDetailsFragment bookDetailsFragment = (BookDetailsFragment)getTargetFragment();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // TODO LOW make this text red
+            // TODO MEDIUM make this text red
             builder.setMessage(bookDetailsFragment.getString(R.string.delete_book_confirmation_message));
             builder.setPositiveButton(bookDetailsFragment.getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
