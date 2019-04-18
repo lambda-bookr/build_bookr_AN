@@ -16,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -259,23 +258,6 @@ public class BookrAPIDAO {
             e.printStackTrace();
         }
 
-//        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REGISTER, registerFormJson);
-//        // unknown error
-//        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
-//            return null;
-//        }
-//
-//        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // success
-//            String replyStr = (String)requestResult.resultObj;
-//
-//            try {
-//                JSONObject replyJson = new JSONObject(replyStr);
-//                return replyJson.getString(KEY_JSON_REGISTER_TOKEN);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
         return null;
     }
 
@@ -312,34 +294,6 @@ public class BookrAPIDAO {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//
-//        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + LOGIN, credentialsJson);
-//
-//        // unknown error
-//        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
-//            return null;
-//        }
-//
-//        // cannot connect to server
-//        if (requestResult.responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-//            return null;
-//        }
-//
-//        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // successful log in
-//            String replyStr = (String)requestResult.resultObj;
-//            try {
-//                JSONObject replyJson = new JSONObject(replyStr);
-//                String token = replyJson.getString(KEY_JSON_LOGIN_TOKEN);
-//                int userId = replyJson.getInt(KEY_JSON_LOGIN_USER_ID);
-//
-//                SparseArray<String> ret = new SparseArray<>();
-//                ret.put(userId, token);
-//                return ret;
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
         return null;
     }
