@@ -116,7 +116,7 @@ public class BookListFragment extends Fragment {
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
                 bookListAdapter.setBookList(result.books);
-                //populateBookListAdapter(result.books);
+                downloadBookListImages(result.books);
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
@@ -135,11 +135,14 @@ public class BookListFragment extends Fragment {
         transaction.commit();
     }
 
-    private void populateBookListAdapter(final ArrayList<Book> books) {
+    /** Download the images one by one then update the corresponding view*/
+    private void downloadBookListImages(final ArrayList<Book> books) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (final Book book : books) {
+                for (int i = 0; i < books.size(); ++i) {
+                    final Book book = books.get(i);
+                    final int bookIndex = i;
                     final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
                     if (getActivity() == null) {
                         return;
@@ -147,7 +150,7 @@ public class BookListFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            bookListAdapter.addBook(book, bookImageBitmap);
+                            bookListAdapter.setBookImageBitmap(bookIndex, bookImageBitmap);
                         }
                     });
                 }
@@ -156,7 +159,7 @@ public class BookListFragment extends Fragment {
     }
 
     public void addBook(Book book) {
-        bookListAdapter.addBook(book, null);
+        bookListAdapter.addBook(book);
     }
 
     public void removeBook(int bookPosition) {

@@ -43,7 +43,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     private int bookDetailsFragmentSlotId;
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Bitmap> bookImageBitmaps = new ArrayList<>();
-    private int lastPosition;
+    private int lastPosition = -1;
 
     @NonNull
     @Override
@@ -54,10 +54,19 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final BookListAdapter.ViewHolder viewHolder, int i) {
         final Book book = books.get(i);
+        Bitmap bookImageBitmap = bookImageBitmaps.get(i);
 
         viewHolder.titleTextView.setText(book.getTitle());
         viewHolder.authorTextView.setText(book.getAuthor());
         viewHolder.averageRatingRatingBar.setRating((float)book.getAverageRating());
+        if (bookImageBitmaps.get(i) == null) {
+            viewHolder.bookImageImageView.setVisibility(View.INVISIBLE);
+            viewHolder.requestingImageImageView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+            viewHolder.requestingImageImageView.setVisibility(View.INVISIBLE);
+            viewHolder.bookImageImageView.setImageBitmap(bookImageBitmap);
+        }
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +84,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
             }
         });
 
-        if (i >= lastPosition) {
+        if (i > lastPosition) {
             Animation animation = AnimationUtils.loadAnimation(viewHolder.itemView.getContext(), android.R.anim.slide_in_left);
             viewHolder.itemView.startAnimation(animation);
             lastPosition = i;
@@ -97,9 +106,10 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public void addBook(Book book, Bitmap bookImageBitmap) {
+    public void addBook(Book book) {
         books.add(book);
-        bookImageBitmaps.add(bookImageBitmap);
+        bookImageBitmaps.add(null);
+        // TODO request image
         notifyItemInserted(books.size() - 1);
     }
 
@@ -119,6 +129,11 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public void setBookImageBitmap(int i, Bitmap bookImageBitmap) {
+        bookImageBitmaps.set(i, bookImageBitmap);
+        notifyItemChanged(i);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
@@ -128,12 +143,14 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
             authorTextView = itemView.findViewById(R.id.list_item_book_text_view_author);
             averageRatingRatingBar = itemView.findViewById(R.id.list_item_book_rating_bar_average_rating);
             bookImageImageView = itemView.findViewById(R.id.list_item_book_image_view_image);
+            requestingImageImageView = itemView.findViewById(R.id.list_item_book_progress_bar_requesting_image);
         }
 
         private TextView titleTextView;
         private TextView authorTextView;
         private RatingBar averageRatingRatingBar;
         private ImageView bookImageImageView;
+        private ProgressBar requestingImageImageView;
 
     }
 
