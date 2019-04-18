@@ -21,7 +21,7 @@ import java.util.HashMap;
 // TODO LOW move login/register here?
 public class BookrAPIDAO {
 
-    private static String BASE_URL = "https://bookr-backend.herokuapp.com/";
+    private static final String BASE_URL = "https://bookr-backend.herokuapp.com/";
 
     private static final String BOOKS = "api/books/";
     private static final String BOOK_REVIEWS = "reviews/";

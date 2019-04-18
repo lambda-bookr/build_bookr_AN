@@ -79,13 +79,13 @@ public class BookDetailsFragment extends Fragment {
 
         // create more options popup
         ImageButton moreOptionsImageButton = fragmentView.findViewById(R.id.fragment_book_details_image_button_more_options);
-        moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
+        UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
 
-                // must be the creator to delete it
-                if (book.getUserId() == userInfo.getId()) {
+        // must be the creator to see more options
+        if (book.getUserId() == userInfo.getId()) {
+            moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     PopupMenu popupMenu = new PopupMenu(getActivity(), v);
                     popupMenu.getMenuInflater().inflate(R.menu.fragment_book_details_more_options, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -103,8 +103,10 @@ public class BookDetailsFragment extends Fragment {
                     });
                     popupMenu.show();
                 }
-            }
-        });
+            });
+        } else{
+            moreOptionsImageButton.setVisibility(View.INVISIBLE);
+        }
 
         TextView titleTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_title);
         titleTextView.setText(book.getTitle());
