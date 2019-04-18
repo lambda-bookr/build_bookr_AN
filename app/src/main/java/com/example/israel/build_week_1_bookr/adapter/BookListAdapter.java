@@ -74,10 +74,10 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
                 BookDetailsFragment bookDetailsFragment = BookDetailsFragment.newInstance(book, viewHolder.getLayoutPosition());
                 bookDetailsFragment.setTargetFragment(bookListFragment, 0);
 
-                bookDetailsFragment.setEnterTransition(new Slide());
+                //bookDetailsFragment.setEnterTransition(new Slide());
 
                 FragmentTransaction transaction = bookListFragment.getActivity().getSupportFragmentManager().beginTransaction();
-                //transaction.setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right);
+                transaction.setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right);
                 transaction.add(bookDetailsFragmentSlotId, bookDetailsFragment);
                 transaction.addToBackStack(null); // remove this fragment on back press
                 transaction.commit();
@@ -106,10 +106,23 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public void addBook(Book book) {
+    public void addBook(final Book book) {
         books.add(book);
         bookImageBitmaps.add(null);
-        // TODO request image
+
+        @SuppressLint("StaticFieldLeak")
+        RequestImageByUrlAsyncTask requestImageByUrlAsyncTask = new RequestImageByUrlAsyncTask(book.getImageUrl()) {
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+
+                // no way to cancel this
+
+                updateBookImageBitmap(book, bitmap);
+            }
+        };
+        requestImageByUrlAsyncTask.execute();
+
         notifyItemInserted(books.size() - 1);
     }
 
@@ -129,9 +142,19 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public void setBookImageBitmap(int i, Bitmap bookImageBitmap) {
-        bookImageBitmaps.set(i, bookImageBitmap);
-        notifyItemChanged(i);
+    public void setBookImageBitmap(Book book, Bitmap bookImageBitmap) {
+        updateBookImageBitmap(book, bookImageBitmap);
+    }
+
+    private void updateBookImageBitmap(Book book, Bitmap bookImageBitmap) {
+        // find the book and update its image. rather than direct index access. this is remove safe
+        for (int i = 0; i < books.size(); ++i) {
+            if (books.get(i).getId() == book.getId()) {
+                bookImageBitmaps.set(i, bookImageBitmap);
+                notifyItemChanged(i);
+                break;
+            }
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

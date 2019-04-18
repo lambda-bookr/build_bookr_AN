@@ -116,7 +116,7 @@ public class BookListFragment extends Fragment {
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
                 bookListAdapter.setBookList(result.books);
-                downloadBookListImages(result.books);
+                downloadBookListImages(new ArrayList<>(result.books));
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
@@ -127,9 +127,10 @@ public class BookListFragment extends Fragment {
     private void createAddBookFragment() {
         AddBookFragment addBookFragment = AddBookFragment.newInstance();
         addBookFragment.setTargetFragment(this, 0);
-        addBookFragment.setEnterTransition(new Slide());
+        //addBookFragment.setEnterTransition(new Slide());
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right);
         transaction.add(R.id.activity_book_list_frame_layout, addBookFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -142,7 +143,6 @@ public class BookListFragment extends Fragment {
             public void run() {
                 for (int i = 0; i < books.size(); ++i) {
                     final Book book = books.get(i);
-                    final int bookIndex = i;
                     final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
                     if (getActivity() == null) {
                         return;
@@ -150,7 +150,7 @@ public class BookListFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            bookListAdapter.setBookImageBitmap(bookIndex, bookImageBitmap);
+                            bookListAdapter.setBookImageBitmap(book, bookImageBitmap);
                         }
                     });
                 }
