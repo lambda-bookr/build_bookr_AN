@@ -56,10 +56,14 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @NonNull
-    public static ArrayList<Book> getBookList() {
+    public static ArrayList<Book> getBookList(String token) {
         ArrayList<Book> books = new ArrayList<>();
 
-        String booksJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS, "GET", null, null);
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
+        header.put("Content-Type", "application/json");
+
+        String booksJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS, "GET", null, header);
 
         if (booksJsonStr == null) {
             return books;
@@ -82,8 +86,12 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static Book2 getBook2(Book book) {
-        String book2JsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + book.getId(), "GET", null, null);
+    public static Book2 getBook2(String token, Book book) {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
+        header.put("Content-Type", "application/json");
+
+        String book2JsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + book.getId(), "GET", null, header);
         if (book2JsonStr == null) {
             return null;
         }
@@ -100,7 +108,7 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static Book addBook(int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
+    public static Book addBook(String token, int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
         JSONObject outBookJson = new JSONObject();
         try {
             outBookJson.put(KEY_JSON_ADD_BOOK_USER_ID, userId);
@@ -115,6 +123,7 @@ public class BookrAPIDAO {
         }
 
         HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
         header.put("Content-Type", "application/json");
         header.put("Accept", "application/json");
 
@@ -135,8 +144,13 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static Book deleteBook(int bookId) {
-        String bookJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + Integer.toString(bookId), "DELETE", null, null);
+    public static Book deleteBook(String token, int bookId) {
+
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
+        header.put("Content-Type", "application/json");
+
+        String bookJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + Integer.toString(bookId), "DELETE", null, header);
 
         if (bookJsonStr == null) {
             return null;
@@ -153,11 +167,15 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @NonNull
-    public static ArrayList<Review> getReviews(int bookId) {
+    public static ArrayList<Review> getReviews(String token, int bookId) {
         // TODO when pagination comes, it will start here
         ArrayList<Review> reviews = new ArrayList<>();
 
-        String reviewsJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, null);
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
+        header.put("Content-Type", "application/json");
+
+        String reviewsJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, header);
 
         if (reviewsJsonStr == null) {
             return reviews;
@@ -180,7 +198,7 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static Review addReview(int bookId, int userId, int rating, String review) {
+    public static Review addReview(String token, int bookId, int userId, int rating, String review) {
         JSONObject outReviewJson = new JSONObject();
         try {
             outReviewJson.put(KEY_JSON_ADD_REVIEW_BOOK_ID, bookId);
@@ -192,6 +210,7 @@ public class BookrAPIDAO {
         }
 
         HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
         header.put("Content-Type", "application/json");
         header.put("Accept", "application/json");
 
@@ -212,8 +231,12 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static Review removeReview(int reviewId) {
-        String reviewJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId, "DELETE", null, null);
+    public static Review removeReview(String token, int reviewId) {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
+        header.put("Content-Type", "application/json");
+
+        String reviewJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId, "DELETE", null, header);
 
         if (reviewJsonStr == null) {
             return null;

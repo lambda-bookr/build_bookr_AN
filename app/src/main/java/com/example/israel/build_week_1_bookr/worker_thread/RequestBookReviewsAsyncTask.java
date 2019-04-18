@@ -9,15 +9,17 @@ import java.util.ArrayList;
 
 public class RequestBookReviewsAsyncTask extends AsyncTask<Void, Void, ArrayList<Review>> {
 
-    public RequestBookReviewsAsyncTask(int bookId) {
+    public RequestBookReviewsAsyncTask(String token, int bookId) {
+        this.token = token;
         this.bookId = bookId;
     }
 
+    private String token;
     private int bookId;
 
     @Override
     protected ArrayList<Review> doInBackground(Void... voids) {
 
-        return BookrAPIDAO.getReviews(bookId);
+        return BookrAPIDAO.getReviews(token, bookId);
     }
 }

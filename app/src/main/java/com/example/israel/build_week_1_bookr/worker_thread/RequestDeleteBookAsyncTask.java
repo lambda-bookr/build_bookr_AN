@@ -14,16 +14,18 @@ import java.net.HttpURLConnection;
 
 public class RequestDeleteBookAsyncTask extends AsyncTask<Void, Void, Book> {
 
-    public RequestDeleteBookAsyncTask(int bookId) {
+    public RequestDeleteBookAsyncTask(String token, int bookId) {
+        this.token = token;
         this.bookId = bookId;
     }
 
+    private String token;
     private int bookId;
 
     @Override
     protected Book doInBackground(Void... voids) {
 
-    return BookrAPIDAO.deleteBook(bookId);
+    return BookrAPIDAO.deleteBook(token, bookId);
     }
 
 }

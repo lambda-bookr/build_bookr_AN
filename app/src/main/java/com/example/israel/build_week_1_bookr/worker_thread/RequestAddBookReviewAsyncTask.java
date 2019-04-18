@@ -7,13 +7,15 @@ import com.example.israel.build_week_1_bookr.model.Review;
 
 public class RequestAddBookReviewAsyncTask extends AsyncTask<Void, Void, Review> {
 
-    public RequestAddBookReviewAsyncTask(int bookId, int userId, int rating, String review) {
+    public RequestAddBookReviewAsyncTask(String token, int bookId, int userId, int rating, String review) {
+        this.token = token;
         this.bookId = bookId;
         this.userId = userId;
         this.rating = rating;
         this.review = review;
     }
 
+    private String token;
     private int bookId;
     private int userId;
     private int rating;
@@ -22,6 +24,6 @@ public class RequestAddBookReviewAsyncTask extends AsyncTask<Void, Void, Review>
     @Override
     protected Review doInBackground(Void... voids) {
 
-        return BookrAPIDAO.addReview(bookId, userId, rating, review);
+        return BookrAPIDAO.addReview(token, bookId, userId, rating, review);
     }
 }

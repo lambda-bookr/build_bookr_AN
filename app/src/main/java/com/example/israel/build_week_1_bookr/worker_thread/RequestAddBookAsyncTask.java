@@ -7,7 +7,8 @@ import com.example.israel.build_week_1_bookr.model.Book;
 
 public class RequestAddBookAsyncTask extends AsyncTask<Void, Void, Book> {
 
-    public RequestAddBookAsyncTask(int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
+    public RequestAddBookAsyncTask(String token, int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
+        this.token = token;
         this.userId = userId;
         this.title = title;
         this.author = author;
@@ -17,6 +18,7 @@ public class RequestAddBookAsyncTask extends AsyncTask<Void, Void, Book> {
         this.imageUrl = imageUrl;
     }
 
+    private String token;
     private int userId;
     private String title;
     private String author;
@@ -28,7 +30,7 @@ public class RequestAddBookAsyncTask extends AsyncTask<Void, Void, Book> {
     @Override
     protected Book doInBackground(Void... voids) {
 
-        return BookrAPIDAO.addBook(userId, title, author, publisher, price, description, imageUrl);
+        return BookrAPIDAO.addBook(token, userId, title, author, publisher, price, description, imageUrl);
     }
 
 }

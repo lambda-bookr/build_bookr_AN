@@ -102,7 +102,7 @@ public class AddBookReviewFragment extends Fragment {
         UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
         int userId = userInfo.getId();
 
-        requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(bookId, userId, ratingView.getRating(), reviewStr) {
+        requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(SessionDAO.getSessionToken(getActivity()), bookId, userId, ratingView.getRating(), reviewStr) {
 
             @Override
             protected void onPostExecute(Review review) {

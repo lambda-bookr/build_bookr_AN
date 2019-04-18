@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.ReviewListAdapter;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookReviewsAsyncTask;
@@ -134,7 +135,7 @@ public class BookReviewsFragment extends Fragment {
             return;
         }
 
-        requestBookReviewsAsyncTask = new RequestBookReviewsAsyncTask(book.getId()) {
+        requestBookReviewsAsyncTask = new RequestBookReviewsAsyncTask(SessionDAO.getSessionToken(getActivity()), book.getId()) {
             @Override
             protected void onPostExecute(@NonNull ArrayList<Review> reviews) {
                 super.onPostExecute(reviews);
@@ -169,7 +170,7 @@ public class BookReviewsFragment extends Fragment {
             return;
         }
 
-        requestRemoveBookReviewAsyncTask = new RequestRemoveBookReviewAsyncTask(removeReviewId) {
+        requestRemoveBookReviewAsyncTask = new RequestRemoveBookReviewAsyncTask(SessionDAO.getSessionToken(getActivity()), removeReviewId) {
 
             @Override
             protected void onPostExecute(Review review) {

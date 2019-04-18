@@ -129,6 +129,7 @@ public class AddBookFragment extends Fragment {
         UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
 
         requestAddBookAsyncTask = new RequestAddBookAsyncTask(
+                SessionDAO.getSessionToken(getActivity()),
                 userInfo.getId(),
                 titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, imageUrlStr) {
             @Override

@@ -10,11 +10,17 @@ import java.util.ArrayList;
 
 public class RequestBookListAsyncTask extends AsyncTask<Void, Void, ArrayList<Book>> {
 
+    public RequestBookListAsyncTask(String token) {
+        this.token = token;
+    }
+
+    private String token;
+
     @Override
     @NonNull
     protected ArrayList<Book> doInBackground(Void... voids) {
 
-        return BookrAPIDAO.getBookList();
+        return BookrAPIDAO.getBookList(token);
     }
 
 }

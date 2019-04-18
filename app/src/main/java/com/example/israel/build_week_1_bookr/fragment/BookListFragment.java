@@ -22,6 +22,7 @@ import android.widget.ScrollView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
@@ -120,7 +121,7 @@ public class BookListFragment extends Fragment {
 
         bookListRecyclerView.setVisibility(View.INVISIBLE);
 
-        requestBookListAsyncTask = new RequestBookListAsyncTask() {
+        requestBookListAsyncTask = new RequestBookListAsyncTask(SessionDAO.getSessionToken(getActivity())) {
             @Override
             protected void onPostExecute(@NonNull ArrayList<Book> books) {
                 super.onPostExecute(books);

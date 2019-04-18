@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestDeleteBookAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
@@ -194,7 +195,7 @@ public class BookDetailsFragment extends Fragment {
             return;
         }
 
-        requestDeleteBookAsyncTask = new RequestDeleteBookAsyncTask(book.getId()) {
+        requestDeleteBookAsyncTask = new RequestDeleteBookAsyncTask(SessionDAO.getSessionToken(getActivity()), book.getId()) {
             @Override
             protected void onPostExecute(Book book) {
                 super.onPostExecute(book);
