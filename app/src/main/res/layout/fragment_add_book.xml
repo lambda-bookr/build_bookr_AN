@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         app:cardCornerRadius="@dimen/book_list_card_radius"
         app:cardElevation="@dimen/book_list_card_elevation"
-        app:cardUseCompatPadding="true" >
+        app:cardUseCompatPadding="true"
+        android:backgroundTint="#d9c9ae">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

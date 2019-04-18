@@ -202,12 +202,14 @@ public class BookListFragment extends Fragment {
                 });
             }
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    downloadBookImagesThread = null;
-                }
-            });
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        downloadBookImagesThread = null;
+                    }
+                });
+            }
         }
     }
 

@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.worker_thread.RegisterAsyncTask;
 
 // TODO HIGH toast
@@ -120,16 +122,13 @@ public class RegisterFragment extends Fragment {
         final ProgressBar progressBar = fragmentView.findViewById(R.id.fragment_register_progress_bar_registering);
         progressBar.setVisibility(View.VISIBLE);
 
-        final TextView resultTextView = fragmentView.findViewById(R.id.fragment_register_text_view_result);
-        resultTextView.setVisibility(View.INVISIBLE);
-
         registerAsyncTask = new RegisterAsyncTask(usernameStr, passwordStr, firstNameStr, lastNameStr) {
             @Override
             protected void onPostExecute(Result result) {
                 super.onPostExecute(result);
                 progressBar.setVisibility(View.GONE);
 
-                if (isCancelled()) {
+                if (isCancelled() || getActivity() == null) {
                     return;
                 }
 
@@ -137,7 +136,10 @@ public class RegisterFragment extends Fragment {
 
                 switch (result.code) {
                     case Result.SUCCESS: {
-                        resultTextView.setVisibility(View.VISIBLE);
+                        Toast toast = Toast.makeText(getActivity(), getString(R.string.registration_successful), Toast.LENGTH_LONG);
+                        toast.show();
+
+                        StaticHelpers.hideKeyboard(getActivity());
                     } break;
 
                     case Result.USERNAME_TAKEN: {

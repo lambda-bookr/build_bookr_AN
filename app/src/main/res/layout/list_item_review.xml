@@ -11,7 +11,8 @@
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:cardUseCompatPadding="true"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="#d9c9ae">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
