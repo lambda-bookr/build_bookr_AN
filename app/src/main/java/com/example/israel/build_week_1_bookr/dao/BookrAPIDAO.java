@@ -135,17 +135,16 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Book deleteBook(int bookId) {
-        NetworkAdapter.Result networkResult = NetworkAdapter.httpRequestDEL(CommonStatics.DATABASE_BASE_URL + BOOKS + Integer.toString(bookId));
-        if (networkResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+        String bookJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + Integer.toString(bookId), "DELETE", null, null);
+
+        if (bookJsonStr == null) {
             return null;
         }
 
-        if (networkResult.responseCode == HttpURLConnection.HTTP_OK) {
-            try {
-                return new Book(new JSONObject((String)networkResult.resultObj));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        try {
+            return new Book(new JSONObject(bookJsonStr));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -205,26 +204,13 @@ public class BookrAPIDAO {
             e.printStackTrace();
         }
 
-//        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REVIEWS, outReviewJson);
-//        if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
-//            return null;
-//        }
-//
-//        if (result.responseCode == HttpURLConnection.HTTP_CREATED) {
-//            try {
-//                return new Review(new JSONObject((String)result.resultObj));
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
         return null;
     }
 
     @WorkerThread
     @Nullable
     public static Review removeReview(int reviewId) {
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestDEL(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId);
+        NetworkAdapter.Result result = NetworkAdapter.httpRequestDELETE(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
             return null;
         }

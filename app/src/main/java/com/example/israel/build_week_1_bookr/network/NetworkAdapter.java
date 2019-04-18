@@ -218,7 +218,7 @@ public class NetworkAdapter {
 
     @WorkerThread
     @NonNull
-    public static Result httpRequestDEL(String urlStr) {
+    public static Result httpRequestDELETE(String urlStr) {
         HttpURLConnection httpURLConnection = null;
         InputStream inputStream = null;
         Result result = new Result();
