@@ -84,7 +84,7 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Book2 getBook2(Book book) {
-        String book2JsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + book.getId());
+        String book2JsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + book.getId(), "GET", null, null);
         if (book2JsonStr == null) {
             return null;
         }
@@ -159,7 +159,6 @@ public class BookrAPIDAO {
         ArrayList<Review> reviews = new ArrayList<>();
 
         String reviewsJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, null);
-        //String reviewsJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS);
 
         if (reviewsJsonStr == null) {
             return reviews;
@@ -215,17 +214,16 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Review removeReview(int reviewId) {
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestDELETE(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId);
-        if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+        String reviewJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId, "DELETE", null, null);
+
+        if (reviewJsonStr == null) {
             return null;
         }
 
-        if (result.responseCode == HttpURLConnection.HTTP_OK) {
-            try {
-                return new Review(new JSONObject((String)result.resultObj));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        try {
+            return new Review(new JSONObject(reviewJsonStr));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return null;
