@@ -9,8 +9,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.fragment.BookReviewsFragment;
 import com.example.israel.build_week_1_bookr.model.Review;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 
 import java.util.ArrayList;
 
@@ -40,8 +42,15 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                bookReviewsFragment.createReviewPopupMenu(v, review, viewHolder.getAdapterPosition());
-                return true;
+                UserInfo userInfo = SessionDAO.getUserInfo(bookReviewsFragment.getActivity());
+
+                // must be the creator to delete it
+                if (review.getUsername().equals(userInfo.getUsername())) {
+                    bookReviewsFragment.createReviewPopupMenu(v, review, viewHolder.getAdapterPosition());
+                    return true;
+                }
+
+                return false;
             }
         });
     }
