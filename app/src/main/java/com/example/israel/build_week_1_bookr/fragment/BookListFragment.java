@@ -105,8 +105,8 @@ public class BookListFragment extends Fragment {
 
         requestBookListAsyncTask = new RequestBookListAsyncTask() {
             @Override
-            protected void onPostExecute(Result result) {
-                super.onPostExecute(result);
+            protected void onPostExecute(@NonNull ArrayList<Book> books) {
+                super.onPostExecute(books);
 
                 if (isCancelled()) {
                     return;
@@ -115,8 +115,8 @@ public class BookListFragment extends Fragment {
 
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
-                bookListAdapter.setBookList(result.books);
-                downloadBookListImages(new ArrayList<>(result.books));
+                bookListAdapter.setBookList(books);
+                downloadBookListImages(new ArrayList<>(books));
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }

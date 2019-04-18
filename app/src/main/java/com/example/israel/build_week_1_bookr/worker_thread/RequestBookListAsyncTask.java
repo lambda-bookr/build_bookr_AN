@@ -8,21 +8,13 @@ import com.example.israel.build_week_1_bookr.model.Book;
 
 import java.util.ArrayList;
 
-public class RequestBookListAsyncTask extends AsyncTask<Void, Void, RequestBookListAsyncTask.Result> {
+public class RequestBookListAsyncTask extends AsyncTask<Void, Void, ArrayList<Book>> {
 
     @Override
     @NonNull
-    protected Result doInBackground(Void... voids) {
+    protected ArrayList<Book> doInBackground(Void... voids) {
 
-        // TODO better Result
-        Result result = new Result();
-        result.books = BookrAPIDAO.getBookList();
-
-        return result;
-    }
-
-    public class Result {
-        public ArrayList<Book> books;
+        return BookrAPIDAO.getBookList();
     }
 
 }
