@@ -14,8 +14,6 @@ import java.net.HttpURLConnection;
 
 public class RequestDeleteBookAsyncTask extends AsyncTask<Void, Void, Book> {
 
-    private static final String BOOKS = "api/books/";
-
     public RequestDeleteBookAsyncTask(int bookId) {
         this.bookId = bookId;
     }

@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.model.Review;
 
-import org.json.JSONObject;
-
 public class RequestRemoveBookReviewAsyncTask extends AsyncTask<Void, Void, Review> {
 
     public RequestRemoveBookReviewAsyncTask(int reviewId) {

@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.model.Review;
-import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 
 import java.util.ArrayList;
 

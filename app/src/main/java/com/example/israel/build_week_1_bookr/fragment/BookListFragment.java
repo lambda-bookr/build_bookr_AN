@@ -166,6 +166,9 @@ public class BookListFragment extends Fragment {
         bookListAdapter.removeBook(bookPosition);
     }
 
+    // TODO MEDIUM create a Thread that will wait for a book to request an image downloaded
+    // rather than downloading every image we should only download the one that is (being viewed + n)
+
     @SuppressLint("StaticFieldLeak")
     public class DownloadBookImagesAsyncTask extends AsyncTask<Void, Void, Void> {
 

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 // TODO LOW move login/register here?
 public class BookrAPIDAO {
 
-    private static final String BASE_URL = CommonStatics.DATABASE_BASE_URL;
     private static final String BOOKS = "api/books/";
     private static final String REVIEWS = "reviews/";
     private static final String API_REVIEWS = "api/" + REVIEWS;
@@ -44,7 +43,7 @@ public class BookrAPIDAO {
     public static ArrayList<Book> getBookList() {
         ArrayList<Book> books = new ArrayList<>();
 
-        String booksJsonStr = NetworkAdapter.httpRequestGET(BASE_URL + BOOKS);
+        String booksJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS);
 
         if (booksJsonStr == null) {
             return books;
@@ -68,7 +67,7 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Book2 getBook2(Book book) {
-        String book2JsonStr = NetworkAdapter.httpRequestGET(BASE_URL + BOOKS + book.getId());
+        String book2JsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + book.getId());
         if (book2JsonStr == null) {
             return null;
         }
@@ -140,7 +139,7 @@ public class BookrAPIDAO {
     public static ArrayList<Review> getReviews(int bookId) {
         // TODO when pagination comes, it will start here
         ArrayList<Review> reviews = new ArrayList<>();
-        String reviewsJsonStr = NetworkAdapter.httpRequestGET(BASE_URL + BOOKS + bookId + "/" + REVIEWS);
+        String reviewsJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + REVIEWS);
         if (reviewsJsonStr == null) {
             return reviews;
         }
@@ -173,7 +172,7 @@ public class BookrAPIDAO {
             e.printStackTrace();
         }
 
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(BASE_URL + API_REVIEWS, outReviewJson);
+        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + API_REVIEWS, outReviewJson);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
             return null;
         }
@@ -192,7 +191,7 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Review removeReview(int reviewId) {
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestDEL(BASE_URL + API_REVIEWS + reviewId);
+        NetworkAdapter.Result result = NetworkAdapter.httpRequestDEL(CommonStatics.DATABASE_BASE_URL + API_REVIEWS + reviewId);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
             return null;
         }
