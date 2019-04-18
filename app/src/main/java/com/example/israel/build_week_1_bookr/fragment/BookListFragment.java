@@ -27,6 +27,7 @@ import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 // TODO HIGH preserve last position when coming back from the details. Hint savedInstance
 // TODO MEDIUM fragment's animation
@@ -38,7 +39,7 @@ public class BookListFragment extends Fragment {
     private BookListAdapter bookListAdapter;
     private RequestBookListAsyncTask requestBookListAsyncTask;
     private SwipeRefreshLayout bookListSwipeRefreshLayout;
-    private DownloadBookImagesAsyncTask downloadBookImagesAsyncTask;
+    private DownloadBookImagesThread downloadBookImagesThread;
 
     public static BookListFragment newInstance() {
 
@@ -130,8 +131,13 @@ public class BookListFragment extends Fragment {
                 bookListRecyclerView.setVisibility(View.VISIBLE);
 
                 bookListAdapter.setBookList(books);
-                downloadBookImagesAsyncTask = new DownloadBookImagesAsyncTask(new ArrayList<>(books));
-                downloadBookImagesAsyncTask.execute();
+
+                // start downloading the images
+//                downloadBookImagesAsyncTask = new DownloadBookImagesAsyncTask(new ArrayList<>(books));
+//                downloadBookImagesAsyncTask.execute();
+
+                downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(books));
+                downloadBookImagesThread.start();
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
@@ -169,25 +175,26 @@ public class BookListFragment extends Fragment {
     // TODO MEDIUM create a Thread that will wait for a book to request an image downloaded
     // rather than downloading every image we should only download the one that is (being viewed + n)
 
-    @SuppressLint("StaticFieldLeak")
-    public class DownloadBookImagesAsyncTask extends AsyncTask<Void, Void, Void> {
+    public class DownloadBookImagesThread extends Thread {
 
-        public DownloadBookImagesAsyncTask(ArrayList<Book> books) {
+        public DownloadBookImagesThread(ArrayList<Book> books) {
             this.books = books;
         }
 
         private ArrayList<Book> books;
+        private AtomicBoolean isCancelled = new AtomicBoolean(false);
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run() {
+            super.run();
 
             // Download the images one by one then update the corresponding view
             for (int i = 0; i < books.size(); ++i) {
                 final Book book = books.get(i);
                 final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
-                if (isCancelled() || // the adapter list is now different. It will not crash but it's useless to set the images
+                if (isCancelled.get() || // the adapter list is now different. It will not crash but it's useless to set the images
                         getActivity() == null) {
-                    return null;
+                    break;
                 }
 
                 getActivity().runOnUiThread(new Runnable() {
@@ -198,21 +205,19 @@ public class BookListFragment extends Fragment {
                 });
             }
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            downloadBookImagesAsyncTask = null;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    downloadBookImagesThread = null;
+                }
+            });
         }
     }
 
     private void cancelDownloadBookImages() {
-        if (downloadBookImagesAsyncTask != null) {
-            downloadBookImagesAsyncTask.cancel(false);
-            downloadBookImagesAsyncTask = null;
+        if (downloadBookImagesThread != null) {
+            downloadBookImagesThread.isCancelled.set(true);
+            downloadBookImagesThread = null;
         }
     }
 
