@@ -25,9 +25,6 @@ public class BookrAPIDAO {
 
     private static final String BOOKS = "api/books/";
     private static final String BOOK_REVIEWS = "reviews/";
-    private static final String REVIEWS = "api/" + BOOK_REVIEWS;
-    private static final String USERS = "api/users/";
-
     private static final String ADD_BOOK = "api/books/";
     private static final String KEY_JSON_ADD_BOOK_USER_ID = "user_id";
     private static final String KEY_JSON_ADD_BOOK_TITLE = "title";
@@ -37,16 +34,11 @@ public class BookrAPIDAO {
     private static final String KEY_JSON_ADD_BOOK_DESCRIPTION = "description";
     private static final String KEY_JSON_ADD_BOOK_IMAGE_URL = "imageUrl";
 
+    private static final String REVIEWS = "api/" + BOOK_REVIEWS;
     private static final String KEY_JSON_ADD_REVIEW_BOOK_ID = "book_id";
     private static final String KEY_JSON_ADD_REVIEW_USER_ID = "user_id";
     private static final String KEY_JSON_ADD_REVIEW_RATING = "rating";
     private static final String KEY_JSON_ADD_REVIEW_REVIEW = "review";
-
-    static private final String LOGIN = "api/auth/login/";
-    static private final String KEY_JSON_LOGIN_USERNAME = "username";
-    static private final String KEY_JSON_LOGIN_PASSWORD = "password";
-    static private final String KEY_JSON_LOGIN_TOKEN = "token";
-    static private final String KEY_JSON_LOGIN_USER_ID = "userID";
 
     static private final String REGISTER = "api/auth/register/";
     static private final String KEY_JSON_REGISTER_USERNAME = "username";
@@ -54,6 +46,14 @@ public class BookrAPIDAO {
     static private final String KEY_JSON_REGISTER_FIRST_NAME = "firstName";
     static private final String KEY_JSON_REGISTER_LAST_NAME = "lastName";
     static private final String KEY_JSON_REGISTER_TOKEN = "token";
+
+    static private final String LOGIN = "api/auth/login/";
+    static private final String KEY_JSON_LOGIN_USERNAME = "username";
+    static private final String KEY_JSON_LOGIN_PASSWORD = "password";
+    static private final String KEY_JSON_LOGIN_TOKEN = "token";
+    static private final String KEY_JSON_LOGIN_USER_ID = "userID";
+
+    private static final String USERS = "api/users/";
 
     @WorkerThread
     @NonNull
@@ -189,18 +189,34 @@ public class BookrAPIDAO {
             e.printStackTrace();
         }
 
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REVIEWS, outReviewJson);
-        if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Accept", "application/json");
+
+        String reviewJSONStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REVIEWS, "POST", outReviewJson, header);
+
+        if (reviewJSONStr == null) {
             return null;
         }
 
-        if (result.responseCode == HttpURLConnection.HTTP_CREATED) {
-            try {
-                return new Review(new JSONObject((String)result.resultObj));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        try {
+            return new Review(new JSONObject(reviewJSONStr));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+//        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REVIEWS, outReviewJson);
+//        if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+//            return null;
+//        }
+//
+//        if (result.responseCode == HttpURLConnection.HTTP_CREATED) {
+//            try {
+//                return new Review(new JSONObject((String)result.resultObj));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         return null;
     }
@@ -216,6 +232,39 @@ public class BookrAPIDAO {
         if (result.responseCode == HttpURLConnection.HTTP_OK) {
             try {
                 return new Review(new JSONObject((String)result.resultObj));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @WorkerThread
+    @Nullable
+    public static String register(String username, String password, String firstName, String lastName) {
+        JSONObject registerFormJson = new JSONObject();
+        try {
+            registerFormJson.put(KEY_JSON_REGISTER_USERNAME, username);
+            registerFormJson.put(KEY_JSON_REGISTER_PASSWORD, password);
+            registerFormJson.put(KEY_JSON_REGISTER_FIRST_NAME, firstName);
+            registerFormJson.put(KEY_JSON_REGISTER_LAST_NAME, lastName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REGISTER, registerFormJson);
+        // unknown error
+        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+            return null;
+        }
+
+        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // success
+            String replyStr = (String)requestResult.resultObj;
+
+            try {
+                JSONObject replyJson = new JSONObject(replyStr);
+                return replyJson.getString(KEY_JSON_REGISTER_TOKEN);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -288,38 +337,6 @@ public class BookrAPIDAO {
         return null;
     }
 
-    @WorkerThread
-    @Nullable
-    public static String register(String username, String password, String firstName, String lastName) {
-        JSONObject registerFormJson = new JSONObject();
-        try {
-            registerFormJson.put(KEY_JSON_REGISTER_USERNAME, username);
-            registerFormJson.put(KEY_JSON_REGISTER_PASSWORD, password);
-            registerFormJson.put(KEY_JSON_REGISTER_FIRST_NAME, firstName);
-            registerFormJson.put(KEY_JSON_REGISTER_LAST_NAME, lastName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REGISTER, registerFormJson);
-        // unknown error
-        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
-            return null;
-        }
-
-        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // success
-            String replyStr = (String)requestResult.resultObj;
-
-            try {
-                JSONObject replyJson = new JSONObject(replyStr);
-                return replyJson.getString(KEY_JSON_REGISTER_TOKEN);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return null;
-    }
 
 
 }

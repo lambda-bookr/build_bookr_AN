@@ -335,7 +335,6 @@ public class NetworkAdapter {
     @WorkerThread
     @Nullable
     public static String httpRequest(String urlString, String requestMethod, @Nullable JSONObject requestBody, @Nullable HashMap<String, String> headerProperties) {
-        String             result      = null;
         InputStream inputStream = null;
         HttpsURLConnection connection  = null;
 
@@ -367,20 +366,26 @@ public class NetworkAdapter {
             }
 
             final int responseCode = connection.getResponseCode();
-            if (responseCode == HttpsURLConnection.HTTP_OK) {
-                inputStream = connection.getInputStream();
-                if (inputStream != null) {
-                    BufferedReader reader  = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder  builder = new StringBuilder();
-
-                    String line;
-                    do {
-                        line = reader.readLine();
-                        builder.append(line);
-                    } while (line != null);
-                    result = builder.toString();
-                }
+            // 200 to 299 are all success
+            if (responseCode < HttpURLConnection.HTTP_OK || responseCode > HttpURLConnection.HTTP_MULT_CHOICE - 1) {
+                return null;
             }
+
+            inputStream = connection.getInputStream();
+            if (inputStream == null) {
+                return null;
+            }
+            BufferedReader reader  = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder  builder = new StringBuilder();
+
+            String line;
+            do {
+                line = reader.readLine();
+                builder.append(line);
+            } while (line != null);
+
+            return builder.toString(); // success
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -398,7 +403,7 @@ public class NetworkAdapter {
                 connection.disconnect();
             }
         }
-        return result;
+        return null;
     }
 
 
