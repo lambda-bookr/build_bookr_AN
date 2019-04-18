@@ -3,10 +3,7 @@ package com.example.israel.build_week_1_bookr.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +15,7 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.model.Review;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestAddReviewAsyncTask;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveReviewAsyncTask;
-
-import org.json.JSONObject;
+import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookReviewAsyncTask;
 
 public class AddBookReviewFragment extends Fragment {
 
@@ -29,7 +23,7 @@ public class AddBookReviewFragment extends Fragment {
 
     private View fragmentView;
     private int bookId;
-    private RequestAddReviewAsyncTask requestAddReviewAsyncTask;
+    private RequestAddBookReviewAsyncTask requestAddBookReviewAsyncTask;
 
     public static AddBookReviewFragment newInstance(int bookId) {
 
@@ -81,9 +75,9 @@ public class AddBookReviewFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        if (requestAddReviewAsyncTask != null) {
-            requestAddReviewAsyncTask.cancel(false);
-            requestAddReviewAsyncTask = null;
+        if (requestAddBookReviewAsyncTask != null) {
+            requestAddBookReviewAsyncTask.cancel(false);
+            requestAddBookReviewAsyncTask = null;
         }
 
         super.onDetach();
@@ -91,7 +85,7 @@ public class AddBookReviewFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestAddReview() {
-        if (requestAddReviewAsyncTask != null) {
+        if (requestAddBookReviewAsyncTask != null) {
             return;
         }
 
@@ -108,20 +102,19 @@ public class AddBookReviewFragment extends Fragment {
 
         int userId = SessionTokenDAO.getUserId(getActivity());
 
-        requestAddReviewAsyncTask = new RequestAddReviewAsyncTask(bookId, userId, (int)ratingBar.getRating(), reviewStr) {
+        requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(bookId, userId, (int)ratingBar.getRating(), reviewStr) {
 
             @Override
-            protected void onPostExecute(JSONObject jsonObject) {
-                super.onPostExecute(jsonObject);
+            protected void onPostExecute(Review review) {
+                super.onPostExecute(review);
 
                 if (isCancelled() || getActivity() == null) {
                     return;
                 }
 
-                requestAddReviewAsyncTask = null;
+                requestAddBookReviewAsyncTask = null;
 
-                if (jsonObject != null) {
-                    Review review = new Review(jsonObject);
+                if (review != null) {
                     ((BookReviewsFragment)getTargetFragment()).addReview(review);
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
@@ -136,7 +129,7 @@ public class AddBookReviewFragment extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         };
-        requestAddReviewAsyncTask.execute();
+        requestAddBookReviewAsyncTask.execute();
     }
 
 }

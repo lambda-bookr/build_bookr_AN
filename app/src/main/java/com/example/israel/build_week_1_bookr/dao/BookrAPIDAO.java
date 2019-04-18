@@ -162,7 +162,7 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static JSONObject addReview(int bookId, int userId, int rating, String review) {
+    public static Review addReview(int bookId, int userId, int rating, String review) {
         JSONObject outReviewJson = new JSONObject();
         try {
             outReviewJson.put(KEY_JSON_ADD_REVIEW_BOOK_ID, bookId);
@@ -180,7 +180,7 @@ public class BookrAPIDAO {
 
         if (result.responseCode == HttpURLConnection.HTTP_CREATED) {
             try {
-                return new JSONObject((String)result.resultObj);
+                return new Review(new JSONObject((String)result.resultObj));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
