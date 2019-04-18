@@ -48,6 +48,7 @@
                 android:paddingTop="10dp"
                 android:paddingRight="@dimen/fragment_book_details_text_horizontal_padding"
                 android:text="@string/placeholder_book_title"
+                android:textStyle="bold"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_book_details_image_button_more_options"
                 app:layout_constraintStart_toStartOf="parent"

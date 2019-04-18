@@ -118,7 +118,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
                 // no way to cancel this
 
-                updateBookImageBitmap(book, bitmap);
+                setBookImageBitmap(book, bitmap);
             }
         };
         requestImageByUrlAsyncTask.execute();
@@ -143,10 +143,6 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     }
 
     public void setBookImageBitmap(Book book, Bitmap bookImageBitmap) {
-        updateBookImageBitmap(book, bookImageBitmap);
-    }
-
-    private void updateBookImageBitmap(Book book, Bitmap bookImageBitmap) {
         // find the book and update its image. rather than direct index access. this is remove safe
         for (int i = 0; i < books.size(); ++i) {
             if (books.get(i).getId() == book.getId()) {
