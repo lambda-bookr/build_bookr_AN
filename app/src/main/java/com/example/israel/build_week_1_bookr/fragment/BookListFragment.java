@@ -26,6 +26,8 @@ import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -188,6 +190,14 @@ public class BookListFragment extends Fragment {
             // Download the images one by one then update the corresponding view
             for (int i = 0; i < books.size(); ++i) {
                 final Book book = books.get(i);
+
+                try {
+                    new URL(book.getImageUrl());
+                } catch (MalformedURLException e) {
+                    // no need to try downloading
+                    continue;
+                }
+
                 final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
                 if (isCancelled.get() || // the adapter list is now different. It will not crash but it's useless to set the images
                         getActivity() == null) {

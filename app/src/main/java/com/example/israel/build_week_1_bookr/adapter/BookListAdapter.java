@@ -2,6 +2,7 @@ package com.example.israel.build_week_1_bookr.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -30,6 +31,8 @@ import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> {
@@ -59,13 +62,22 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         viewHolder.titleTextView.setText(book.getTitle());
         viewHolder.authorTextView.setText(book.getAuthor());
         viewHolder.averageRatingRatingBar.setRating((float)book.getAverageRating());
-        if (bookImageBitmaps.get(i) == null) {
-            viewHolder.bookImageImageView.setVisibility(View.INVISIBLE);
-            viewHolder.requestingImageImageView.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+
+        try {
+            new URL(book.getImageUrl());
+            if (bookImageBitmaps.get(i) == null) {
+                // wait for image to be downloaded
+                viewHolder.bookImageImageView.setVisibility(View.INVISIBLE);
+                viewHolder.requestingImageImageView.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+                viewHolder.requestingImageImageView.setVisibility(View.INVISIBLE);
+                viewHolder.bookImageImageView.setImageBitmap(bookImageBitmap);
+            }
+        } catch (MalformedURLException e) { // invalid url
             viewHolder.requestingImageImageView.setVisibility(View.INVISIBLE);
-            viewHolder.bookImageImageView.setImageBitmap(bookImageBitmap);
+            viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+            viewHolder.bookImageImageView.setImageResource(R.drawable.ic_broken_image_white_24dp);
         }
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
