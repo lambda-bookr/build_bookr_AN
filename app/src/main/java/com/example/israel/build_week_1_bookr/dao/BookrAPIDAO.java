@@ -60,7 +60,7 @@ public class BookrAPIDAO {
     public static ArrayList<Book> getBookList() {
         ArrayList<Book> books = new ArrayList<>();
 
-        String booksJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS);
+        String booksJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS, "GET", null, null);
 
         if (booksJsonStr == null) {
             return books;
