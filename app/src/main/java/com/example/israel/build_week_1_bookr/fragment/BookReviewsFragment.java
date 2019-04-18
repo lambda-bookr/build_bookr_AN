@@ -169,8 +169,6 @@ public class BookReviewsFragment extends Fragment {
             return;
         }
 
-        // TODO CRITICAL progress bar
-
         requestRemoveBookReviewAsyncTask = new RequestRemoveBookReviewAsyncTask(removeReviewId) {
 
             @Override

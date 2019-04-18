@@ -24,16 +24,14 @@
             android:layout_height="match_parent"
             android:padding="10dp">
 
-            <RatingBar
+            <com.example.israel.build_week_1_bookr.custom_view.RatingView
                 android:id="@+id/fragment_add_book_review_rating_bar"
-                style="?android:attr/ratingBarStyleIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:isIndicator="false"
-                android:numStars="5"
-                android:progressTint="@color/rating_bar_color"
-                android:rating="5"
-                android:stepSize="1"
+                app:rating="5"
+                app:maxRating="5"
+                app:emptySymbol="@drawable/avd_star_filled_to_empty"
+                app:filledSymbol="@drawable/avd_star_empty_to_filled"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,3 +72,16 @@
     </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>
+
+<!--            <RatingBar
+                android:id="@+id/fragment_add_book_review_rating_bar"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:progressTint="@color/rating_bar_color"
+                android:rating="5"
+                android:stepSize="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />-->

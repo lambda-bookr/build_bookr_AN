@@ -133,9 +133,6 @@ public class BookListFragment extends Fragment {
                 bookListAdapter.setBookList(books);
 
                 // start downloading the images
-//                downloadBookImagesAsyncTask = new DownloadBookImagesAsyncTask(new ArrayList<>(books));
-//                downloadBookImagesAsyncTask.execute();
-
                 downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(books));
                 downloadBookImagesThread.start();
 

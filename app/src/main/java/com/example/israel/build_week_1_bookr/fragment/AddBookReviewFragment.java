@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
+import com.example.israel.build_week_1_bookr.custom_view.RatingView;
 import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
 import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookReviewAsyncTask;
@@ -89,9 +90,7 @@ public class AddBookReviewFragment extends Fragment {
             return;
         }
 
-        // TODO CRITICAL progress bar
-
-        RatingBar ratingBar = fragmentView.findViewById(R.id.fragment_add_book_review_rating_bar);
+        RatingView ratingView = fragmentView.findViewById(R.id.fragment_add_book_review_rating_bar);
         EditText reviewEditText = fragmentView.findViewById(R.id.fragment_add_book_review_edit_text);
         String reviewStr = reviewEditText.getText().toString();
         if (reviewStr.length() == 0) {
@@ -102,7 +101,7 @@ public class AddBookReviewFragment extends Fragment {
 
         int userId = SessionTokenDAO.getUserId(getActivity());
 
-        requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(bookId, userId, (int)ratingBar.getRating(), reviewStr) {
+        requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(bookId, userId, ratingView.getRating(), reviewStr) {
 
             @Override
             protected void onPostExecute(Review review) {

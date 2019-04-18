@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RatingView">
+
+        <attr name="maxRating" format="integer"/>
+        <attr name="rating" format="integer"/>
+        <attr name="emptySymbol" format="reference"/>
+        <attr name="filledSymbol" format="reference"/>
+
+    </declare-styleable>
+
+</resources>

@@ -255,7 +255,6 @@ public class BookDetailsFragment extends Fragment {
 
         bookReviewsFragment.setEnterTransition(new Slide());
 
-        // TODO HIGH add but do not refresh this fragment
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.activity_book_list_frame_layout, bookReviewsFragment);
         transaction.addToBackStack(null);

@@ -143,11 +143,16 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     }
 
     public void setBookImageBitmap(Book book, Bitmap bookImageBitmap) {
-        // find the book and update its image. rather than direct index access. this is remove safe
+        // find the book and update its image.
+        // rather than direct index access
+        // this is remove safe
         for (int i = 0; i < books.size(); ++i) {
             if (books.get(i).getId() == book.getId()) {
-                bookImageBitmaps.set(i, bookImageBitmap);
-                notifyItemChanged(i);
+                // do not update the image if it already has one
+                if (bookImageBitmaps.get(i) == null) {
+                    bookImageBitmaps.set(i, bookImageBitmap);
+                    notifyItemChanged(i);
+                }
                 break;
             }
         }
