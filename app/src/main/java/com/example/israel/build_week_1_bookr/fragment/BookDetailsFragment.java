@@ -196,8 +196,8 @@ public class BookDetailsFragment extends Fragment {
 
         requestDeleteBookAsyncTask = new RequestDeleteBookAsyncTask(book.getId()) {
             @Override
-            protected void onPostExecute(Result result) {
-                super.onPostExecute(result);
+            protected void onPostExecute(Book book) {
+                super.onPostExecute(book);
 
                 if (isCancelled() || getActivity() == null) {
                     return;
@@ -205,20 +205,16 @@ public class BookDetailsFragment extends Fragment {
 
                 requestDeleteBookAsyncTask = null;
 
-                switch (result.result) {
-                    case Result.SUCCESS: {
-                        // TODO DEPENDS. remove the book from book list manually
+                if (book != null) {
+                    // remove from the book list
+                    ((BookListFragment)getTargetFragment()).removeBook(bookListPosition);
+                    getActivity().getSupportFragmentManager().popBackStack();
 
-                        ((BookListFragment)getTargetFragment()).removeBook(bookListPosition);
-                        getActivity().getSupportFragmentManager().popBackStack();
-
-                        Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_success), Toast.LENGTH_SHORT);
-                        toast.show();
-                    } break;
-                    case Result.FAILED: {
-                        Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_failed), Toast.LENGTH_SHORT);
-                        toast.show();
-                    } break;
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_success), Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_failed), Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         };
