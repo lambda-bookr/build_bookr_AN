@@ -51,6 +51,13 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+        fragmentView.findViewById(R.id.fragment_register_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // blocker
+            }
+        });
+
         return fragmentView;
     }
 
@@ -70,7 +77,7 @@ public class RegisterFragment extends Fragment {
         registerFragment.setEnterTransition(new Slide());
 
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(i, registerFragment);
+        transaction.add(i, registerFragment);
         transaction.addToBackStack(null); // remove this fragment on back press
         transaction.commit();
     }
