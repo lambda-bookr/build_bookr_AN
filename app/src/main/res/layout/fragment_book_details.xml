@@ -13,7 +13,7 @@
         app:cardCornerRadius="@dimen/book_list_card_radius"
         app:cardElevation="@dimen/book_list_card_elevation"
         app:cardUseCompatPadding="true"
-        android:backgroundTint="@color/card_bg_color">
+        app:cardBackgroundColor="@color/card_bg_color">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

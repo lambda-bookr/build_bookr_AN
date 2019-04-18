@@ -11,4 +11,5 @@
     <color name="button_color">#FF5500</color>
     <color name="button_text_color">#FFFFFF</color>
     <color name="card_bg_color">#d9c9ae</color>
+    <color name="card_bg_color_dark">#c5b59a</color>
 </resources>
