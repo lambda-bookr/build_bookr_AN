@@ -102,31 +102,33 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Book addBook(int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
-        JSONObject jsonObject = new JSONObject();
+        JSONObject outBookJson = new JSONObject();
         try {
-            jsonObject.put(KEY_JSON_ADD_BOOK_USER_ID, userId);
-            jsonObject.put(KEY_JSON_ADD_BOOK_TITLE, title);
-            jsonObject.put(KEY_JSON_ADD_BOOK_AUTHOR, author);
-            jsonObject.put(KEY_JSON_ADD_BOOK_PUBLISHER, publisher);
-            jsonObject.put(KEY_JSON_ADD_BOOK_PRICE, price);
-            jsonObject.put(KEY_JSON_ADD_BOOK_DESCRIPTION, description);
-            jsonObject.put(KEY_JSON_ADD_BOOK_IMAGE_URL, imageUrl);
+            outBookJson.put(KEY_JSON_ADD_BOOK_USER_ID, userId);
+            outBookJson.put(KEY_JSON_ADD_BOOK_TITLE, title);
+            outBookJson.put(KEY_JSON_ADD_BOOK_AUTHOR, author);
+            outBookJson.put(KEY_JSON_ADD_BOOK_PUBLISHER, publisher);
+            outBookJson.put(KEY_JSON_ADD_BOOK_PRICE, price);
+            outBookJson.put(KEY_JSON_ADD_BOOK_DESCRIPTION, description);
+            outBookJson.put(KEY_JSON_ADD_BOOK_IMAGE_URL, imageUrl);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        NetworkAdapter.Result networkResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + ADD_BOOK, jsonObject);
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Accept", "application/json");
 
-        if (networkResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+        String bookJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + ADD_BOOK, "POST", outBookJson, header);
+
+        if (bookJsonStr == null) {
             return null;
         }
 
-        if (networkResult.responseCode == HttpURLConnection.HTTP_CREATED) {
-            try {
-                return new Book(new JSONObject((String)networkResult.resultObj));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        try {
+            return new Book(new JSONObject(bookJsonStr));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return null;
