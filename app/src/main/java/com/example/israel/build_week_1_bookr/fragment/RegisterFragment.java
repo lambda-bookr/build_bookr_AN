@@ -124,7 +124,7 @@ public class RegisterFragment extends Fragment {
 
         registerAsyncTask = new RegisterAsyncTask(usernameStr, passwordStr, firstNameStr, lastNameStr) {
             @Override
-            protected void onPostExecute(Result result) {
+            protected void onPostExecute(String result) {
                 super.onPostExecute(result);
                 progressBar.setVisibility(View.GONE);
 
@@ -134,20 +134,15 @@ public class RegisterFragment extends Fragment {
 
                 registerAsyncTask = null;
 
-                switch (result.code) {
-                    case Result.SUCCESS: {
-                        Toast toast = Toast.makeText(getActivity(), getString(R.string.registration_successful), Toast.LENGTH_LONG);
-                        toast.show();
+                if (result != null) {
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.registration_successful), Toast.LENGTH_LONG);
+                    toast.show();
 
-                        StaticHelpers.hideKeyboard(getActivity());
-                    } break;
-
-                    case Result.USERNAME_TAKEN: {
-                        usernameEditText.setError(getString(R.string.username_taken));
-                        usernameEditText.requestFocus();
-                    } break;
+                    StaticHelpers.hideKeyboard(getActivity());
+                } else {
+                    usernameEditText.setError(getString(R.string.username_taken));
+                    usernameEditText.requestFocus();
                 }
-
             }
         };
         registerAsyncTask.execute();

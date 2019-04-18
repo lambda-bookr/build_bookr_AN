@@ -48,6 +48,13 @@ public class BookrAPIDAO {
     static private final String KEY_JSON_LOGIN_TOKEN = "token";
     static private final String KEY_JSON_LOGIN_USER_ID = "userID";
 
+    static private final String REGISTER = "api/auth/register/";
+    static private final String KEY_JSON_REGISTER_USERNAME = "username";
+    static private final String KEY_JSON_REGISTER_PASSWORD = "password";
+    static private final String KEY_JSON_REGISTER_FIRST_NAME = "firstName";
+    static private final String KEY_JSON_REGISTER_LAST_NAME = "lastName";
+    static private final String KEY_JSON_REGISTER_TOKEN = "token";
+
     @WorkerThread
     @NonNull
     public static ArrayList<Book> getBookList() {
@@ -280,5 +287,39 @@ public class BookrAPIDAO {
 
         return null;
     }
+
+    @WorkerThread
+    @Nullable
+    public static String register(String username, String password, String firstName, String lastName) {
+        JSONObject registerFormJson = new JSONObject();
+        try {
+            registerFormJson.put(KEY_JSON_REGISTER_USERNAME, username);
+            registerFormJson.put(KEY_JSON_REGISTER_PASSWORD, password);
+            registerFormJson.put(KEY_JSON_REGISTER_FIRST_NAME, firstName);
+            registerFormJson.put(KEY_JSON_REGISTER_LAST_NAME, lastName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REGISTER, registerFormJson);
+        // unknown error
+        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+            return null;
+        }
+
+        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // success
+            String replyStr = (String)requestResult.resultObj;
+
+            try {
+                JSONObject replyJson = new JSONObject(replyStr);
+                return replyJson.getString(KEY_JSON_REGISTER_TOKEN);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
 
 }

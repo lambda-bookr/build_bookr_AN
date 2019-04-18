@@ -5,24 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
-import com.example.israel.build_week_1_bookr.CommonStatics;
 import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
-import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.HttpURLConnection;
-import java.util.HashMap;
 
 public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result> {
-
-    static private final String LOGIN = "api/auth/login/";
-    static private final String KEY_JSON_USERNAME = "username";
-    static private final String KEY_JSON_PASSWORD = "password";
-    static private final String KEY_JSON_TOKEN = "token";
-    static private final String KEY_JSON_USER_ID = "userID";
 
     public LoginAsyncTask(@NonNull String username, @NonNull String password) {
         this.username = username;
@@ -67,7 +53,6 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
         public static final int UNKNOWN_ERROR = 7;
         public static final int CANNOT_CONNECT_TO_SERVER = 8;
 
-        public int result;
         public String sessionToken;
         public UserInfo userInfo;
 
