@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
-import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
 
 // TODO MEDIUM toast
@@ -141,22 +141,20 @@ public class LoginFragment extends Fragment {
 
                 loggingInProgressBar.setVisibility(View.INVISIBLE);
 
-                switch (result.result) {
-                    case Result.SUCCESS: {
-                        // store session token
-                        SessionTokenDAO.setSessionToken(getActivity(), result.sessionToken);
-                        SessionTokenDAO.setUserId(getActivity(), result.userId);
+                if (result != null) {
 
-                        ActivityStarter.startBookListActivity(getActivity());
+                    // store session token
+                    SessionDAO.setSessionToken(getActivity(), result.sessionToken);
+                    SessionDAO.setUserInfo(getActivity(), result.userInfo);
 
-                        // do not come back here, use log out instead
-                        getActivity().finish();
-                    } break;
+                    ActivityStarter.startBookListActivity(getActivity());
 
-                    case Result.WRONG_PASSWORD: {
-                        passwordEditText.setError(getString(R.string.incorrect_password));
-                        passwordEditText.requestFocus();
-                    }
+                    // do not come back here, use log out instead
+                    getActivity().finish();
+
+                } else {
+                    passwordEditText.setError(getString(R.string.incorrect_password));
+                    passwordEditText.requestFocus();
                 }
             }
         };

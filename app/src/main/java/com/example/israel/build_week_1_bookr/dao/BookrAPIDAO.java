@@ -3,11 +3,13 @@ package com.example.israel.build_week_1_bookr.dao;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.util.SparseArray;
 
 import com.example.israel.build_week_1_bookr.CommonStatics;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Book2;
 import com.example.israel.build_week_1_bookr.model.Review;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 
 import org.json.JSONArray;
@@ -16,13 +18,15 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // TODO LOW move login/register here?
 public class BookrAPIDAO {
 
     private static final String BOOKS = "api/books/";
-    private static final String REVIEWS = "reviews/";
-    private static final String API_REVIEWS = "api/" + REVIEWS;
+    private static final String BOOK_REVIEWS = "reviews/";
+    private static final String REVIEWS = "api/" + BOOK_REVIEWS;
+    private static final String USERS = "api/users/";
 
     private static final String ADD_BOOK = "api/books/";
     private static final String KEY_JSON_ADD_BOOK_USER_ID = "user_id";
@@ -37,6 +41,12 @@ public class BookrAPIDAO {
     private static final String KEY_JSON_ADD_REVIEW_USER_ID = "user_id";
     private static final String KEY_JSON_ADD_REVIEW_RATING = "rating";
     private static final String KEY_JSON_ADD_REVIEW_REVIEW = "review";
+
+    static private final String LOGIN = "api/auth/login/";
+    static private final String KEY_JSON_LOGIN_USERNAME = "username";
+    static private final String KEY_JSON_LOGIN_PASSWORD = "password";
+    static private final String KEY_JSON_LOGIN_TOKEN = "token";
+    static private final String KEY_JSON_LOGIN_USER_ID = "userID";
 
     @WorkerThread
     @NonNull
@@ -139,7 +149,7 @@ public class BookrAPIDAO {
     public static ArrayList<Review> getReviews(int bookId) {
         // TODO when pagination comes, it will start here
         ArrayList<Review> reviews = new ArrayList<>();
-        String reviewsJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + REVIEWS);
+        String reviewsJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS);
         if (reviewsJsonStr == null) {
             return reviews;
         }
@@ -172,7 +182,7 @@ public class BookrAPIDAO {
             e.printStackTrace();
         }
 
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + API_REVIEWS, outReviewJson);
+        NetworkAdapter.Result result = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + REVIEWS, outReviewJson);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
             return null;
         }
@@ -191,7 +201,7 @@ public class BookrAPIDAO {
     @WorkerThread
     @Nullable
     public static Review removeReview(int reviewId) {
-        NetworkAdapter.Result result = NetworkAdapter.httpRequestDEL(CommonStatics.DATABASE_BASE_URL + API_REVIEWS + reviewId);
+        NetworkAdapter.Result result = NetworkAdapter.httpRequestDEL(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
             return null;
         }
@@ -202,6 +212,70 @@ public class BookrAPIDAO {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        return null;
+    }
+
+    @WorkerThread
+    @Nullable
+    public static SparseArray<String> login(String username, String password) {
+        JSONObject credentialsJson = new JSONObject();
+        try {
+            credentialsJson.put(KEY_JSON_LOGIN_USERNAME, username);
+            credentialsJson.put(KEY_JSON_LOGIN_PASSWORD, password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + LOGIN, credentialsJson);
+
+        // unknown error
+        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+            return null;
+        }
+
+        // cannot connect to server
+        if (requestResult.responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+            return null;
+        }
+
+        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // successful log in
+            String replyStr = (String)requestResult.resultObj;
+            try {
+                JSONObject replyJson = new JSONObject(replyStr);
+                String token = replyJson.getString(KEY_JSON_LOGIN_TOKEN);
+                int userId = replyJson.getInt(KEY_JSON_LOGIN_USER_ID);
+
+                SparseArray<String> ret = new SparseArray<>();
+                ret.put(userId, token);
+                return ret;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @WorkerThread
+    @Nullable
+    public static UserInfo getUserInfo(int userId, String token) {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", token);
+        header.put("Content-Type", "application/json");
+
+        String reply = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + USERS + userId, "GET", null, header);
+
+        if (reply == null) {
+            return null;
+        }
+
+        try {
+            return new UserInfo(new JSONObject(reply));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return null;

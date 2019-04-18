@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.custom_view.RatingView;
-import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Review;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookReviewAsyncTask;
 
 public class AddBookReviewFragment extends Fragment {
@@ -99,7 +99,8 @@ public class AddBookReviewFragment extends Fragment {
             return;
         }
 
-        int userId = SessionTokenDAO.getUserId(getActivity());
+        UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
+        int userId = userInfo.getId();
 
         requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(bookId, userId, ratingView.getRating(), reviewStr) {
 

@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
-import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 
 // TODO VERY LOW. isTablet
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     private void validateSession() {
-        if (SessionTokenDAO.isSessionValid(this)) {
+        if (SessionDAO.isSessionValid(this)) {
             // go directly to the book list activity
             ActivityStarter.startBookListActivity(MainActivity.this);
         } else {

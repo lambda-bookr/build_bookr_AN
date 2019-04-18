@@ -8,11 +8,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
-import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 
 // TODO MEDIUM custom toolbar. and header for nav layout to show user data
 public class BookListActivity extends AppCompatActivity
@@ -23,11 +26,24 @@ public class BookListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
 
-        // TODO VERY LOW. hard code this to xml
-        addBookListFragment();
+        // setup navigation view
+        UserInfo userInfo = SessionDAO.getUserInfo(this);
 
         NavigationView navigationView = findViewById(R.id.activity_book_list_nav_view);
+
+        navigationView.findViewById(R.id.book_list_nav_header_text_view_full_name);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View navigationHeader = navigationView.getHeaderView(0);
+        TextView usernameTextView = navigationHeader.findViewById(R.id.book_list_nav_header_text_view_username);
+        usernameTextView.setText(userInfo.getUsername());
+
+        TextView fullNameTextView = navigationHeader.findViewById(R.id.book_list_nav_header_text_view_full_name);
+        String fullNameStr = userInfo.getFirstName() + " " + userInfo.getLastName();
+        fullNameTextView.setText(fullNameStr);
+
+        // book list fragment
+        addBookListFragment();
 
     }
 
@@ -66,7 +82,7 @@ public class BookListActivity extends AppCompatActivity
     }
 
     private void logout() {
-        SessionTokenDAO.invalidateSession(this);
+        SessionDAO.invalidateSession(this);
         ActivityStarter.startLoginActivity(this);
 
         finish();

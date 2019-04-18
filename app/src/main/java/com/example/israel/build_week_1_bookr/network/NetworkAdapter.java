@@ -332,8 +332,10 @@ public class NetworkAdapter {
     public static final String DELETE  = "DELETE";
     public static final String TRACE   = "TRACE";
 
-    static String httpRequest(String urlString, String requestMethod, @Nullable JSONObject requestBody, @Nullable HashMap<String, String> headerProperties) {
-        String             result      = "";
+    @WorkerThread
+    @Nullable
+    public static String httpRequest(String urlString, String requestMethod, @Nullable JSONObject requestBody, @Nullable HashMap<String, String> headerProperties) {
+        String             result      = null;
         InputStream inputStream = null;
         HttpsURLConnection connection  = null;
 

@@ -20,8 +20,9 @@ import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
-import com.example.israel.build_week_1_bookr.dao.SessionTokenDAO;
+import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookAsyncTask;
 
 public class AddBookFragment extends Fragment {
@@ -125,8 +126,10 @@ public class AddBookFragment extends Fragment {
         final ProgressBar requestingAddBookProgressBar = fragmentView.findViewById(R.id.fragment_add_book_progress_bar_requesting_add_book);
         requestingAddBookProgressBar.setVisibility(View.VISIBLE);
 
+        UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
+
         requestAddBookAsyncTask = new RequestAddBookAsyncTask(
-                SessionTokenDAO.getUserId(getActivity()),
+                userInfo.getId(),
                 titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, imageUrlStr) {
             @Override
             protected void onPostExecute(Book book) {

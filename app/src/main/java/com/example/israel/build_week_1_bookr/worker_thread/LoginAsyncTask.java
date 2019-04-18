@@ -2,14 +2,19 @@ package com.example.israel.build_week_1_bookr.worker_thread;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.SparseArray;
 
 import com.example.israel.build_week_1_bookr.CommonStatics;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 
 public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result> {
 
@@ -28,48 +33,25 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
     private String password;
 
     @Override
-    @NonNull
-    protected LoginAsyncTask.Result doInBackground(Void... voids) {
+    @Nullable
+    protected Result doInBackground(Void... voids) {
+
+        SparseArray<String> userId_Token = BookrAPIDAO.login(username, password);
+        if (userId_Token == null) {
+            return null;
+        }
+
+        int userId = userId_Token.keyAt(0);
+        String token = userId_Token.valueAt(0);
+
+        UserInfo userInfo = BookrAPIDAO.getUserInfo(userId, token);
+        if (userInfo == null) {
+            return null;
+        }
 
         Result result = new Result();
-
-        JSONObject credentialsJson = new JSONObject();
-        try {
-            credentialsJson.put(KEY_JSON_USERNAME, username);
-            credentialsJson.put(KEY_JSON_PASSWORD, password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return result;
-        }
-
-        NetworkAdapter.Result requestResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + LOGIN, credentialsJson);
-        // unknown error
-        if (requestResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
-            result.result = Result.UNKNOWN_ERROR;
-            return result;
-        }
-
-        // cannot connect to server
-        if (requestResult.responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-            result.result = Result.CANNOT_CONNECT_TO_SERVER;
-            return result;
-        }
-
-        if (requestResult.responseCode == HttpURLConnection.HTTP_CREATED) { // successful log in
-            String replyStr = (String)requestResult.resultObj;
-            try {
-                JSONObject replyJson = new JSONObject(replyStr);
-                result.sessionToken = replyJson.getString(KEY_JSON_TOKEN);
-                result.userId = replyJson.getInt(KEY_JSON_USER_ID);
-                result.result = Result.SUCCESS;
-            } catch (JSONException e) {
-                e.printStackTrace();
-                result.result = Result.INVALID_SERVER_REPLY;
-            }
-        } else {
-            result.result = Result.WRONG_PASSWORD;
-        }
-
+        result.userInfo = userInfo;
+        result.sessionToken = token;
         return result;
     }
 
@@ -87,7 +69,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, LoginAsyncTask.Result>
 
         public int result;
         public String sessionToken;
-        public int userId;
+        public UserInfo userInfo;
 
     }
 
