@@ -122,8 +122,8 @@ public class AddBookFragment extends Fragment {
                 SessionTokenDAO.getUserId(getActivity()),
                 titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, "http://lorempixel.com/640/480") { // TODO proper image url
             @Override
-            protected void onPostExecute(Result result) {
-                super.onPostExecute(result);
+            protected void onPostExecute(Book book) {
+                super.onPostExecute(book);
                 requestingAddBookProgressBar.setVisibility(View.GONE);
 
                 if (isCancelled() || getActivity() == null) {
@@ -132,20 +132,15 @@ public class AddBookFragment extends Fragment {
 
                 requestAddBookAsyncTask = null;
 
-                switch (result.result) {
-                    case Result.SUCCESS: {
-                        ((BookListFragment)getTargetFragment()).addBook(new Book(result.addedBookJson));
+                if (book != null) {
+                    ((BookListFragment)getTargetFragment()).addBook(book);
 
-                        Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
-                        toast.show();
-                    } break;
-
-                    case Result.FAILED: {
-                        Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
-                        toast.show();
-                    } break;
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
+                    toast.show();
                 }
-
             }
         };
         requestAddBookAsyncTask.execute();

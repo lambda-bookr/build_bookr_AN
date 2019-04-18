@@ -25,6 +25,15 @@ public class BookrAPIDAO {
     private static final String REVIEWS = "reviews/";
     private static final String API_REVIEWS = "api/" + REVIEWS;
 
+    private static final String ADD_BOOK = "api/books/";
+    private static final String KEY_JSON_USER_ID = "user_id";
+    private static final String KEY_JSON_TITLE = "title";
+    private static final String KEY_JSON_AUTHOR = "author";
+    private static final String KEY_JSON_PUBLISHER = "publisher";
+    private static final String KEY_JSON_PRICE = "price";
+    private static final String KEY_JSON_DESCRIPTION = "description";
+    private static final String KEY_JSON_IMAGE_URL = "imageUrl";
+
     private static final String KEY_JSON_ADD_REVIEW_BOOK_ID = "book_id";
     private static final String KEY_JSON_ADD_REVIEW_USER_ID = "user_id";
     private static final String KEY_JSON_ADD_REVIEW_RATING = "rating";
@@ -69,6 +78,39 @@ public class BookrAPIDAO {
             return new Book2(book2Json);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @WorkerThread
+    @Nullable
+    public static Book addBook(int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(KEY_JSON_USER_ID, userId);
+            jsonObject.put(KEY_JSON_TITLE, title);
+            jsonObject.put(KEY_JSON_AUTHOR, author);
+            jsonObject.put(KEY_JSON_PUBLISHER, publisher);
+            jsonObject.put(KEY_JSON_PRICE, price);
+            jsonObject.put(KEY_JSON_DESCRIPTION, description);
+            jsonObject.put(KEY_JSON_IMAGE_URL, imageUrl);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        NetworkAdapter.Result networkResult = NetworkAdapter.httpRequestPOSTJson(CommonStatics.DATABASE_BASE_URL + ADD_BOOK, jsonObject);
+
+        if (networkResult.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
+            return null;
+        }
+
+        if (networkResult.responseCode == HttpURLConnection.HTTP_CREATED) {
+            try {
+                return new Book(new JSONObject((String)networkResult.resultObj));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         return null;
