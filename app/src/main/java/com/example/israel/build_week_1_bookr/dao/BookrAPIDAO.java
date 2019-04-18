@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.util.SparseArray;
 
-import com.example.israel.build_week_1_bookr.CommonStatics;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Book2;
 import com.example.israel.build_week_1_bookr.model.Review;
@@ -21,6 +20,8 @@ import java.util.HashMap;
 
 // TODO LOW move login/register here?
 public class BookrAPIDAO {
+
+    private static String BASE_URL = "https://bookr-backend.herokuapp.com/";
 
     private static final String BOOKS = "api/books/";
     private static final String BOOK_REVIEWS = "reviews/";
@@ -63,7 +64,7 @@ public class BookrAPIDAO {
         header.put("Authorization", token);
         header.put("Content-Type", "application/json");
 
-        String booksJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS, "GET", null, header);
+        String booksJsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS, "GET", null, header);
 
         if (booksJsonStr == null) {
             return books;
@@ -91,7 +92,7 @@ public class BookrAPIDAO {
         header.put("Authorization", token);
         header.put("Content-Type", "application/json");
 
-        String book2JsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + book.getId(), "GET", null, header);
+        String book2JsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS + book.getId(), "GET", null, header);
         if (book2JsonStr == null) {
             return null;
         }
@@ -127,7 +128,7 @@ public class BookrAPIDAO {
         header.put("Content-Type", "application/json");
         header.put("Accept", "application/json");
 
-        String bookJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + ADD_BOOK, "POST", outBookJson, header);
+        String bookJsonStr = NetworkAdapter.httpRequest(BASE_URL + ADD_BOOK, "POST", outBookJson, header);
 
         if (bookJsonStr == null) {
             return null;
@@ -150,7 +151,7 @@ public class BookrAPIDAO {
         header.put("Authorization", token);
         header.put("Content-Type", "application/json");
 
-        String bookJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + Integer.toString(bookId), "DELETE", null, header);
+        String bookJsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS + Integer.toString(bookId), "DELETE", null, header);
 
         if (bookJsonStr == null) {
             return null;
@@ -175,7 +176,7 @@ public class BookrAPIDAO {
         header.put("Authorization", token);
         header.put("Content-Type", "application/json");
 
-        String reviewsJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, header);
+        String reviewsJsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, header);
 
         if (reviewsJsonStr == null) {
             return reviews;
@@ -214,7 +215,7 @@ public class BookrAPIDAO {
         header.put("Content-Type", "application/json");
         header.put("Accept", "application/json");
 
-        String reviewJSONStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REVIEWS, "POST", outReviewJson, header);
+        String reviewJSONStr = NetworkAdapter.httpRequest(BASE_URL + REVIEWS, "POST", outReviewJson, header);
 
         if (reviewJSONStr == null) {
             return null;
@@ -236,7 +237,7 @@ public class BookrAPIDAO {
         header.put("Authorization", token);
         header.put("Content-Type", "application/json");
 
-        String reviewJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REVIEWS + reviewId, "DELETE", null, header);
+        String reviewJsonStr = NetworkAdapter.httpRequest(BASE_URL + REVIEWS + reviewId, "DELETE", null, header);
 
         if (reviewJsonStr == null) {
             return null;
@@ -268,7 +269,7 @@ public class BookrAPIDAO {
         header.put("Content-Type", "application/json");
         header.put("Accept", "application/json");
 
-        String replyStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + REGISTER, "POST", registerFormJson, header);
+        String replyStr = NetworkAdapter.httpRequest(BASE_URL + REGISTER, "POST", registerFormJson, header);
 
         if (replyStr == null) {
             return null;
@@ -299,7 +300,7 @@ public class BookrAPIDAO {
         header.put("Content-Type", "application/json");
         header.put("Accept", "application/json");
 
-        String replyStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + LOGIN, "POST", credentialsJson, header);
+        String replyStr = NetworkAdapter.httpRequest(BASE_URL + LOGIN, "POST", credentialsJson, header);
 
         if (replyStr == null) {
             return null;
@@ -328,7 +329,7 @@ public class BookrAPIDAO {
         header.put("Authorization", token);
         header.put("Content-Type", "application/json");
 
-        String reply = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + USERS + userId, "GET", null, header);
+        String reply = NetworkAdapter.httpRequest(BASE_URL + USERS + userId, "GET", null, header);
 
         if (reply == null) {
             return null;
