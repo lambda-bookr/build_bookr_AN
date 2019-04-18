@@ -3,19 +3,20 @@ package com.example.israel.build_week_1_bookr.worker_thread;
 import android.os.AsyncTask;
 
 import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
+import com.example.israel.build_week_1_bookr.model.Review;
 
 import org.json.JSONObject;
 
-public class RequestRemoveReviewAsyncTask extends AsyncTask<Void, Void, JSONObject> {
+public class RequestRemoveBookReviewAsyncTask extends AsyncTask<Void, Void, Review> {
 
-    public RequestRemoveReviewAsyncTask(int reviewId) {
+    public RequestRemoveBookReviewAsyncTask(int reviewId) {
         this.reviewId = reviewId;
     }
 
     private int reviewId;
 
     @Override
-    protected JSONObject doInBackground(Void... voids) {
+    protected Review doInBackground(Void... voids) {
         return BookrAPIDAO.removeReview(reviewId);
     }
 }

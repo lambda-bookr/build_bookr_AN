@@ -191,7 +191,7 @@ public class BookrAPIDAO {
 
     @WorkerThread
     @Nullable
-    public static JSONObject removeReview(int reviewId) {
+    public static Review removeReview(int reviewId) {
         NetworkAdapter.Result result = NetworkAdapter.httpRequestDEL(BASE_URL + API_REVIEWS + reviewId);
         if (result.responseCode == NetworkAdapter.Result.INVALID_RESPONSE_CODE) {
             return null;
@@ -199,7 +199,7 @@ public class BookrAPIDAO {
 
         if (result.responseCode == HttpURLConnection.HTTP_OK) {
             try {
-                return new JSONObject((String)result.resultObj);
+                return new Review(new JSONObject((String)result.resultObj));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

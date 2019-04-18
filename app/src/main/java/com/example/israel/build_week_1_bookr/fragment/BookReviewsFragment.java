@@ -27,9 +27,7 @@ import com.example.israel.build_week_1_bookr.adapter.ReviewListAdapter;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookReviewsAsyncTask;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveReviewAsyncTask;
-
-import org.json.JSONObject;
+import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveBookReviewAsyncTask;
 
 public class BookReviewsFragment extends Fragment {
 
@@ -40,7 +38,7 @@ public class BookReviewsFragment extends Fragment {
     private View fragmentView;
     private Book book;
     private RequestBookReviewsAsyncTask requestBookReviewsAsyncTask;
-    private RequestRemoveReviewAsyncTask requestRemoveReviewAsyncTask;
+    private RequestRemoveBookReviewAsyncTask requestRemoveBookReviewAsyncTask;
     private ReviewListAdapter reviewListAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int removeReviewId;
@@ -105,9 +103,9 @@ public class BookReviewsFragment extends Fragment {
             requestBookReviewsAsyncTask = null;
         }
 
-        if (requestRemoveReviewAsyncTask != null) {
-            requestRemoveReviewAsyncTask.cancel(false);
-            requestRemoveReviewAsyncTask = null;
+        if (requestRemoveBookReviewAsyncTask != null) {
+            requestRemoveBookReviewAsyncTask.cancel(false);
+            requestRemoveBookReviewAsyncTask = null;
         }
 
         super.onDetach();
@@ -166,25 +164,25 @@ public class BookReviewsFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestRemoveReview() {
-        if (requestRemoveReviewAsyncTask != null) {
+        if (requestRemoveBookReviewAsyncTask != null) {
             return;
         }
 
         // TODO CRITICAL progress bar
 
-        requestRemoveReviewAsyncTask = new RequestRemoveReviewAsyncTask(removeReviewId) {
+        requestRemoveBookReviewAsyncTask = new RequestRemoveBookReviewAsyncTask(removeReviewId) {
 
             @Override
-            protected void onPostExecute(JSONObject jsonObject) {
-                super.onPostExecute(jsonObject);
+            protected void onPostExecute(Review review) {
+                super.onPostExecute(review);
 
                 if (isCancelled() || getActivity() == null) {
                     return;
                 }
 
-                requestRemoveReviewAsyncTask = null;
+                requestRemoveBookReviewAsyncTask = null;
 
-                if (jsonObject != null) {
+                if (review != null) {
                     reviewListAdapter.removeReview(removeReviewAdapterPosition);
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_success), Toast.LENGTH_SHORT);
@@ -195,7 +193,7 @@ public class BookReviewsFragment extends Fragment {
                 }
             }
         };
-        requestRemoveReviewAsyncTask.execute();
+        requestRemoveBookReviewAsyncTask.execute();
 
     }
 
