@@ -157,7 +157,10 @@ public class BookrAPIDAO {
     public static ArrayList<Review> getReviews(int bookId) {
         // TODO when pagination comes, it will start here
         ArrayList<Review> reviews = new ArrayList<>();
-        String reviewsJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS);
+
+        String reviewsJsonStr = NetworkAdapter.httpRequest(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, null);
+        //String reviewsJsonStr = NetworkAdapter.httpRequestGET(CommonStatics.DATABASE_BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS);
+
         if (reviewsJsonStr == null) {
             return reviews;
         }
