@@ -50,5 +50,7 @@
     <string name="published_by">published by</string>
     <string name="registration_successful">Registration successful</string>
     <string name="hint_image_url">Image url(optional)</string>
+    <string name="register_header">Register</string>
+    <string name="add_book_header">Add Book</string>
 
 </resources>

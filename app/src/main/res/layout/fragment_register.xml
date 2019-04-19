@@ -24,23 +24,29 @@
                 android:id="@+id/fragment_register_progress_bar_registering"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/fragment_register_text_view_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/register_header"
+                android:textSize="30sp"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_progress_bar_registering"/>
 
             <EditText
                 android:id="@+id/fragment_register_edit_text_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_username"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_register_edit_text_password"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_register_progress_bar_registering" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_register_text_view_header" />
 
             <EditText
                 android:id="@+id/fragment_register_edit_text_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_password"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_register_edit_text_first_name"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_username" />
 
             <EditText
@@ -48,7 +54,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_first_name"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_register_edit_text_last_name"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_register_edit_text_password" />
 
             <EditText
