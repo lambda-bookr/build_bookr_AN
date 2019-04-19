@@ -54,4 +54,4 @@ As a team, we built an app that can add and share books online.
 # Try the App
 1. On your android phone.
 2. [Download](https://github.com/lambda-bookr/build_bookr_AN/blob/master/Bookr.apk)
-3. Go to your downloads folder then open it.
+3. Go to your downloads folder then open it. Allow it to install.
