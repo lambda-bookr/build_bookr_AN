@@ -1,7 +1,7 @@
 # Bookr App for Android
 Bookr is your source for all things book. It is a social platform for peer reviewed books. Users can share books rather than paying full price. Thanks to the rating and review system, it shows which books were of most use. It creates an environment where knowledge can be easily shared.
 
-<img src=http://lorempixel.com/400/200/>
+<img src=https://github.com/lambda-bookr/build_bookr_AN/blob/Israel_dela_Cruz/book_list.png>
 
 ## Bookr Android App General Features
 * Register/Login.
