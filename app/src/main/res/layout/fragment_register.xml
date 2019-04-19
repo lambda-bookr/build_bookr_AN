@@ -13,7 +13,7 @@
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:cardUseCompatPadding="true"
-        android:backgroundTint="#d9c9ae">
+        app:cardBackgroundColor="@color/card_bg_color">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

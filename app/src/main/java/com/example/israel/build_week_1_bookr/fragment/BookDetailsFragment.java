@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestDeleteBookAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
@@ -78,27 +79,34 @@ public class BookDetailsFragment extends Fragment {
 
         // create more options popup
         ImageButton moreOptionsImageButton = fragmentView.findViewById(R.id.fragment_book_details_image_button_more_options);
-        moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(getActivity(), v);
-                popupMenu.getMenuInflater().inflate(R.menu.fragment_book_details_more_options, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int id = item.getItemId();
-                        switch (id) {
-                            case R.id.menu_book_details_book_delete: {
-                                createDeleteBookConfirmationDialog();
-                            } break;
-                        }
+        UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
 
-                        return true;
-                    }
-                });
-                popupMenu.show();
-            }
-        });
+        // must be the creator to see more options
+        if (book.getUserId() == userInfo.getId()) {
+            moreOptionsImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.fragment_book_details_more_options, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int id = item.getItemId();
+                            switch (id) {
+                                case R.id.menu_book_details_book_delete: {
+                                    createDeleteBookConfirmationDialog();
+                                } break;
+                            }
+
+                            return true;
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
+        } else{
+            moreOptionsImageButton.setVisibility(View.INVISIBLE);
+        }
 
         TextView titleTextView = fragmentView.findViewById(R.id.fragment_book_details_text_view_title);
         titleTextView.setText(book.getTitle());
