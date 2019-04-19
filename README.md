@@ -52,5 +52,5 @@ As a team, we built an app that can add and share books online.
     * [Bookr API](https://github.com/lambda-bookr/build-bookr-BE)
 
 # Try the App
-1. [Download](https://github.com/lambda-bookr/build_bookr_AN/blob/master/app\build\outputs\apk\debug)
+1. [Download](https://github.com/lambda-bookr/build_bookr_AN/blob/master/Bookr.apk)
 2. Go to your downloads folder then open it.
