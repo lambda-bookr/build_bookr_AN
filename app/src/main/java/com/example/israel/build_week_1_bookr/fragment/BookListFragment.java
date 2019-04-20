@@ -22,15 +22,22 @@ import android.widget.ScrollView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 // TODO HIGH preserve last position when coming back from the details. Hint savedInstance
 // TODO MEDIUM fragment's animation
@@ -40,7 +47,7 @@ public class BookListFragment extends Fragment {
     private static final int GRID_SPAN_COUNT = 1;
     private RecyclerView bookListRecyclerView;
     private BookListAdapter bookListAdapter;
-    private RequestBookListAsyncTask requestBookListAsyncTask;
+    private Call<ArrayList<Book>> getBooksCall;
     private SwipeRefreshLayout bookListSwipeRefreshLayout;
     private DownloadBookImagesThread downloadBookImagesThread;
 
@@ -112,7 +119,7 @@ public class BookListFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestBookList() {
-        if (requestBookListAsyncTask != null) {
+        if (getBooksCall != null) {
             return;
         }
 
@@ -121,34 +128,46 @@ public class BookListFragment extends Fragment {
 
         bookListRecyclerView.setVisibility(View.INVISIBLE);
 
-        requestBookListAsyncTask = new RequestBookListAsyncTask(SessionDAO.getSessionToken(getActivity())) {
+        getBooksCall = BookrAPIDAO.apiService.getBooks(SessionDAO.getSessionToken(getActivity()));
+        getBooksCall.enqueue(new Callback<ArrayList<Book>>() {
             @Override
-            protected void onPostExecute(@NonNull ArrayList<Book> books) {
-                super.onPostExecute(books);
-
-                if (isCancelled()) {
+            public void onResponse(Call<ArrayList<Book>> call, Response<ArrayList<Book>> response) {
+                if (call.isCanceled()) {
                     return;
                 }
-                requestBookListAsyncTask = null;
 
-                bookListRecyclerView.setVisibility(View.VISIBLE);
+                getBooksCall = null;
 
-                bookListAdapter.setBookList(books);
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    bookListRecyclerView.setVisibility(View.VISIBLE);
 
-                // start downloading the images
-                downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(books));
-                downloadBookImagesThread.start();
+                    bookListAdapter.setBookList(response.body());
+
+                    // start downloading the images
+                    downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(response.body()));
+                    downloadBookImagesThread.start();
+
+                    bookListSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Book>> call, Throwable t) {
+                if (call.isCanceled()) {
+                    return;
+                }
+
+                getBooksCall = null;
 
                 bookListSwipeRefreshLayout.setRefreshing(false);
             }
-        };
-        requestBookListAsyncTask.execute();
+        });
     }
 
     private void cancelRequestBookList() {
-        if (requestBookListAsyncTask != null) {
-            requestBookListAsyncTask.cancel(false);
-            requestBookListAsyncTask = null;
+        if (getBooksCall != null) {
+            getBooksCall.cancel();
+            getBooksCall = null;
         }
     }
 

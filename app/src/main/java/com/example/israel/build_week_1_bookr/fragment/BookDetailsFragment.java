@@ -26,11 +26,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestDeleteBookAsyncTask;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookDetailsFragment extends Fragment {
 
@@ -41,7 +46,7 @@ public class BookDetailsFragment extends Fragment {
     private View fragmentView;
     private Book book;
     private RequestImageByUrlAsyncTask requestBookImageByUrlAsyncTask;
-    private RequestDeleteBookAsyncTask requestDeleteBookAsyncTask;
+    private Call<Book> deleteBookCall;
     private int bookListPosition;
 
     public static BookDetailsFragment newInstance(Book book, int bookListPosition) {
@@ -148,9 +153,9 @@ public class BookDetailsFragment extends Fragment {
             requestBookImageByUrlAsyncTask = null;
         }
 
-        if (requestDeleteBookAsyncTask != null) {
-            requestDeleteBookAsyncTask.cancel(false);
-            requestDeleteBookAsyncTask = null;
+        if (deleteBookCall != null) {
+            deleteBookCall.cancel();
+            deleteBookCall = null;
         }
 
         super.onDetach();
@@ -199,22 +204,21 @@ public class BookDetailsFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestDeleteBook() {
-        if (requestDeleteBookAsyncTask != null) {
+        if (deleteBookCall != null) {
             return;
         }
 
-        requestDeleteBookAsyncTask = new RequestDeleteBookAsyncTask(SessionDAO.getSessionToken(getActivity()), book.getId()) {
+        deleteBookCall = BookrAPIDAO.apiService.deleteBook(SessionDAO.getSessionToken(getActivity()), book.getId());
+        deleteBookCall.enqueue(new Callback<Book>() {
             @Override
-            protected void onPostExecute(Book book) {
-                super.onPostExecute(book);
-
-                if (isCancelled() || getActivity() == null) {
+            public void onResponse(Call<Book> call, Response<Book> response) {
+                if (call.isCanceled() || getActivity() == null) {
                     return;
                 }
 
-                requestDeleteBookAsyncTask = null;
+                deleteBookCall = null;
 
-                if (book != null) {
+                if (response.isSuccessful()) {
                     // remove from the book list
                     ((BookListFragment)getTargetFragment()).removeBook(bookListPosition);
                     getActivity().getSupportFragmentManager().popBackStack();
@@ -226,8 +230,19 @@ public class BookDetailsFragment extends Fragment {
                     toast.show();
                 }
             }
-        };
-        requestDeleteBookAsyncTask.execute();
+
+            @Override
+            public void onFailure(Call<Book> call, Throwable t) {
+                if (call.isCanceled() || getActivity() == null) {
+                    return;
+                }
+
+                deleteBookCall = null;
+
+                Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_failed), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
 
     }
 

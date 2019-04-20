@@ -10,6 +10,8 @@ import com.example.israel.build_week_1_bookr.model.Book2;
 import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +19,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 // TODO LOW move login/register here?
 public class BookrAPIDAO {
@@ -54,6 +71,33 @@ public class BookrAPIDAO {
     static private final String KEY_JSON_LOGIN_USER_ID = "userID";
 
     private static final String USERS = "api/users/";
+    private static final int READ_TIMEOUT = 3000;
+    private static final int CONNECT_TIMEOUT = 3000;
+
+    public interface BookrApiEndpointInterface {
+
+        @GET(BOOKS)
+        Call<ArrayList<Book>> getBooks(@Header("Authorization") String token);
+
+        @POST(BOOKS)
+        Call<Book> addBook(@Header("Authorization") String token, @Body Book book);
+
+        @DELETE(BOOKS + "{bookId}")
+        Call<Book> deleteBook(@Header("Authorization") String token, @Path("bookId") int bookId);
+    }
+
+    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
+            .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
+            .build();
+
+    private static final Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()))
+            .client(okHttpClient)
+            .build();
+
+    public static final BookrApiEndpointInterface apiService = retrofit.create(BookrApiEndpointInterface.class);
 
     @WorkerThread
     @NonNull

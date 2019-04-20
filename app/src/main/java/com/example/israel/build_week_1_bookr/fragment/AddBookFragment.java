@@ -20,10 +20,15 @@ import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookAsyncTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddBookFragment extends Fragment {
 
@@ -31,7 +36,7 @@ public class AddBookFragment extends Fragment {
     public static final String DEFAULT_IMAGE_URL = "http://lorempixel.com/640/480";
 
     private View fragmentView;
-    private RequestAddBookAsyncTask requestAddBookAsyncTask;
+    private Call<Book> addBookCall;
 
     public static AddBookFragment newInstance() {
 
@@ -72,9 +77,9 @@ public class AddBookFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        if (requestAddBookAsyncTask != null) {
-            requestAddBookAsyncTask.cancel(false);
-            requestAddBookAsyncTask = null;
+        if (addBookCall != null) {
+            addBookCall.cancel();
+            addBookCall = null;
         }
 
         super.onDetach();
@@ -82,7 +87,7 @@ public class AddBookFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestAddBook() {
-        if (requestAddBookAsyncTask != null) {
+        if (addBookCall != null) {
             return;
         }
 
@@ -128,33 +133,40 @@ public class AddBookFragment extends Fragment {
 
         UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
 
-        requestAddBookAsyncTask = new RequestAddBookAsyncTask(
-                SessionDAO.getSessionToken(getActivity()),
-                userInfo.getId(),
-                titleStr, authorStr, publisherStr, Double.parseDouble(priceStr), descriptionStr, imageUrlStr) {
-            @Override
-            protected void onPostExecute(Book book) {
-                super.onPostExecute(book);
-                requestingAddBookProgressBar.setVisibility(View.GONE);
+        Book outBook = new Book(userInfo.getId(), titleStr, authorStr, Double.parseDouble(priceStr), publisherStr, descriptionStr, imageUrlStr);
 
-                if (isCancelled() || getActivity() == null) {
+        addBookCall = BookrAPIDAO.apiService.addBook(SessionDAO.getSessionToken(getActivity()), outBook);
+        addBookCall.enqueue(new Callback<Book>() {
+            @Override
+            public void onResponse(Call<Book> call, Response<Book> response) {
+                if (call.isCanceled() || getActivity() == null) {
                     return;
                 }
 
-                requestAddBookAsyncTask = null;
+                addBookCall = null;
 
-                if (book != null) {
-                    ((BookListFragment)getTargetFragment()).addBook(book);
+                requestingAddBookProgressBar.setVisibility(View.GONE);
+
+                if (response.isSuccessful()) {
+                    ((BookListFragment)getTargetFragment()).addBook(response.body());
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
                     toast.show();
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
-                    toast.show();
                 }
             }
-        };
-        requestAddBookAsyncTask.execute();
+
+            @Override
+            public void onFailure(Call<Book> call, Throwable t) {
+                if (call.isCanceled() || getActivity() == null) {
+                    return;
+                }
+
+                addBookCall = null;
+
+                requestingAddBookProgressBar.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     private void createConfirmationDialog() {

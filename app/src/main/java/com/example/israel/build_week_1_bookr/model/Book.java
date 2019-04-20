@@ -3,8 +3,13 @@ package com.example.israel.build_week_1_bookr.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.annotation.Generated;
 
 public class Book implements Parcelable {
 
@@ -21,6 +26,16 @@ public class Book implements Parcelable {
 
     public Book() {
 
+    }
+
+    public Book(int userId, String author, String title, double price, String publisher, String description, String imageUrl) {
+        this.userId = userId;
+        this.author = author;
+        this.title = title;
+        this.price = price;
+        this.publisher = publisher;
+        this.description = description;
+        this.imageUrl = imageUrl;
     }
 
     public Book(JSONObject bookJson) {
@@ -94,14 +109,40 @@ public class Book implements Parcelable {
         averageRating = in.readDouble();
     }
 
+    @SerializedName("id")
+    @Expose(serialize = false) // don't send it, only receive it
     private int id;
+
+    @SerializedName("user_id")
+    @Expose
     private int userId;
+
+    @SerializedName("author")
+    @Expose
     private String author;
+
+    @SerializedName("title")
+    @Expose
     private String title;
+
+    @SerializedName("price")
+    @Expose
     private double price;
+
+    @SerializedName("publisher")
+    @Expose
     private String publisher;
+
+    @SerializedName("description")
+    @Expose
     private String description;
+
+    @SerializedName("imageUrl")
+    @Expose
     private String imageUrl;
+
+    @SerializedName("rating")
+    @Expose(serialize = false)
     private double averageRating;
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {
