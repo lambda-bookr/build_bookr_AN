@@ -8,9 +8,6 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 // TODO VERY LOW. isTablet
 public class MainActivity extends AppCompatActivity {
 

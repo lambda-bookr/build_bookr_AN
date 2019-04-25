@@ -1,19 +1,20 @@
 package com.example.israel.build_week_1_bookr.dao;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.util.SparseArray;
 
 import com.example.israel.build_week_1_bookr.model.Book;
-import com.example.israel.build_week_1_bookr.model.Book2;
+import com.example.israel.build_week_1_bookr.json_object.LoginInfo;
+import com.example.israel.build_week_1_bookr.json_object.LoginReply;
+import com.example.israel.build_week_1_bookr.json_object.OutReview;
+import com.example.israel.build_week_1_bookr.json_object.RegistrationInfo;
+import com.example.israel.build_week_1_bookr.json_object.RegistrationReply;
 import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
@@ -34,6 +33,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import rx.Observable;
 
 // TODO LOW move login/register here?
 public class BookrAPIDAO {
@@ -71,323 +71,69 @@ public class BookrAPIDAO {
     static private final String KEY_JSON_LOGIN_USER_ID = "userID";
 
     private static final String USERS = "api/users/";
+
     private static final int READ_TIMEOUT = 3000;
     private static final int CONNECT_TIMEOUT = 3000;
 
+    public static final BookrApiEndpointInterface apiService;
+    static {
+        //RxJava2CallAdapterFactory rxAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io());
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()))
+                //.addCallAdapterFactory(rxAdapterFactory)
+                .client(okHttpClient)
+                .build();
+        apiService = retrofit.create(BookrApiEndpointInterface.class);
+    }
+
     public interface BookrApiEndpointInterface {
 
+        @Headers({"Content-Type: application/json"})
         @GET(BOOKS)
         Call<ArrayList<Book>> getBooks(@Header("Authorization") String token);
 
+        @GET(BOOKS)
+        Observable<ArrayList<Book>> getBooksRx(@Header("Authorization") String token);
+
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
         @POST(BOOKS)
         Call<Book> addBook(@Header("Authorization") String token, @Body Book book);
 
+        @Headers({"Accept: application/json"})
         @DELETE(BOOKS + "{bookId}")
         Call<Book> deleteBook(@Header("Authorization") String token, @Path("bookId") int bookId);
+
+        @Headers({"Content-Type: application/json"})
+        @GET(BOOKS + "{bookId}/" + BOOK_REVIEWS)
+        Call<ArrayList<Review>> getReviews(@Header("Authorization") String token, @Path("bookId") int bookId);
+
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        @POST(REVIEWS)
+        Call<Review> addReview(@Header("Authorization") String token, @Body OutReview outReview);
+
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        @DELETE(REVIEWS + "{reviewId}")
+        Call<Review> deleteReview(@Header("Authorization") String token, @Path("reviewId") int reviewId);
+
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        @POST(REGISTER)
+        Call<RegistrationReply> register(@Body RegistrationInfo registrationInfo);
+
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        @POST(LOGIN)
+        Call<LoginReply> login(@Body LoginInfo loginInfo);
+
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        @GET(USERS + "{userId}")
+        Call<UserInfo> getUserInfo(@Header("Authorization") String token, @Path("userId") int userId);
+
     }
-
-    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
-            .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
-            .build();
-
-    private static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()))
-            .client(okHttpClient)
-            .build();
-
-    public static final BookrApiEndpointInterface apiService = retrofit.create(BookrApiEndpointInterface.class);
-
-    @WorkerThread
-    @NonNull
-    public static ArrayList<Book> getBookList(String token) {
-        ArrayList<Book> books = new ArrayList<>();
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-
-        String booksJsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS, "GET", null, header);
-
-        if (booksJsonStr == null) {
-            return books;
-        }
-
-        try {
-            JSONArray booksJsonArr = new JSONArray(booksJsonStr);
-            books.ensureCapacity(booksJsonArr.length());
-            for (int i = 0; i < booksJsonArr.length(); ++i) {
-                JSONObject bookJson = booksJsonArr.getJSONObject(i);
-                books.add(new Book(bookJson));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return books;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static Book2 getBook2(String token, Book book) {
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-
-        String book2JsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS + book.getId(), "GET", null, header);
-        if (book2JsonStr == null) {
-            return null;
-        }
-
-        try {
-            JSONObject book2Json = new JSONObject(book2JsonStr);
-            return new Book2(book2Json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static Book addBook(String token, int userId, String title, String author, String publisher, double price, String description, String imageUrl) {
-        JSONObject outBookJson = new JSONObject();
-        try {
-            outBookJson.put(KEY_JSON_ADD_BOOK_USER_ID, userId);
-            outBookJson.put(KEY_JSON_ADD_BOOK_TITLE, title);
-            outBookJson.put(KEY_JSON_ADD_BOOK_AUTHOR, author);
-            outBookJson.put(KEY_JSON_ADD_BOOK_PUBLISHER, publisher);
-            outBookJson.put(KEY_JSON_ADD_BOOK_PRICE, price);
-            outBookJson.put(KEY_JSON_ADD_BOOK_DESCRIPTION, description);
-            outBookJson.put(KEY_JSON_ADD_BOOK_IMAGE_URL, imageUrl);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-        header.put("Accept", "application/json");
-
-        String bookJsonStr = NetworkAdapter.httpRequest(BASE_URL + ADD_BOOK, "POST", outBookJson, header);
-
-        if (bookJsonStr == null) {
-            return null;
-        }
-
-        try {
-            return new Book(new JSONObject(bookJsonStr));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static Book deleteBook(String token, int bookId) {
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-
-        String bookJsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS + Integer.toString(bookId), "DELETE", null, header);
-
-        if (bookJsonStr == null) {
-            return null;
-        }
-
-        try {
-            return new Book(new JSONObject(bookJsonStr));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @NonNull
-    public static ArrayList<Review> getReviews(String token, int bookId) {
-        // TODO when pagination comes, it will start here
-        ArrayList<Review> reviews = new ArrayList<>();
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-
-        String reviewsJsonStr = NetworkAdapter.httpRequest(BASE_URL + BOOKS + bookId + "/" + BOOK_REVIEWS, "GET", null, header);
-
-        if (reviewsJsonStr == null) {
-            return reviews;
-        }
-
-        try {
-            JSONArray reviewsJsonArr = new JSONArray(reviewsJsonStr);
-            reviews.ensureCapacity(reviewsJsonArr.length());
-            for (int i = 0; i < reviewsJsonArr.length(); ++i) {
-                JSONObject reviewJson = reviewsJsonArr.getJSONObject(i);
-                reviews.add(new Review(reviewJson));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return reviews;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static Review addReview(String token, int bookId, int userId, int rating, String review) {
-        JSONObject outReviewJson = new JSONObject();
-        try {
-            outReviewJson.put(KEY_JSON_ADD_REVIEW_BOOK_ID, bookId);
-            outReviewJson.put(KEY_JSON_ADD_REVIEW_USER_ID, userId);
-            outReviewJson.put(KEY_JSON_ADD_REVIEW_RATING, rating);
-            outReviewJson.put(KEY_JSON_ADD_REVIEW_REVIEW, review);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-        header.put("Accept", "application/json");
-
-        String reviewJSONStr = NetworkAdapter.httpRequest(BASE_URL + REVIEWS, "POST", outReviewJson, header);
-
-        if (reviewJSONStr == null) {
-            return null;
-        }
-
-        try {
-            return new Review(new JSONObject(reviewJSONStr));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static Review removeReview(String token, int reviewId) {
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-
-        String reviewJsonStr = NetworkAdapter.httpRequest(BASE_URL + REVIEWS + reviewId, "DELETE", null, header);
-
-        if (reviewJsonStr == null) {
-            return null;
-        }
-
-        try {
-            return new Review(new JSONObject(reviewJsonStr));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static String register(String username, String password, String firstName, String lastName) {
-        JSONObject registerFormJson = new JSONObject();
-        try {
-            registerFormJson.put(KEY_JSON_REGISTER_USERNAME, username);
-            registerFormJson.put(KEY_JSON_REGISTER_PASSWORD, password);
-            registerFormJson.put(KEY_JSON_REGISTER_FIRST_NAME, firstName);
-            registerFormJson.put(KEY_JSON_REGISTER_LAST_NAME, lastName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
-        header.put("Accept", "application/json");
-
-        String replyStr = NetworkAdapter.httpRequest(BASE_URL + REGISTER, "POST", registerFormJson, header);
-
-        if (replyStr == null) {
-            return null;
-        }
-
-        try {
-            JSONObject replyJson = new JSONObject(replyStr);
-            return replyJson.getString(KEY_JSON_REGISTER_TOKEN);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static SparseArray<String> login(String username, String password) {
-        JSONObject credentialsJson = new JSONObject();
-        try {
-            credentialsJson.put(KEY_JSON_LOGIN_USERNAME, username);
-            credentialsJson.put(KEY_JSON_LOGIN_PASSWORD, password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
-        header.put("Accept", "application/json");
-
-        String replyStr = NetworkAdapter.httpRequest(BASE_URL + LOGIN, "POST", credentialsJson, header);
-
-        if (replyStr == null) {
-            return null;
-        }
-
-        try {
-            JSONObject replyJson = new JSONObject(replyStr);
-            String token = replyJson.getString(KEY_JSON_LOGIN_TOKEN);
-            int userId = replyJson.getInt(KEY_JSON_LOGIN_USER_ID);
-
-            SparseArray<String> ret = new SparseArray<>();
-            ret.put(userId, token);
-            return ret;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    public static UserInfo getUserInfo(int userId, String token) {
-        HashMap<String, String> header = new HashMap<>();
-        header.put("Authorization", token);
-        header.put("Content-Type", "application/json");
-
-        String reply = NetworkAdapter.httpRequest(BASE_URL + USERS + userId, "GET", null, header);
-
-        if (reply == null) {
-            return null;
-        }
-
-        try {
-            return new UserInfo(new JSONObject(reply));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-
 
 }

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.example.israel.build_week_1_bookr.model.UserInfo;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,19 +60,18 @@ public class SessionDAO {
     public static void setUserInfo(Context context, UserInfo userInfo) {
         SharedPreferences sp = getSP(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(KEY_USER_INFO, userInfo.toString());
+
+        Gson gson = new Gson();
+        editor.putString(KEY_USER_INFO, gson.toJson(userInfo));
         editor.apply();
     }
 
     @MainThread
+    @Nullable
     public static UserInfo getUserInfo(Context context) {
-        try {
-            return new UserInfo(new JSONObject(getSP(context).getString(KEY_USER_INFO, "")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String userInfoJsonStr = getSP(context).getString(KEY_USER_INFO, null);
+        Gson gson = new Gson();
+        return gson.fromJson(userInfoJsonStr, UserInfo.class);
     }
 
 }

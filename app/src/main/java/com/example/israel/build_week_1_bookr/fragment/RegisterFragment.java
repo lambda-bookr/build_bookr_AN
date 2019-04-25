@@ -12,18 +12,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
-import com.example.israel.build_week_1_bookr.worker_thread.RegisterAsyncTask;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
+import com.example.israel.build_week_1_bookr.json_object.RegistrationInfo;
+import com.example.israel.build_week_1_bookr.json_object.RegistrationReply;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 // TODO HIGH toast
 public class RegisterFragment extends Fragment {
 
-    private RegisterAsyncTask registerAsyncTask;
+    private Call<RegistrationReply> registerCall;
     private View fragmentView;
+    private EditText usernameEditText;
+    private ProgressBar registeringProgressBar;
 
     public static RegisterFragment newInstance() {
 
@@ -46,6 +53,9 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_register, container, false);
 
+        usernameEditText = fragmentView.findViewById(R.id.fragment_register_edit_text_username);
+        registeringProgressBar = fragmentView.findViewById(R.id.fragment_register_progress_bar_registering);
+
         fragmentView.findViewById(R.id.fragment_register_button_confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,9 +75,9 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        if (registerAsyncTask != null) {
-            registerAsyncTask.cancel(false);
-            registerAsyncTask = null;
+        if (registerCall != null) {
+            registerCall.cancel();
+            registerCall = null;
         }
 
         super.onDetach();
@@ -86,11 +96,10 @@ public class RegisterFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void register() {
-        if (registerAsyncTask != null) {
+        if (registerCall != null) {
             return;
         }
 
-        final EditText usernameEditText = fragmentView.findViewById(R.id.fragment_register_edit_text_username);
         String usernameStr = usernameEditText.getText().toString();
         if (usernameStr.length() == 0) {
             usernameEditText.setError(getString(R.string.this_field_cannot_be_empty));
@@ -119,33 +128,42 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        final ProgressBar progressBar = fragmentView.findViewById(R.id.fragment_register_progress_bar_registering);
-        progressBar.setVisibility(View.VISIBLE);
+        registeringProgressBar.setVisibility(View.VISIBLE);
 
-        registerAsyncTask = new RegisterAsyncTask(usernameStr, passwordStr, firstNameStr, lastNameStr) {
+        RegistrationInfo registrationInfo = new RegistrationInfo(usernameStr, passwordStr, firstNameStr, lastNameStr);
+
+        registerCall = BookrAPIDAO.apiService.register(registrationInfo);
+        registerCall.enqueue(new Callback<RegistrationReply>() {
             @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-                progressBar.setVisibility(View.GONE);
-
-                if (isCancelled() || getActivity() == null) {
-                    return;
-                }
-
-                registerAsyncTask = null;
-
-                if (result != null) {
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.registration_successful), Toast.LENGTH_LONG);
-                    toast.show();
-
-                    StaticHelpers.hideKeyboard(getActivity());
-                } else {
-                    usernameEditText.setError(getString(R.string.username_taken));
-                    usernameEditText.requestFocus();
-                }
+            public void onResponse(Call<RegistrationReply> call, Response<RegistrationReply> response) {
+                onRegisterCallFinished(false, response);
             }
-        };
-        registerAsyncTask.execute();
+
+            @Override
+            public void onFailure(Call<RegistrationReply> call, Throwable t) {
+                onRegisterCallFinished(true, null);
+            }
+        });
+
+    }
+
+    private void onRegisterCallFinished(boolean isFailure, Response<RegistrationReply> response) {
+        if (registerCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        registeringProgressBar.setVisibility(View.GONE);
+        registerCall = null;
+
+        if (isFailure || !response.isSuccessful()) {
+            usernameEditText.setError(getString(R.string.username_taken));
+            usernameEditText.requestFocus();
+        } else {
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.registration_successful), Toast.LENGTH_LONG);
+            toast.show();
+
+            StaticHelpers.hideKeyboard(getActivity());
+        }
     }
 
 }

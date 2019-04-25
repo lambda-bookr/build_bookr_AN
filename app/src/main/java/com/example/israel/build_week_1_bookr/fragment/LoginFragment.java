@@ -13,12 +13,20 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.controller.ActivityStarter;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
-import com.example.israel.build_week_1_bookr.worker_thread.LoginAsyncTask;
+import com.example.israel.build_week_1_bookr.json_object.LoginInfo;
+import com.example.israel.build_week_1_bookr.json_object.LoginReply;
+import com.example.israel.build_week_1_bookr.model.UserInfo;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 // TODO MEDIUM toast
 public class LoginFragment extends Fragment {
@@ -26,7 +34,9 @@ public class LoginFragment extends Fragment {
     private View fragmentView;
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private LoginAsyncTask loginAsyncTask;
+    private Call<LoginReply> loginCall;
+    private Call<UserInfo> getUserInfoCall;
+    private ProgressBar loggingInProgressBar;
 
     public static LoginFragment newInstance() {
 
@@ -94,9 +104,9 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        if (loginAsyncTask != null) {
-            loginAsyncTask.cancel(false);
-            loginAsyncTask = null;
+        if (loginCall != null) {
+            loginCall.cancel();
+            loginCall = null;
         }
 
         super.onDetach();
@@ -106,7 +116,7 @@ public class LoginFragment extends Fragment {
     private void login() {
         StaticHelpers.hideKeyboard(getActivity());
 
-        if (loginAsyncTask != null) {
+        if (loginCall != null) {
             return;
         }
 
@@ -124,41 +134,77 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        final ProgressBar loggingInProgressBar = fragmentView.findViewById(R.id.fragment_login_progress_bar_logging_in);
+        loggingInProgressBar = fragmentView.findViewById(R.id.fragment_login_progress_bar_logging_in);
         loggingInProgressBar.setVisibility(View.VISIBLE);
 
-        // try logging in with username and password
-        loginAsyncTask = new LoginAsyncTask(usernameStr, passwordStr) {
+        LoginInfo loginInfo = new LoginInfo(usernameStr, passwordStr);
+
+        loginCall = BookrAPIDAO.apiService.login(loginInfo);
+        loginCall.enqueue(new Callback<LoginReply>() {
+            @Override
+            public void onResponse(Call<LoginReply> call, Response<LoginReply> response) {
+                onLoginCallFinished(false, response);
+            }
 
             @Override
-            protected void onPostExecute(Result result) {
-                super.onPostExecute(result);
-
-                if (isCancelled() || getActivity() == null) {
-                    return;
-                }
-                loginAsyncTask = null;
-
-                loggingInProgressBar.setVisibility(View.INVISIBLE);
-
-                if (result != null) {
-
-                    // store session token
-                    SessionDAO.setSessionToken(getActivity(), result.sessionToken);
-                    SessionDAO.setUserInfo(getActivity(), result.userInfo);
-
-                    ActivityStarter.startBookListActivity(getActivity());
-
-                    // do not come back here, use log out instead
-                    getActivity().finish();
-
-                } else {
-                    passwordEditText.setError(getString(R.string.incorrect_password));
-                    passwordEditText.requestFocus();
-                }
+            public void onFailure(Call<LoginReply> call, Throwable t) {
+                onLoginCallFinished(true, null);
             }
-        };
-        loginAsyncTask.execute();
+        });
+
+    }
+
+    private void onLoginCallFinished(boolean isFailure, final Response<LoginReply> response) {
+        if (loginCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        loginCall = null;
+
+        if (isFailure || !response.isSuccessful()) {
+            loggingInProgressBar.setVisibility(View.INVISIBLE);
+            passwordEditText.setError(getString(R.string.incorrect_password));
+            passwordEditText.requestFocus();
+        } else {
+            // store session token
+            SessionDAO.setSessionToken(getActivity(), response.body().token);
+
+            getUserInfoCall = BookrAPIDAO.apiService.getUserInfo(response.body().token, response.body().userId);
+            getUserInfoCall.enqueue(new Callback<UserInfo>() {
+                @Override
+                public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
+                    onGetUserInfoCallCallFinished(false, response);
+                }
+
+                @Override
+                public void onFailure(Call<UserInfo> call, Throwable t) {
+                    onGetUserInfoCallCallFinished(false, null);
+                }
+            });
+        }
+    }
+
+    private void onGetUserInfoCallCallFinished(boolean isFailure, Response<UserInfo> response) {
+        if (getUserInfoCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        getUserInfoCall = null;
+        loggingInProgressBar.setVisibility(View.INVISIBLE);
+
+        if (isFailure || !response.isSuccessful()) {
+            SessionDAO.isSessionValid(getActivity());
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.failed_to_login), Toast.LENGTH_SHORT);
+            toast.show();
+        } else { // success
+            SessionDAO.setUserInfo(getActivity(), response.body());
+
+            ActivityStarter.startBookListActivity(getActivity());
+
+            // do not come back here, use log out instead
+            getActivity().finish();
+        }
+
     }
 
 }

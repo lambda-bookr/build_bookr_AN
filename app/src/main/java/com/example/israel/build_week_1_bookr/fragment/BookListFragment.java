@@ -17,8 +17,6 @@ import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.BookListAdapter;
@@ -26,7 +24,6 @@ import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestBookListAsyncTask;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -37,7 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 // TODO HIGH preserve last position when coming back from the details. Hint savedInstance
 // TODO MEDIUM fragment's animation
@@ -138,7 +134,7 @@ public class BookListFragment extends Fragment {
 
                 getBooksCall = null;
 
-                if (response.code() == HttpURLConnection.HTTP_OK) {
+                if (response.isSuccessful()) {
                     bookListRecyclerView.setVisibility(View.VISIBLE);
 
                     bookListAdapter.setBookList(response.body());

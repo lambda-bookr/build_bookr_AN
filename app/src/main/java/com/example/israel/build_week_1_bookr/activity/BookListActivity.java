@@ -27,20 +27,21 @@ public class BookListActivity extends AppCompatActivity
         setContentView(R.layout.activity_book_list);
 
         // setup navigation view
-        UserInfo userInfo = SessionDAO.getUserInfo(this);
-
         NavigationView navigationView = findViewById(R.id.activity_book_list_nav_view);
 
         navigationView.findViewById(R.id.book_list_nav_header_text_view_full_name);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View navigationHeader = navigationView.getHeaderView(0);
-        TextView usernameTextView = navigationHeader.findViewById(R.id.book_list_nav_header_text_view_username);
-        usernameTextView.setText(userInfo.getUsername());
+        UserInfo userInfo = SessionDAO.getUserInfo(this);
+        if (userInfo != null) {
+            View navigationHeader = navigationView.getHeaderView(0);
+            TextView usernameTextView = navigationHeader.findViewById(R.id.book_list_nav_header_text_view_username);
+            usernameTextView.setText(userInfo.getUsername());
 
-        TextView fullNameTextView = navigationHeader.findViewById(R.id.book_list_nav_header_text_view_full_name);
-        String fullNameStr = userInfo.getFirstName() + " " + userInfo.getLastName();
-        fullNameTextView.setText(fullNameStr);
+            TextView fullNameTextView = navigationHeader.findViewById(R.id.book_list_nav_header_text_view_full_name);
+            String fullNameStr = userInfo.getFirstName() + " " + userInfo.getLastName();
+            fullNameTextView.setText(fullNameStr);
+        }
 
         // book list fragment
         addBookListFragment();

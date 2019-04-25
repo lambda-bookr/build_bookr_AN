@@ -24,7 +24,6 @@ import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookAsyncTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,12 +56,12 @@ public class AddBookFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_add_book, container, false);
 
-        fragmentView.findViewById(R.id.fragment_add_book_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // blocker
-            }
-        });
+//        fragmentView.findViewById(R.id.fragment_add_book_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // blocker
+//            }
+//        });
 
         Button addBookButton = fragmentView.findViewById(R.id.fragment_add_book_button_add_book);
         addBookButton.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +151,9 @@ public class AddBookFragment extends Fragment {
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
                     toast.show();
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
 
@@ -164,6 +166,9 @@ public class AddBookFragment extends Fragment {
                 addBookCall = null;
 
                 requestingAddBookProgressBar.setVisibility(View.GONE);
+
+                Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
 

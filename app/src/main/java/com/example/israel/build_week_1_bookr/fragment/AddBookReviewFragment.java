@@ -13,10 +13,15 @@ import android.widget.Toast;
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.StaticHelpers;
 import com.example.israel.build_week_1_bookr.custom_view.RatingView;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
+import com.example.israel.build_week_1_bookr.json_object.OutReview;
 import com.example.israel.build_week_1_bookr.model.Review;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestAddBookReviewAsyncTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddBookReviewFragment extends Fragment {
 
@@ -24,7 +29,7 @@ public class AddBookReviewFragment extends Fragment {
 
     private View fragmentView;
     private int bookId;
-    private RequestAddBookReviewAsyncTask requestAddBookReviewAsyncTask;
+    private Call<Review> addBookReviewCall;
 
     public static AddBookReviewFragment newInstance(int bookId) {
 
@@ -76,9 +81,9 @@ public class AddBookReviewFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        if (requestAddBookReviewAsyncTask != null) {
-            requestAddBookReviewAsyncTask.cancel(false);
-            requestAddBookReviewAsyncTask = null;
+        if (addBookReviewCall != null) {
+            addBookReviewCall.cancel();
+            addBookReviewCall = null;
         }
 
         super.onDetach();
@@ -86,7 +91,7 @@ public class AddBookReviewFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestAddReview() {
-        if (requestAddBookReviewAsyncTask != null) {
+        if (addBookReviewCall != null) {
             return;
         }
 
@@ -102,20 +107,20 @@ public class AddBookReviewFragment extends Fragment {
         UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
         int userId = userInfo.getId();
 
-        requestAddBookReviewAsyncTask = new RequestAddBookReviewAsyncTask(SessionDAO.getSessionToken(getActivity()), bookId, userId, ratingView.getRating(), reviewStr) {
+        OutReview outReview = new OutReview(bookId, userId, ratingView.getRating(), reviewStr);
 
+        addBookReviewCall = BookrAPIDAO.apiService.addReview(SessionDAO.getSessionToken(getActivity()), outReview);
+        addBookReviewCall.enqueue(new Callback<Review>() {
             @Override
-            protected void onPostExecute(Review review) {
-                super.onPostExecute(review);
-
-                if (isCancelled() || getActivity() == null) {
+            public void onResponse(Call<Review> call, Response<Review> response) {
+                if (call.isCanceled() || getActivity() == null) {
                     return;
                 }
 
-                requestAddBookReviewAsyncTask = null;
+                addBookReviewCall = null;
 
-                if (review != null) {
-                    ((BookReviewsFragment)getTargetFragment()).addReview(review);
+                if (response.isSuccessful()) {
+                    ((BookReviewsFragment)getTargetFragment()).addReview(response.body()); // TODO interface
 
                     Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
                     toast.show();
@@ -128,8 +133,21 @@ public class AddBookReviewFragment extends Fragment {
 
                 getActivity().getSupportFragmentManager().popBackStack();
             }
-        };
-        requestAddBookReviewAsyncTask.execute();
+
+            @Override
+            public void onFailure(Call<Review> call, Throwable t) {
+                if (call.isCanceled() || getActivity() == null) {
+                    return;
+                }
+
+                addBookReviewCall = null;
+
+                Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_failed), Toast.LENGTH_SHORT);
+                toast.show();
+
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
 }

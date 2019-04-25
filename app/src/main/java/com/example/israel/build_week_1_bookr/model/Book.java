@@ -13,19 +13,7 @@ import javax.annotation.Generated;
 
 public class Book implements Parcelable {
 
-    public static final int INVALID_ID = -1;
-    private static final String KEY_JSON_ID = "id";
-    private static final String KEY_JSON_USER_ID = "user_id";
-    private static final String KEY_JSON_AUTHOR = "author";
-    private static final String KEY_JSON_TITLE = "title";
-    private static final String KEY_JSON_PRICE = "price";
-    private static final String KEY_JSON_PUBLISHER = "publisher";
-    private static final String KEY_JSON_DESCRIPTION = "description";
-    private static final String KEY_JSON_IMAGE_URL = "imageUrl";
-    private static final String KEY_JSON_AVERAGE_RATING = "rating";
-
     public Book() {
-
     }
 
     public Book(int userId, String author, String title, double price, String publisher, String description, String imageUrl) {
@@ -36,65 +24,6 @@ public class Book implements Parcelable {
         this.publisher = publisher;
         this.description = description;
         this.imageUrl = imageUrl;
-    }
-
-    public Book(JSONObject bookJson) {
-        try {
-            id = bookJson.getInt(KEY_JSON_ID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            id = INVALID_ID;
-        }
-
-        try {
-            userId = bookJson.getInt(KEY_JSON_USER_ID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            userId = INVALID_ID;
-        }
-
-        try {
-            author = bookJson.getString(KEY_JSON_AUTHOR);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            title = bookJson.getString(KEY_JSON_TITLE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            price = bookJson.getDouble(KEY_JSON_PRICE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            publisher = bookJson.getString(KEY_JSON_PUBLISHER);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            description = bookJson.getString(KEY_JSON_DESCRIPTION);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            imageUrl = bookJson.getString(KEY_JSON_IMAGE_URL);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (!bookJson.isNull(KEY_JSON_AVERAGE_RATING)) { // if there's no review, server sends a null value
-                averageRating = bookJson.getDouble(KEY_JSON_AVERAGE_RATING);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     protected Book(Parcel in) {

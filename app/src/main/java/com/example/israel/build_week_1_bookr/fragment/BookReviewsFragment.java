@@ -24,13 +24,16 @@ import android.widget.Toast;
 
 import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.adapter.ReviewListAdapter;
+import com.example.israel.build_week_1_bookr.dao.BookrAPIDAO;
 import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.Review;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestBookReviewsAsyncTask;
-import com.example.israel.build_week_1_bookr.worker_thread.RequestRemoveBookReviewAsyncTask;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookReviewsFragment extends Fragment {
 
@@ -40,8 +43,8 @@ public class BookReviewsFragment extends Fragment {
 
     private View fragmentView;
     private Book book;
-    private RequestBookReviewsAsyncTask requestBookReviewsAsyncTask;
-    private RequestRemoveBookReviewAsyncTask requestRemoveBookReviewAsyncTask;
+    private Call<ArrayList<Review>> getReviewsCall;
+    private Call<Review> deleteReviewCall;
     private ReviewListAdapter reviewListAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int removeReviewId;
@@ -101,14 +104,14 @@ public class BookReviewsFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        if (requestBookReviewsAsyncTask != null) {
-            requestBookReviewsAsyncTask.cancel(false);
-            requestBookReviewsAsyncTask = null;
+        if (getReviewsCall != null) {
+            getReviewsCall.cancel();
+            getReviewsCall = null;
         }
 
-        if (requestRemoveBookReviewAsyncTask != null) {
-            requestRemoveBookReviewAsyncTask.cancel(false);
-            requestRemoveBookReviewAsyncTask = null;
+        if (deleteReviewCall != null) {
+            deleteReviewCall.cancel();
+            deleteReviewCall = null;
         }
 
         super.onDetach();
@@ -131,26 +134,34 @@ public class BookReviewsFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestReviews() {
-        if (requestBookReviewsAsyncTask != null) {
+        if (getReviewsCall != null) {
             return;
         }
 
-        requestBookReviewsAsyncTask = new RequestBookReviewsAsyncTask(SessionDAO.getSessionToken(getActivity()), book.getId()) {
+        getReviewsCall = BookrAPIDAO.apiService.getReviews(SessionDAO.getSessionToken(getActivity()), book.getId());
+        getReviewsCall.enqueue(new Callback<ArrayList<Review>>() {
             @Override
-            protected void onPostExecute(@NonNull ArrayList<Review> reviews) {
-                super.onPostExecute(reviews);
-                if (isCancelled()) {
+            public void onResponse(Call<ArrayList<Review>> call, Response<ArrayList<Review>> response) {
+                if (call.isCanceled()) {
                     return;
                 }
 
-                requestBookReviewsAsyncTask = null;
                 swipeRefreshLayout.setRefreshing(false);
 
-                reviewListAdapter.setReviewList(reviews);
-
+                if (response.isSuccessful()) {
+                    reviewListAdapter.setReviewList(response.body());
+                }
             }
-        };
-        requestBookReviewsAsyncTask.execute();
+
+            @Override
+            public void onFailure(Call<ArrayList<Review>> call, Throwable t) {
+                if (call.isCanceled()) {
+                    return;
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void createAddBookReviewFragment() {
@@ -166,35 +177,42 @@ public class BookReviewsFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     private void requestRemoveReview() {
-        if (requestRemoveBookReviewAsyncTask != null) {
+        if (deleteReviewCall != null) {
             return;
         }
 
-        requestRemoveBookReviewAsyncTask = new RequestRemoveBookReviewAsyncTask(SessionDAO.getSessionToken(getActivity()), removeReviewId) {
+        deleteReviewCall = BookrAPIDAO.apiService.deleteReview(SessionDAO.getSessionToken(getActivity()), removeReviewId);
+        deleteReviewCall.enqueue(new Callback<Review>() {
+            @Override
+            public void onResponse(Call<Review> call, Response<Review> response) {
+                onDeleteReviewCallFinished(false, response);
+            }
 
             @Override
-            protected void onPostExecute(Review review) {
-                super.onPostExecute(review);
-
-                if (isCancelled() || getActivity() == null) {
-                    return;
-                }
-
-                requestRemoveBookReviewAsyncTask = null;
-
-                if (review != null) {
-                    reviewListAdapter.removeReview(removeReviewAdapterPosition);
-
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_success), Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_failed), Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+            public void onFailure(Call<Review> call, Throwable t) {
+                onDeleteReviewCallFinished(true, null);
             }
-        };
-        requestRemoveBookReviewAsyncTask.execute();
 
+        });
+
+    }
+
+    private void onDeleteReviewCallFinished(boolean isFailure, Response<Review> response) {
+        if (deleteReviewCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        deleteReviewCall = null;
+
+        if (isFailure || !response.isSuccessful()) {
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_failed), Toast.LENGTH_SHORT);
+            toast.show();
+        } else { // success
+            reviewListAdapter.removeReview(removeReviewAdapterPosition);
+
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_success), Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     public void createReviewPopupMenu(View v, final Review review, int reviewAdapterPosition) {
