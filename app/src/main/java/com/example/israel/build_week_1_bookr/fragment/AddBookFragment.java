@@ -25,6 +25,8 @@ import com.example.israel.build_week_1_bookr.dao.SessionDAO;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +38,7 @@ public class AddBookFragment extends Fragment {
 
     private View fragmentView;
     private Call<Book> addBookCall;
+    private ProgressBar requestingAddBookProgressBar;
 
     public static AddBookFragment newInstance() {
 
@@ -55,6 +58,7 @@ public class AddBookFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_add_book, container, false);
+        requestingAddBookProgressBar = fragmentView.findViewById(R.id.fragment_add_book_progress_bar_requesting_add_book);
 
 //        fragmentView.findViewById(R.id.fragment_add_book_constraint_layout_root).setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -127,7 +131,6 @@ public class AddBookFragment extends Fragment {
             imageUrlStr = DEFAULT_IMAGE_URL;
         }
 
-        final ProgressBar requestingAddBookProgressBar = fragmentView.findViewById(R.id.fragment_add_book_progress_bar_requesting_add_book);
         requestingAddBookProgressBar.setVisibility(View.VISIBLE);
 
         UserInfo userInfo = SessionDAO.getUserInfo(getActivity());
@@ -138,39 +141,34 @@ public class AddBookFragment extends Fragment {
         addBookCall.enqueue(new Callback<Book>() {
             @Override
             public void onResponse(Call<Book> call, Response<Book> response) {
-                if (call.isCanceled() || getActivity() == null) {
-                    return;
-                }
-
-                addBookCall = null;
-
-                requestingAddBookProgressBar.setVisibility(View.GONE);
-
-                if (response.isSuccessful()) {
-                    ((BookListFragment)getTargetFragment()).addBook(response.body());
-
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+                onAddBookCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<Book> call, Throwable t) {
-                if (call.isCanceled() || getActivity() == null) {
-                    return;
-                }
-
-                addBookCall = null;
-
-                requestingAddBookProgressBar.setVisibility(View.GONE);
-
-                Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
-                toast.show();
+                onAddBookCallFinished(null);
             }
         });
+
+    }
+
+    private void onAddBookCallFinished(Response<Book> response) {
+        if (addBookCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        addBookCall = null;
+        requestingAddBookProgressBar.setVisibility(View.GONE);
+
+        if (response != null && response.isSuccessful()) {
+            ((BookListFragment)getTargetFragment()).addBook(response.body());
+
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_success), Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.add_book_failed), Toast.LENGTH_SHORT);
+            toast.show();
+        }
 
     }
 

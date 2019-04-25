@@ -128,36 +128,35 @@ public class BookListFragment extends Fragment {
         getBooksCall.enqueue(new Callback<ArrayList<Book>>() {
             @Override
             public void onResponse(Call<ArrayList<Book>> call, Response<ArrayList<Book>> response) {
-                if (call.isCanceled()) {
-                    return;
-                }
-
-                getBooksCall = null;
-
-                if (response.isSuccessful()) {
-                    bookListRecyclerView.setVisibility(View.VISIBLE);
-
-                    bookListAdapter.setBookList(response.body());
-
-                    // start downloading the images
-                    downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(response.body()));
-                    downloadBookImagesThread.start();
-
-                    bookListSwipeRefreshLayout.setRefreshing(false);
-                }
+                onGetBookCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Book>> call, Throwable t) {
-                if (call.isCanceled()) {
-                    return;
-                }
-
-                getBooksCall = null;
-
-                bookListSwipeRefreshLayout.setRefreshing(false);
+                onGetBookCallFinished(null);
             }
         });
+    }
+
+    private void onGetBookCallFinished(Response<ArrayList<Book>> response) {
+        if (getBooksCall.isCanceled()) {
+            return;
+        }
+
+        getBooksCall = null;
+        bookListSwipeRefreshLayout.setRefreshing(false);
+
+        if (response != null && response.isSuccessful()) {
+            bookListRecyclerView.setVisibility(View.VISIBLE);
+
+            bookListAdapter.setBookList(response.body());
+
+            // start downloading the images
+            downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(response.body()));
+            downloadBookImagesThread.start();
+
+            bookListSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private void cancelRequestBookList() {

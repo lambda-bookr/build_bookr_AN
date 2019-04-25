@@ -113,41 +113,36 @@ public class AddBookReviewFragment extends Fragment {
         addBookReviewCall.enqueue(new Callback<Review>() {
             @Override
             public void onResponse(Call<Review> call, Response<Review> response) {
-                if (call.isCanceled() || getActivity() == null) {
-                    return;
-                }
-
-                addBookReviewCall = null;
-
-                if (response.isSuccessful()) {
-                    ((BookReviewsFragment)getTargetFragment()).addReview(response.body()); // TODO interface
-
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
-                    toast.show();
-
-                    StaticHelpers.hideKeyboard(getActivity());
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_failed), Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-
-                getActivity().getSupportFragmentManager().popBackStack();
+                onAddBookReviewCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<Review> call, Throwable t) {
-                if (call.isCanceled() || getActivity() == null) {
-                    return;
-                }
-
-                addBookReviewCall = null;
-
-                Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_failed), Toast.LENGTH_SHORT);
-                toast.show();
-
-                getActivity().getSupportFragmentManager().popBackStack();
+                onAddBookReviewCallFinished(null);
             }
         });
+    }
+
+    private void onAddBookReviewCallFinished(Response<Review> response) {
+        if (addBookReviewCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        addBookReviewCall = null;
+
+        if (response != null && response.isSuccessful()) {
+            ((BookReviewsFragment)getTargetFragment()).addReview(response.body()); // TODO interface
+
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_success), Toast.LENGTH_SHORT);
+            toast.show();
+
+            StaticHelpers.hideKeyboard(getActivity());
+        } else {
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.add_review_failed), Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
 }

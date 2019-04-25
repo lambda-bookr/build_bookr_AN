@@ -142,26 +142,27 @@ public class BookReviewsFragment extends Fragment {
         getReviewsCall.enqueue(new Callback<ArrayList<Review>>() {
             @Override
             public void onResponse(Call<ArrayList<Review>> call, Response<ArrayList<Review>> response) {
-                if (call.isCanceled()) {
-                    return;
-                }
-
-                swipeRefreshLayout.setRefreshing(false);
-
-                if (response.isSuccessful()) {
-                    reviewListAdapter.setReviewList(response.body());
-                }
+                onGetReviewsCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Review>> call, Throwable t) {
-                if (call.isCanceled()) {
-                    return;
-                }
-
-                swipeRefreshLayout.setRefreshing(false);
+                onGetReviewsCallFinished(null);
             }
         });
+    }
+
+    private void onGetReviewsCallFinished(Response<ArrayList<Review>> response) {
+        if (getReviewsCall.isCanceled()) {
+            return;
+        }
+
+        getReviewsCall = null;
+        swipeRefreshLayout.setRefreshing(false);
+
+        if (response != null && response.isSuccessful()) {
+            reviewListAdapter.setReviewList(response.body());
+        }
     }
 
     private void createAddBookReviewFragment() {
@@ -185,32 +186,30 @@ public class BookReviewsFragment extends Fragment {
         deleteReviewCall.enqueue(new Callback<Review>() {
             @Override
             public void onResponse(Call<Review> call, Response<Review> response) {
-                onDeleteReviewCallFinished(false, response);
+                onDeleteReviewCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<Review> call, Throwable t) {
-                onDeleteReviewCallFinished(true, null);
+                onDeleteReviewCallFinished(null);
             }
-
         });
-
     }
 
-    private void onDeleteReviewCallFinished(boolean isFailure, Response<Review> response) {
+    private void onDeleteReviewCallFinished(Response<Review> response) {
         if (deleteReviewCall.isCanceled() || getActivity() == null) {
             return;
         }
 
         deleteReviewCall = null;
 
-        if (isFailure || !response.isSuccessful()) {
-            Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_failed), Toast.LENGTH_SHORT);
-            toast.show();
-        } else { // success
+        if (response != null && response.isSuccessful()) {
             reviewListAdapter.removeReview(removeReviewAdapterPosition);
 
             Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_success), Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_review_failed), Toast.LENGTH_SHORT);
             toast.show();
         }
     }

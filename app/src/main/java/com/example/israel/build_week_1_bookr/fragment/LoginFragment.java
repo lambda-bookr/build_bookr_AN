@@ -24,6 +24,8 @@ import com.example.israel.build_week_1_bookr.json_object.LoginInfo;
 import com.example.israel.build_week_1_bookr.json_object.LoginReply;
 import com.example.israel.build_week_1_bookr.model.UserInfo;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -109,6 +111,11 @@ public class LoginFragment extends Fragment {
             loginCall = null;
         }
 
+        if (getUserInfoCall != null) {
+            getUserInfoCall.cancel();
+            getUserInfoCall = null;
+        }
+
         super.onDetach();
     }
 
@@ -143,29 +150,25 @@ public class LoginFragment extends Fragment {
         loginCall.enqueue(new Callback<LoginReply>() {
             @Override
             public void onResponse(Call<LoginReply> call, Response<LoginReply> response) {
-                onLoginCallFinished(false, response);
+                onLoginCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<LoginReply> call, Throwable t) {
-                onLoginCallFinished(true, null);
+                onLoginCallFinished(null);
             }
         });
 
     }
 
-    private void onLoginCallFinished(boolean isFailure, final Response<LoginReply> response) {
+    private void onLoginCallFinished(final Response<LoginReply> response) {
         if (loginCall.isCanceled() || getActivity() == null) {
             return;
         }
 
         loginCall = null;
 
-        if (isFailure || !response.isSuccessful()) {
-            loggingInProgressBar.setVisibility(View.INVISIBLE);
-            passwordEditText.setError(getString(R.string.incorrect_password));
-            passwordEditText.requestFocus();
-        } else {
+        if (response != null && response.isSuccessful()) {
             // store session token
             SessionDAO.setSessionToken(getActivity(), response.body().token);
 
@@ -173,18 +176,22 @@ public class LoginFragment extends Fragment {
             getUserInfoCall.enqueue(new Callback<UserInfo>() {
                 @Override
                 public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
-                    onGetUserInfoCallCallFinished(false, response);
+                    onGetUserInfoCallCallFinished(response);
                 }
 
                 @Override
                 public void onFailure(Call<UserInfo> call, Throwable t) {
-                    onGetUserInfoCallCallFinished(false, null);
+                    onGetUserInfoCallCallFinished(null);
                 }
             });
+        } else {
+            loggingInProgressBar.setVisibility(View.INVISIBLE);
+            passwordEditText.setError(getString(R.string.incorrect_password));
+            passwordEditText.requestFocus();
         }
     }
 
-    private void onGetUserInfoCallCallFinished(boolean isFailure, Response<UserInfo> response) {
+    private void onGetUserInfoCallCallFinished(Response<UserInfo> response) {
         if (getUserInfoCall.isCanceled() || getActivity() == null) {
             return;
         }
@@ -192,17 +199,17 @@ public class LoginFragment extends Fragment {
         getUserInfoCall = null;
         loggingInProgressBar.setVisibility(View.INVISIBLE);
 
-        if (isFailure || !response.isSuccessful()) {
-            SessionDAO.isSessionValid(getActivity());
-            Toast toast = Toast.makeText(getActivity(), getString(R.string.failed_to_login), Toast.LENGTH_SHORT);
-            toast.show();
-        } else { // success
+        if (response != null && response.isSuccessful()) {
             SessionDAO.setUserInfo(getActivity(), response.body());
 
             ActivityStarter.startBookListActivity(getActivity());
 
             // do not come back here, use log out instead
             getActivity().finish();
+        } else { // success
+            SessionDAO.isSessionValid(getActivity());
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.failed_to_login), Toast.LENGTH_SHORT);
+            toast.show();
         }
 
     }

@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.util.SparseArray;
 
+import com.example.israel.build_week_1_bookr.BuildConfig;
 import com.example.israel.build_week_1_bookr.model.Book;
 import com.example.israel.build_week_1_bookr.json_object.LoginInfo;
 import com.example.israel.build_week_1_bookr.json_object.LoginReply;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -39,37 +41,11 @@ import rx.Observable;
 public class BookrAPIDAO {
 
     private static final String BASE_URL = "https://bookr-backend.herokuapp.com/";
-
     private static final String BOOKS = "api/books/";
     private static final String BOOK_REVIEWS = "reviews/";
-    private static final String ADD_BOOK = "api/books/";
-    private static final String KEY_JSON_ADD_BOOK_USER_ID = "user_id";
-    private static final String KEY_JSON_ADD_BOOK_TITLE = "title";
-    private static final String KEY_JSON_ADD_BOOK_AUTHOR = "author";
-    private static final String KEY_JSON_ADD_BOOK_PUBLISHER = "publisher";
-    private static final String KEY_JSON_ADD_BOOK_PRICE = "price";
-    private static final String KEY_JSON_ADD_BOOK_DESCRIPTION = "description";
-    private static final String KEY_JSON_ADD_BOOK_IMAGE_URL = "imageUrl";
-
     private static final String REVIEWS = "api/" + BOOK_REVIEWS;
-    private static final String KEY_JSON_ADD_REVIEW_BOOK_ID = "book_id";
-    private static final String KEY_JSON_ADD_REVIEW_USER_ID = "user_id";
-    private static final String KEY_JSON_ADD_REVIEW_RATING = "rating";
-    private static final String KEY_JSON_ADD_REVIEW_REVIEW = "review";
-
     static private final String REGISTER = "api/auth/register/";
-    static private final String KEY_JSON_REGISTER_USERNAME = "username";
-    static private final String KEY_JSON_REGISTER_PASSWORD = "password";
-    static private final String KEY_JSON_REGISTER_FIRST_NAME = "firstName";
-    static private final String KEY_JSON_REGISTER_LAST_NAME = "lastName";
-    static private final String KEY_JSON_REGISTER_TOKEN = "token";
-
     static private final String LOGIN = "api/auth/login/";
-    static private final String KEY_JSON_LOGIN_USERNAME = "username";
-    static private final String KEY_JSON_LOGIN_PASSWORD = "password";
-    static private final String KEY_JSON_LOGIN_TOKEN = "token";
-    static private final String KEY_JSON_LOGIN_USER_ID = "userID";
-
     private static final String USERS = "api/users/";
 
     private static final int READ_TIMEOUT = 3000;
@@ -79,9 +55,15 @@ public class BookrAPIDAO {
     static {
         //RxJava2CallAdapterFactory rxAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io());
 
+        // implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+        // only use in debug
+//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+//        interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
+                //.addInterceptor(interceptor)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()

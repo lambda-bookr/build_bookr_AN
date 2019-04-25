@@ -210,38 +210,34 @@ public class BookDetailsFragment extends Fragment {
         deleteBookCall.enqueue(new Callback<Book>() {
             @Override
             public void onResponse(Call<Book> call, Response<Book> response) {
-                if (call.isCanceled() || getActivity() == null) {
-                    return;
-                }
-
-                deleteBookCall = null;
-
-                if (response.isSuccessful()) {
-                    // remove from the book list
-                    ((BookListFragment)getTargetFragment()).removeBook(bookListPosition);
-                    getActivity().getSupportFragmentManager().popBackStack();
-
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_success), Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_failed), Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+                onDeleteBookCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<Book> call, Throwable t) {
-                if (call.isCanceled() || getActivity() == null) {
-                    return;
-                }
-
-                deleteBookCall = null;
-
-                Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_failed), Toast.LENGTH_SHORT);
-                toast.show();
+                onDeleteBookCallFinished(null);
             }
         });
+    }
 
+    private void onDeleteBookCallFinished(Response<Book> response) {
+        if (deleteBookCall.isCanceled() || getActivity() == null) {
+            return;
+        }
+
+        deleteBookCall = null;
+
+        if (response != null && response.isSuccessful()) {
+            // remove from the book list
+            ((BookListFragment)getTargetFragment()).removeBook(bookListPosition);
+            getActivity().getSupportFragmentManager().popBackStack();
+
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_success), Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_book_failed), Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     public static class DeleteBookConfirmationDialogFragment extends DialogFragment {

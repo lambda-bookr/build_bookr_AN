@@ -136,18 +136,18 @@ public class RegisterFragment extends Fragment {
         registerCall.enqueue(new Callback<RegistrationReply>() {
             @Override
             public void onResponse(Call<RegistrationReply> call, Response<RegistrationReply> response) {
-                onRegisterCallFinished(false, response);
+                onRegisterCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<RegistrationReply> call, Throwable t) {
-                onRegisterCallFinished(true, null);
+                onRegisterCallFinished(null);
             }
         });
 
     }
 
-    private void onRegisterCallFinished(boolean isFailure, Response<RegistrationReply> response) {
+    private void onRegisterCallFinished(Response<RegistrationReply> response) {
         if (registerCall.isCanceled() || getActivity() == null) {
             return;
         }
@@ -155,14 +155,14 @@ public class RegisterFragment extends Fragment {
         registeringProgressBar.setVisibility(View.GONE);
         registerCall = null;
 
-        if (isFailure || !response.isSuccessful()) {
-            usernameEditText.setError(getString(R.string.username_taken));
-            usernameEditText.requestFocus();
-        } else {
+        if (response != null && response.isSuccessful()) {
             Toast toast = Toast.makeText(getActivity(), getString(R.string.registration_successful), Toast.LENGTH_LONG);
             toast.show();
 
             StaticHelpers.hideKeyboard(getActivity());
+        } else {
+            usernameEditText.setError(getString(R.string.username_taken));
+            usernameEditText.requestFocus();
         }
     }
 
