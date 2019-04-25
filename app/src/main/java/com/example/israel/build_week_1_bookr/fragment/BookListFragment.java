@@ -45,7 +45,6 @@ public class BookListFragment extends Fragment {
     private BookListAdapter bookListAdapter;
     private Call<ArrayList<Book>> getBooksCall;
     private SwipeRefreshLayout bookListSwipeRefreshLayout;
-    private DownloadBookImagesThread downloadBookImagesThread;
 
     public static BookListFragment newInstance() {
 
@@ -92,7 +91,6 @@ public class BookListFragment extends Fragment {
     @Override
     public void onDetach() {
         // when we log out this fragment can be detached
-        cancelDownloadBookImages();
         cancelRequestBookList();
 
         super.onDetach();
@@ -119,7 +117,6 @@ public class BookListFragment extends Fragment {
             return;
         }
 
-        cancelDownloadBookImages(); // a new book list will be used
         bookListAdapter.removeAllBooks();
 
         bookListRecyclerView.setVisibility(View.INVISIBLE);
@@ -151,10 +148,6 @@ public class BookListFragment extends Fragment {
 
             bookListAdapter.setBookList(response.body());
 
-            // start downloading the images
-            downloadBookImagesThread = new DownloadBookImagesThread(new ArrayList<>(response.body()));
-            downloadBookImagesThread.start();
-
             bookListSwipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -184,65 +177,6 @@ public class BookListFragment extends Fragment {
 
     public void removeBook(int bookPosition) {
         bookListAdapter.removeBook(bookPosition);
-    }
-
-    // TODO MEDIUM create a Thread that will wait for a book to request an image downloaded
-    // rather than downloading every image we should only download the one that is (being viewed + n)
-
-    public class DownloadBookImagesThread extends Thread {
-
-        public DownloadBookImagesThread(ArrayList<Book> books) {
-            this.books = books;
-        }
-
-        private ArrayList<Book> books;
-        private AtomicBoolean isCancelled = new AtomicBoolean(false);
-
-        @Override
-        public void run() {
-            super.run();
-
-            // Download the images one by one then update the corresponding view
-            for (int i = 0; i < books.size(); ++i) {
-                final Book book = books.get(i);
-
-                try {
-                    new URL(book.getImageUrl());
-                } catch (MalformedURLException e) {
-                    // no need to try downloading
-                    continue;
-                }
-
-                final Bitmap bookImageBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
-                if (isCancelled.get() || // the adapter list is now different. It will not crash but it's useless to set the images
-                        getActivity() == null) {
-                    break;
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        bookListAdapter.setBookImageBitmap(book, bookImageBitmap);
-                    }
-                });
-            }
-
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        downloadBookImagesThread = null;
-                    }
-                });
-            }
-        }
-    }
-
-    private void cancelDownloadBookImages() {
-        if (downloadBookImagesThread != null) {
-            downloadBookImagesThread.isCancelled.set(true);
-            downloadBookImagesThread = null;
-        }
     }
 
 }

@@ -15,6 +15,8 @@ import android.transition.ChangeTransform;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.TransitionSet;
+import android.util.Pair;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +31,18 @@ import com.example.israel.build_week_1_bookr.R;
 import com.example.israel.build_week_1_bookr.fragment.BookDetailsFragment;
 import com.example.israel.build_week_1_bookr.fragment.BookListFragment;
 import com.example.israel.build_week_1_bookr.model.Book;
+import com.example.israel.build_week_1_bookr.network.NetworkAdapter;
+import com.example.israel.build_week_1_bookr.utils.CircularDictionary;
 import com.example.israel.build_week_1_bookr.worker_thread.RequestImageByUrlAsyncTask;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> {
+
+    private static final int IMAGE_CACHE_SIZE = 20;
 
     public BookListAdapter(BookListFragment bookListFragment, int bookDetailsFragmentSlotId) {
         this.bookListFragment = bookListFragment;
@@ -45,8 +52,8 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     private BookListFragment bookListFragment ;
     private int bookDetailsFragmentSlotId;
     private ArrayList<Book> books = new ArrayList<>();
-    private ArrayList<Bitmap> bookImageBitmaps = new ArrayList<>();
     private int lastPosition = -1;
+    private CircularDictionary<Integer, Bitmap> imageCache = new CircularDictionary<>(IMAGE_CACHE_SIZE);
 
     @NonNull
     @Override
@@ -57,7 +64,6 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final BookListAdapter.ViewHolder viewHolder, int i) {
         final Book book = books.get(i);
-        Bitmap bookImageBitmap = bookImageBitmaps.get(i);
 
         viewHolder.titleTextView.setText(book.getTitle());
         viewHolder.authorTextView.setText(book.getAuthor());
@@ -65,14 +71,47 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
         try {
             new URL(book.getImageUrl());
-            if (bookImageBitmaps.get(i) == null) {
-                // wait for image to be downloaded
-                viewHolder.bookImageImageView.setVisibility(View.INVISIBLE);
+
+            final Bitmap imageBitmap = imageCache.get(book.getId());
+            if (imageBitmap == null) {
+                // request image
                 viewHolder.requestingImageImageView.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+                viewHolder.bookImageImageView.setVisibility(View.INVISIBLE);
+
+                final AtomicBoolean cancel = new AtomicBoolean(false);
+                viewHolder.cancelImageRequest = cancel;
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Bitmap requestedBitmap = NetworkAdapter.httpImageRequestGET(book.getImageUrl());
+                        if (cancel.get()) {
+                            return;
+                        }
+
+                        if (bookListFragment.getActivity() != null) {
+                            bookListFragment.getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    viewHolder.requestingImageImageView.setVisibility(View.INVISIBLE);
+                                    viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+
+                                    if (requestedBitmap == null) {
+                                        viewHolder.bookImageImageView.setImageResource(R.drawable.ic_broken_image_white_24dp);
+                                    } else {
+                                        imageCache.put(book.getId(), requestedBitmap);
+                                        viewHolder.bookImageImageView.setImageBitmap(requestedBitmap);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }).start();
+
+            } else { // has image in cache
                 viewHolder.requestingImageImageView.setVisibility(View.INVISIBLE);
-                viewHolder.bookImageImageView.setImageBitmap(bookImageBitmap);
+                viewHolder.bookImageImageView.setVisibility(View.VISIBLE);
+                viewHolder.bookImageImageView.setImageBitmap(imageBitmap);
             }
         } catch (MalformedURLException e) { // invalid url
             viewHolder.requestingImageImageView.setVisibility(View.INVISIBLE);
@@ -104,36 +143,30 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     }
 
     @Override
+    public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+
+        if (holder.cancelImageRequest != null) {
+            holder.cancelImageRequest.set(true);
+            holder.cancelImageRequest = null;
+        }
+    }
+
+    @Override
     public int getItemCount() {
         return books.size();
     }
 
+    /** Reset this adapter */
     public void setBookList(@NonNull ArrayList<Book> books) {
         this.books = books;
-        this.bookImageBitmaps.ensureCapacity(books.size());
-        for (int i = 0; i < books.size(); ++i) {
-            this.bookImageBitmaps.add(null);
-        }
+        this.imageCache = new CircularDictionary<>(IMAGE_CACHE_SIZE);
 
         notifyDataSetChanged();
     }
 
     public void addBook(final Book book) {
         books.add(book);
-        bookImageBitmaps.add(null);
-
-        @SuppressLint("StaticFieldLeak")
-        RequestImageByUrlAsyncTask requestImageByUrlAsyncTask = new RequestImageByUrlAsyncTask(book.getImageUrl()) {
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-
-                // no way to cancel this
-
-                setBookImageBitmap(book, bitmap);
-            }
-        };
-        requestImageByUrlAsyncTask.execute();
 
         notifyItemInserted(books.size() - 1);
     }
@@ -141,7 +174,6 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     public void removeBook(int i) {
         lastPosition -= 1;
         books.remove(i);
-        bookImageBitmaps.remove(i);
 
         notifyItemRemoved(i);
     }
@@ -149,25 +181,8 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     public void removeAllBooks() {
         lastPosition = 0;
         books.clear();
-        bookImageBitmaps.clear();
 
         notifyDataSetChanged();
-    }
-
-    public void setBookImageBitmap(Book book, Bitmap bookImageBitmap) {
-        // find the book and update its image.
-        // rather than direct index access
-        // this is remove safe
-        for (int i = 0; i < books.size(); ++i) {
-            if (books.get(i).getId() == book.getId()) {
-                // do not update the image if it already has one
-                if (bookImageBitmaps.get(i) == null) {
-                    bookImageBitmaps.set(i, bookImageBitmap);
-                    notifyItemChanged(i);
-                }
-                break;
-            }
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -187,6 +202,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         private RatingBar averageRatingRatingBar;
         private ImageView bookImageImageView;
         private ProgressBar requestingImageImageView;
+        private AtomicBoolean cancelImageRequest;
 
     }
 
