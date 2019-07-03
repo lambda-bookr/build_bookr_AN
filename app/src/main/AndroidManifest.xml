@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.israel.build_week_1_bookr">
+    package="com.isra.israel.build_week_1_bookr">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.BookListActivity"
+        <activity android:name="com.isra.israel.build_week_1_bookr.activity.BookListActivity"
             android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".activity.LoginActivity"
+        <activity android:name="com.isra.israel.build_week_1_bookr.activity.LoginActivity"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name="com.isra.israel.build_week_1_bookr.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
